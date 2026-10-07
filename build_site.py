@@ -13,6 +13,8 @@ import datetime as dt
 import html
 import shutil
 
+from PIL import Image
+
 from run_current import CURRENT, OUT
 from run_story import HERE
 
@@ -116,9 +118,13 @@ def main():
         alt = alt_file.read_text().strip() if alt_file.exists() else caption
         short = TITLES.get(script, script.replace(".py", ""))
         toc.append(f'  <li><a href="#g{i}">{html.escape(short)}</a></li>')
+        with Image.open(img_dir / f"{stem}.png") as im:
+            w, h = im.size
         figures.append(
             f'<figure id="g{i}"><a href="img/{stem}.png" target="_blank" rel="noopener">'
-            f'<img src="img/{stem}.png" alt="{html.escape(alt)}" loading="{"eager" if i == 1 else "lazy"}"></a>'
+            # width/height reserve the space before the image arrives; with only 9 images (~3.5 MB)
+            # everything loads up front so no figure is skipped near the bottom of the page
+            f'<img src="img/{stem}.png" alt="{html.escape(alt)}" width="{w}" height="{h}" decoding="async"></a>'
             f"<figcaption><b>{i}. {html.escape(short)}.</b> {html.escape(caption)}</figcaption></figure>")
 
     lede = ("A strong El Niño is building in the Pacific in 2026. These graphics compare it with the biggest "
