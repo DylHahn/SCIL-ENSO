@@ -1,0 +1,7 @@
+numpy
+pandas
+matplotlib
+xarray
+netCDF4
+# optional: coastlines on the regions map
+# cartopy

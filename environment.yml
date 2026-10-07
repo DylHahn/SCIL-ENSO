@@ -1,0 +1,14 @@
+# Same packages as the existing "enso" conda env. To recreate it elsewhere:
+#   conda env create -f environment.yml
+name: enso
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - pandas
+  - matplotlib
+  - xarray
+  - netcdf4
+  - cartopy
+  - pillow
