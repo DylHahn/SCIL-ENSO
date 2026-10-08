@@ -11,35 +11,49 @@
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
           font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 1120px; margin: 0 auto; padding: 48px 16px 72px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
+  .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
+             margin-bottom: -1px; font-weight: 500; }
+  .tabs a:hover { color: var(--text); }
+  .tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
   header p.kicker { color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
                      font-size: 14px; margin: 0 0 8px; }
   h1 { font-size: clamp(28px, 4.5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+  h2 { font-size: 22px; margin: 32px 0 8px; }
   .lede { color: var(--text-2); font-size: 19px; max-width: 760px; margin: 0 0 12px; }
   .meta { color: var(--muted); font-size: 14px; margin: 0 0 40px; }
-  nav ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px 24px;
-            padding: 20px 24px 20px 44px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
-  nav a { color: var(--text-2); text-decoration: none; }
-  nav a:hover { color: var(--text); text-decoration: underline; }
+  .toc ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px 24px;
+             padding: 20px 24px 20px 44px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
+  .toc a { color: var(--text-2); text-decoration: none; }
+  .toc a:hover { color: var(--text); text-decoration: underline; }
   figure { margin: 0 0 64px; scroll-margin-top: 24px; }
   figure a { display: block; }
   img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
   figcaption { margin-top: 14px; color: var(--text-2); max-width: 820px; }
   figcaption b { color: var(--text); }
+  .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
+           color: var(--text-2); }
+  .note h2 { color: var(--text); }
+  .note a, footer a { color: var(--text-2); }
+  .note a:hover, footer a:hover { color: var(--text); }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
-  footer a { color: var(--text-2); }
-  footer ul { padding-left: 20px; }
+  footer ul, .note ul { padding-left: 20px; }
 </style>
 </head>
 <body>
 <main>
+<nav class="tabs" aria-label="Pages">
+  <a href="./" aria-current="page">El Niño 2026</a>
+  <a href="socal/">Southern California</a>
+</nav>
 <header>
   <p class="kicker">El Niño 2026</p>
   <h1>How “super” is this El Niño?</h1>
   <p class="lede">A strong El Niño is building in the Pacific in 2026. These graphics compare it with the biggest El Niños on record, at the surface and below it, and show what past El Niños have meant for rain and heat around the world.</p>
-  <p class="meta">Updated October 7, 2026. Built from NOAA observations and NOAA's official forecasts. Click any graphic for full size.</p>
+  <p class="meta">Updated October 8, 2026. Built from NOAA observations and NOAA's official forecasts. Click any graphic for full size.</p>
 </header>
-<nav aria-label="Graphics on this page"><ol>
+<nav class="toc" aria-label="Graphics on this page"><ol>
   <li><a href="#g1">This El Niño vs. the biggest on record</a></li>
   <li><a href="#g2">At the surface: now vs. past super El Niños</a></li>
   <li><a href="#g3">Underwater: now vs. past super El Niños</a></li>
@@ -59,6 +73,7 @@
 <figure id="g7"><a href="img/07_stats1_rain_change.png" target="_blank" rel="noopener"><img src="img/07_stats1_rain_change.png" alt="Two world maps of the average rainfall change during 8 past El Niños (1982–83, 1986–87, 1991–92, 1994–95, 1997–98, 2009–10, 2015–16, 2023–24). In Dec–Feb it was much wetter in the central and eastern equatorial Pacific, Peru and Ecuador, and the southern US, and drier over Indonesia, northern Australia, southern Africa and northern South America. In Jun–Aug it was drier over Indonesia, India and Central America." width="2600" height="2440" decoding="async"></a><figcaption><b>7. What past El Niños did to rainfall.</b> What past El Niños did to rainfall around the world (measured data, not a forecast).</figcaption></figure>
 <figure id="g8"><a href="img/08_stats2_rain_odds.png" target="_blank" rel="noopener"><img src="img/08_stats2_rain_odds.png" alt="Two world maps counting how many of 8 past El Niños (1982–83, 1986–87, 1991–92, 1994–95, 1997–98, 2009–10, 2015–16, 2023–24) brought a wetter-than-normal season. In Dec–Feb the central and eastern equatorial Pacific was wetter nearly every time, while Indonesia, northern Australia, southern Africa and northern South America were drier in most events. In Jun–Aug Indonesia and parts of Central America were drier in most events." width="2600" height="2440" decoding="async"></a><figcaption><b>8. How often: drier or wetter seasons.</b> How often past El Niños brought a drier or wetter season, place by place.</figcaption></figure>
 <figure id="g9"><a href="img/09_stats3_temperature.png" target="_blank" rel="noopener"><img src="img/09_stats3_temperature.png" alt="Two world maps of average temperature change during 13 past El Niños, warming trend removed (1957–58, 1963–64, 1965–66, 1968–69, 1972–73, 1982–83, 1986–87, 1991–92, 1994–95, 1997–98, 2009–10, 2015–16, 2023–24). The eastern and central tropical Pacific is much warmer, along with much of the tropics; parts of the North and South Pacific are cooler." width="2600" height="2440" decoding="async"></a><figcaption><b>9. El Niño&#x27;s temperature fingerprint.</b> Where El Niño has brought extra warmth or cool, with the long-term warming trend removed.</figcaption></figure>
+
 <footer>
   <p><b>Data</b> (all public, from NOAA):</p>
   <ul>
@@ -67,7 +82,7 @@
     <li>NOAAGlobalTemp v6 and global temperature series: NOAA NCEI</li>
     <li>GPCP v2.3 precipitation: NOAA PSL</li>
   </ul>
-  <p>Explore these datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and method: <a href="https://github.com/DylHahn/enso-2026">GitHub repository</a>.</p>
+  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and method: <a href="https://github.com/DylHahn/enso-2026">GitHub repository</a>.</p>
 </footer>
 </main>
 </body>

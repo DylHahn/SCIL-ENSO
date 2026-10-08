@@ -109,6 +109,7 @@ COLORS = {
     "ocean": "#e8f1fb",
     "heat": "#eb6834",
     "map_neutral": "#efeeea",  # middle of diverging map colour scales
+    "el_nino_soft": "#ee9a8f",  # weaker El Niño: same hue, lighter step
 }
 LIGHT = dict(COLORS)
 
@@ -132,6 +133,7 @@ DARK = {
     "ocean": "#14202e",
     "heat": "#f07a3c",
     "map_neutral": "#3a3a38",
+    "el_nino_soft": "#b5655b",
 }
 
 

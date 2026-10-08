@@ -38,10 +38,15 @@ The site at https://dylhahn.github.io/enso-2026 is the `docs/` folder of this
 repository. To update it after NOAA's monthly releases (2nd Thursday):
 
 ```bash
-python run_current.py --refresh                      # rebuild the graphics
+python run_current.py --refresh                      # "El Niño 2026" tab
+python run_socal.py --refresh                        # "Southern California" tab
 python build_site.py --repo-url https://github.com/DylHahn/enso-2026
 git add docs && git commit -m "Update for <month>" && git push
 ```
+
+NOAA's ENSO update comes out on the 2nd Thursday of the month and its seasonal
+outlook (used on the SoCal tab) on the 3rd Thursday, so a monthly refresh after the
+3rd Thursday picks up both.
 
 GitHub republishes the page a minute or two after the push.
 
@@ -49,11 +54,30 @@ Not in the repository: `data/` (NOAA downloads are fetched automatically; the
 GODAS depth files `godasClimatologyData_{depth}m.nc` used for past years in
 graphics 3–4 are your own preprocessed files) and `figures_public/`.
 
+## The Southern California tab
+
+`python run_socal.py` builds these into `figures_public/socal_current/`:
+
+| # | Script | Graphic | Data |
+|---|---|---|---|
+| 1 | `socal3_outlook.py` | NOAA's official rain / temperature odds for this fall and winter, zoomed to SoCal, plus season-by-season odds for Los Angeles | CPC seasonal outlook GIS files (`seas*_latest.zip`, ~50 MB each) |
+| 2 | `socal1_rain.py` | Every LA rainy season since 1950 by El Niño strength, and how often each kind of winter was wet in four cities | GHCN-Daily stations + RONI |
+| 3 | `socal2_heat.py` | Warm nights (≥ 65 °F) and hot days (≥ 90 °F) every summer since 1950, this summer highlighted | GHCN-Daily stations |
+
+Stations (`enso_socal.py`): Los Angeles Downtown/USC, San Diego Lindbergh Field,
+Santa Barbara, and for the Inland Empire Lake Elsinore (rain; nearly complete
+record) and March Air Reserve Base (heat; the only inland station with a complete
+2026 summer, its 1971–2011 gap is shaded on the chart). Fire is covered with an
+honest note and links to official outlooks rather than a homemade forecast.
+
 ## Folder layout
 
 ```
 enso_viz/
-├── run_current.py           builds the curated set above  ← start here
+├── run_current.py           builds the "El Niño 2026" tab  ← start here
+├── run_socal.py             builds the "Southern California" tab
+├── socal1/2/3_*.py, enso_socal.py   the SoCal graphics and station helpers
+├── build_site.py            writes the two-tab website into docs/
 ├── compare1/2_*.py          this year vs. past El Niños (underwater, surface)
 ├── story1 … story6_*.py     "Super El Niño, explained" series (run_story.py)
 ├── stats1 … stats5_*.py     statistics from past events (run_stats.py)
@@ -64,9 +88,12 @@ enso_viz/
 │   ├── noaa_cache/          NOAA index downloads (refreshed with --refresh)
 │   ├── gridded/             GPCP rainfall + NOAAGlobalTemp (~100 MB)
 │   ├── godas_raw/           NOAA yearly GODAS files for months after your depth files
+│   ├── ghcn/                NOAA daily station records (SoCal tab)
+│   ├── cpc_outlook/         NOAA seasonal outlook map files (SoCal tab)
 │   └── godas/               your GODAS depth files, or a link to them (not in the repo)
 └── figures_public/
-    ├── current/             the curated set
+    ├── current/             the "El Niño 2026" set
+    ├── socal_current/       the "Southern California" set
     └── archive/             earlier output
 ```
 

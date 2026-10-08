@@ -1,8 +1,7 @@
 # Downloaded NOAA data and the link to the research GODAS files: never published
 data/
-# Earlier output and local previews
-figures_public/archive/
-figures_public/current/
+# Local build output (the website keeps its own copies in docs/)
+figures_public/
 __pycache__/
 *.pyc
 .DS_Store

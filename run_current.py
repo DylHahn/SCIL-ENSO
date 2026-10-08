@@ -42,28 +42,33 @@ CURRENT = [
 ]
 
 
+def build_set(series, out, page_title, theme="dark", refresh=False):
+    """Run each script into `out` as NN_name.png (reading order), then write a preview index."""
+    out.mkdir(parents=True, exist_ok=True)
+    for old in out.glob("*"):          # rebuild from scratch so retired graphics don't linger
+        old.unlink()
+    failed, built = [], []
+    for i, (script, refreshable, caption) in enumerate(series, 1):
+        name = f"{i:02d}_{script}"
+        cmd = [sys.executable, str(HERE / script), "--theme", theme,
+               "--out", str(out / name.replace(".py", ".png"))]
+        if refresh and refreshable:
+            cmd.append("--refresh")
+        print("\n>>", " ".join(cmd[1:]))
+        if subprocess.call(cmd) != 0:
+            failed.append(script)
+        built.append((name, refreshable, caption))
+    write_index(built, out, page_title, theme)
+    print("\nDone." if not failed else f"\nFinished with errors in: {', '.join(failed)}")
+    return failed
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true", help="re-download NOAA data first")
     args = ap.parse_args()
-
-    OUT.mkdir(parents=True, exist_ok=True)
-    for old in OUT.glob("*"):          # rebuild from scratch so retired graphics don't linger
-        old.unlink()
-    failed, series = [], []
-    for i, (script, refreshable, caption) in enumerate(CURRENT, 1):
-        name = f"{i:02d}_{script}"
-        out = OUT / name.replace(".py", ".png")
-        cmd = [sys.executable, str(HERE / script), "--theme", args.theme, "--out", str(out)]
-        if args.refresh and refreshable:
-            cmd.append("--refresh")
-        print("\n>>", " ".join(cmd[1:]))
-        if subprocess.call(cmd) != 0:
-            failed.append(script)
-        series.append((name, refreshable, caption))
-    write_index(series, OUT, "2026 El Niño vs. the past", args.theme)
-    print("\nDone." if not failed else f"\nFinished with errors in: {', '.join(failed)}")
+    build_set(CURRENT, OUT, "2026 El Niño vs. the past", args.theme, args.refresh)
 
 
 if __name__ == "__main__":
