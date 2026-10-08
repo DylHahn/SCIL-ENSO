@@ -38,6 +38,7 @@ TITLES = {
     "socal6_warming.py": "Long-term increase in summer heat",
     "socal3_outlook_prcp.py": "NOAA seasonal precipitation outlook",
     "socal7_precip_composite.py": "Precipitation in strong El Niño winters",
+    "socal1_rain.py": "Station precipitation by ENSO phase",
     "eq4_event_timeseries.py": "Anomaly time series across events",
     "socal4_heatmap.py": "Summer 2026 temperature anomalies",
     "socal2_heat.py": "Warm nights and hot days by station",
