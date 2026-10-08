@@ -16,11 +16,13 @@ OUT = HERE / "figures_public" / "socal_current"
 # (script, takes --refresh, caption)
 SOCAL = [
     ("socal3_outlook.py", True,
-     "NOAA's official odds for rain and temperature this fall and winter, zoomed to Southern California."),
+     "NOAA Climate Prediction Center probabilities for seasonal precipitation and temperature in Southern "
+     "California, with season-by-season values for Los Angeles."),
     ("socal1_rain.py", True,
-     "What El Niño winters have meant for rain in Los Angeles, San Diego, the Inland Empire and Santa Barbara since 1950."),
+     "Water-year precipitation by ENSO phase at Los Angeles, San Diego, Lake Elsinore and Santa Barbara, "
+     "1951 to present."),
     ("socal2_heat.py", True,
-     "Warm nights and hot days every summer since 1950, with this summer highlighted."),
+     "June–September counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) at four stations, 1950 to present."),
 ]
 
 

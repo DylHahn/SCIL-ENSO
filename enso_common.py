@@ -74,6 +74,12 @@ def season_words(code):
     return f"{_MONTH_ABBR[(mid - 1) % 12]}–{_MONTH_ABBR[(mid + 1) % 12]}"
 
 
+def join_and(items):
+    """['a', 'b', 'c'] -> 'a, b and c'."""
+    items = list(items)
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
 def season_label(center):
     """Centre-month timestamp -> 'Oct–Dec 2026' or 'Dec 2026–Feb 2027'."""
     a, b = center - pd.DateOffset(months=1), center + pd.DateOffset(months=1)
@@ -313,6 +319,20 @@ def load_nino34_monthly(local_file=None, refresh=False) -> pd.Series:
     s = pd.Series(dict(rows)).sort_index()
     s.name = "Niño 3.4 anomaly (°C)"
     return s
+
+
+def load_nino_regions(refresh=False) -> pd.DataFrame:
+    """Monthly SST anomalies (°C) for all four Niño regions from CPC sstoi.indices.
+    Columns ordered west to east: Niño 4, Niño 3.4, Niño 3, Niño 1+2."""
+    rows = []
+    for line in fetch_text("sstoi", refresh=refresh).splitlines():
+        p = line.split()
+        if len(p) < 10 or not p[0].isdigit():
+            continue
+        rows.append((pd.Timestamp(year=int(p[0]), month=int(p[1]), day=1),
+                     float(p[7]), float(p[9]), float(p[5]), float(p[3])))
+    df = pd.DataFrame(rows, columns=["date", "Niño 4", "Niño 3.4", "Niño 3", "Niño 1+2"]).set_index("date")
+    return df.sort_index()
 
 
 def load_wwv_pmel(local_file=None, refresh=False, column=1) -> pd.Series:

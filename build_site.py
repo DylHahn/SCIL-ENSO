@@ -24,48 +24,49 @@ DOCS = HERE / "docs"
 
 # Short titles for each page's table of contents, by script
 TITLES = {
-    "story1_super_el_nino.py": "This El Niño vs. the biggest on record",
-    "compare2_surface.py": "At the surface: now vs. past super El Niños",
-    "compare1_underwater.py": "Underwater: now vs. past super El Niños",
-    "fig6_equatorial_cross_section.py": "This year's warm water moving east",
-    "stats4_event_ranking.py": "Every El Niño since 1950, ranked",
-    "story4_global_heat.py": "El Niños and global heat records",
-    "stats1_rain_change.py": "What past El Niños did to rainfall",
-    "stats2_rain_odds.py": "How often: drier or wetter seasons",
-    "stats3_temperature.py": "El Niño's temperature fingerprint",
-    "socal3_outlook.py": "NOAA's outlook for this winter",
-    "socal1_rain.py": "El Niño winters and SoCal rain",
-    "socal2_heat.py": "Summer heat, 1950 to now",
+    "story1_super_el_nino.py": "Event development vs. past very strong events",
+    "compare2_surface.py": "Surface temperature anomalies by event",
+    "compare1_underwater.py": "Subsurface temperature anomalies by event",
+    "fig6_equatorial_cross_section.py": "Subsurface evolution, 2026",
+    "stats4_event_ranking.py": "Ranking of El Niño events since 1950",
+    "story4_global_heat.py": "Global temperature and El Niño",
+    "eq1_sst_hovmoller.py": "Equatorial SST evolution (Hovmöller)",
+    "eq2_heat_hovmoller.py": "Upper-ocean heat content (Hovmöller)",
+    "eq3_nino_regions.py": "Warming across the Niño regions",
+    "socal3_outlook.py": "NOAA seasonal outlook",
+    "socal1_rain.py": "Precipitation by ENSO phase",
+    "socal2_heat.py": "Summer warm nights and hot days",
 }
 
 PAGES = [
     dict(
         slug="", tab="El Niño 2026", series=run_current.CURRENT, src=run_current.OUT,
-        title="The 2026 El Niño vs. the past", kicker="El Niño 2026",
-        h1="How “super” is this El Niño?",
-        lede="A strong El Niño is building in the Pacific in 2026. These graphics compare it with the biggest "
-             "El Niños on record, at the surface and below it, and show what past El Niños have meant for "
-             "rain and heat around the world.",
+        title="The 2026–27 El Niño in historical context", kicker="El Niño 2026–27",
+        h1="The 2026–27 El Niño in historical context",
+        lede="A strong El Niño is developing in the equatorial Pacific. These figures compare its surface and "
+             "subsurface evolution with the strongest events since 1950, using NOAA observations, reanalysis "
+             "and official forecasts.",
         extra="",
         data=["Relative Oceanic Niño Index (RONI), outlook and strength probabilities: NOAA Climate Prediction Center",
               "NCEP GODAS ocean reanalysis: NOAA NCEP, via NOAA PSL",
               "NOAAGlobalTemp v6 and global temperature series: NOAA NCEI",
-              "GPCP v2.3 precipitation: NOAA PSL"],
+              "ERSST v5 sea surface temperature: NOAA NCEI, via NOAA PSL",
+              "Monthly Niño region indices (OISST v2.1): NOAA Climate Prediction Center"],
     ),
     dict(
         slug="socal", tab="Southern California", series=run_socal.SOCAL, src=run_socal.OUT,
         title="El Niño and Southern California", kicker="Southern California",
-        h1="What could this El Niño mean for Southern California?",
-        lede="NOAA's official odds for this winter, what past El Niño winters brought to Los Angeles, San Diego, "
-             "the Inland Empire and Santa Barbara, and how this summer's heat compares with every summer "
-             "since 1950.",
+        h1="El Niño and Southern California: outlook and historical context",
+        lede="NOAA's seasonal outlook for the coming months, precipitation during past ENSO phases at four "
+             "Southern California stations, and summer temperature extremes since 1950.",
         extra="""<section class="note">
   <h2>El Niño and wildfire</h2>
-  <p>El Niño's effect on fire in Southern California is indirect. A wet El Niño winter usually means lower fire
-  risk during the winter itself, but heavy rain grows thick grass and brush that dry out by the following summer
-  and fall, which can raise the risk of fast-moving grass fires a year later. El Niño has no reliable link to
-  Santa Ana wind events, which drive the largest fall fires. Fire risk on any given day depends on wind,
-  humidity and dry vegetation, so follow official fire-weather warnings.</p>
+  <p>The influence of El Niño on Southern California wildfire is indirect. Above-normal winter precipitation
+  typically reduces fire activity during the wet season but increases the growth of grasses and fine fuels, which
+  cure during the following summer and autumn and can elevate the potential for rapidly spreading grass fires.
+  There is no robust relationship between ENSO and Santa Ana wind events, which drive the largest autumn fires.
+  Fire danger on a given day depends on wind, humidity and fuel moisture; official fire-weather products should
+  be used for decisions.</p>
   <h2>Official forecasts and warnings</h2>
   <ul>
     <li>Day-to-day weather, heat and Red Flag (fire weather) warnings:
@@ -137,9 +138,9 @@ PAGE = """<!doctype html>
   <p class="kicker">{kicker}</p>
   <h1>{h1}</h1>
   <p class="lede">{lede}</p>
-  <p class="meta">Updated {updated}. Built from NOAA observations and NOAA's official forecasts. Click any graphic for full size.</p>
+  <p class="meta">Updated {updated}. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
-<nav class="toc" aria-label="Graphics on this page"><ol>
+<nav class="toc" aria-label="Figures on this page"><ol>
 {toc}
 </ol></nav>
 {figures}
@@ -184,7 +185,7 @@ def build_page(page, repo_url):
             # width/height reserve the space before the image arrives; with only a few images
             # everything loads up front so no figure is skipped near the bottom of the page
             f'<img src="img/{stem}.png" alt="{html.escape(alt)}" width="{w}" height="{h}" decoding="async"></a>'
-            f"<figcaption><b>{i}. {html.escape(short)}.</b> {html.escape(caption)}</figcaption></figure>")
+            f"<figcaption><b>Figure {i}. {html.escape(short)}.</b> {html.escape(caption)}</figcaption></figure>")
 
     up = "../" if page["slug"] else ""
     tabs = []

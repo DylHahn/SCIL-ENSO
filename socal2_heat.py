@@ -118,16 +118,16 @@ def main():
                 ax.set_ylabel(label + "\nper summer (Jun–Sep)", fontsize=11)
 
     fig.legend(handles=[Patch(color=COLORS["el_nino"], label=f"Summer {args.year}"),
-                        Patch(color=COLORS["el_nino_soft"], label="Earlier summers with a strong El Niño building"),
+                        Patch(color=COLORS["el_nino_soft"], label="Earlier summers preceding a strong El Niño winter"),
                         Patch(color=COLORS["neutral"], label="Other summers")],
                loc="lower left", bbox_to_anchor=(0.055, 0.845), ncol=3, fontsize=11.5, labelcolor=COLORS["text_2"])
 
     best = max(notes, key=lambda n: n[1] / max(n[4], 1))
-    add_title(fig, f"Summer {args.year} brought some of Southern California's warmest nights on record",
-              f"{best[0]} had {best[1]} warm nights, {most_phrase(best[2])} since {args.start}, against about "
-              f"{best[4]:.0f} in a typical recent summer. Warm nights have been rising for decades;\nwarm ocean "
-              "water near the coast, common while a strong El Niño builds, adds to it. Hot nights matter for "
-              "health because bodies can't cool down.")
+    add_title(fig, f"Summer warm nights and hot days at Southern California stations, {args.start}–{args.year}",
+              f"In {args.year}, {best[0]} recorded {best[1]} warm nights, {most_phrase(best[2])} since {args.start} "
+              f"(1991–2020 mean: {best[4]:.0f}). Warm nights have increased at all stations;\nelevated coastal sea "
+              "surface temperatures during developing El Niño events can add to this trend. Warm nights limit "
+              "overnight relief from heat.")
     add_source(fig, f"Data: NOAA NCEI GHCN-Daily station records, Jun–Sep {args.start}–{args.year}; summers with "
                "large data gaps left out. Line: 10-year running average. El Niño strength: NOAA CPC RONI.")
     save(fig, args.out,

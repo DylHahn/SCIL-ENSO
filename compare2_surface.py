@@ -93,17 +93,12 @@ def main():
 
     cur, past = stats[-1], stats[:-1]
     rel = {y: a - b for y, a, b in stats}            # Niño 3.4 minus the tropics: NOAA's relative view
-    best_past = max(past, key=lambda p: p[1])
-    if cur[1] > best_past[1]:
-        headline = f"At the surface, {now} is already warmer than past super El Niños at this point"
-    else:
-        headline = f"At the surface, {now} is keeping pace with past super El Niños"
+    headline = f"Tropical Pacific SST anomalies in {calendar.month_name[month]}: {now} and past very strong events"
     rel_past = ", ".join(f"{y} {rel[y]:+.1f}" for y, _, _ in past)
     add_title(fig, headline,
-              f"Tropical Pacific in {calendar.month_name[month]} of each super El Niño year. The Niño 3.4 box is "
-              f"{cur[1]:+.1f} °C, but the whole tropics are also {cur[2]:+.1f} °C,\nwarmer than in any past event. "
-              f"Measured against the tropics, as NOAA now does, it's {rel[now]:+.1f} °C ({rel_past}), "
-              f"and still growing.")
+              f"Niño 3.4 anomaly {cur[1]:+.1f} °C, the highest of the four years at this stage. The tropical mean "
+              f"(20°S–20°N) is also {cur[2]:+.1f} °C, above any previous event, so relative to\nthe tropics, the "
+              f"basis of NOAA's RONI, the anomaly is {rel[now]:+.1f} °C ({rel_past}).")
     add_source(fig, "Data: NOAAGlobalTemp v6 monthly surface temperature (NOAA NCEI), 5° grid, smoothed for "
                "display; differences from the 1991–2020 monthly normal.")
     save(fig, args.out,

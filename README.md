@@ -19,9 +19,9 @@ shows how this event compares with past El Niños.
 | 4 | `fig6_equatorial_cross_section.py` | This year's warm water building and moving east, every two months | GODAS |
 | 5 | `stats4_event_ranking.py` | Every El Niño since 1950 by peak, length and total warmth | CPC RONI + outlook |
 | 6 | `story4_global_heat.py` | Global temperature records that came with El Niños | NOAA NCEI global temperature |
-| 7 | `stats1_rain_change.py` | What past El Niños did to rainfall | GPCP |
-| 8 | `stats2_rain_odds.py` | How often past El Niños brought a drier / wetter season | GPCP |
-| 9 | `stats3_temperature.py` | El Niño's temperature fingerprint (trend removed) | NOAAGlobalTemp |
+| 7 | `eq1_sst_hovmoller.py` | Longitude–time (Hovmöller) SST anomalies along the equator, 1982, 1997, 2015, 2026 | ERSST v5 |
+| 8 | `eq2_heat_hovmoller.py` | Hovmöller of upper-200 m temperature anomalies (Kelvin waves) | GODAS |
+| 9 | `eq3_nino_regions.py` | Monthly anomalies in Niño 4, 3.4, 3 and 1+2: where the warming is concentrated | CPC Niño indices |
 
 Comparisons default to the latest month with data (GODAS and NOAAGlobalTemp:
 August 2026 at the time of writing) and to 1982, 1997, 2015 as past super El Niños;
@@ -79,6 +79,7 @@ enso_viz/
 ├── socal1/2/3_*.py, enso_socal.py   the SoCal graphics and station helpers
 ├── build_site.py            writes the two-tab website into docs/
 ├── compare1/2_*.py          this year vs. past El Niños (underwater, surface)
+├── eq1/2/3_*.py, enso_equatorial.py   equatorial Pacific Hovmöllers and Niño-region diagnostics
 ├── story1 … story6_*.py     "Super El Niño, explained" series (run_story.py)
 ├── stats1 … stats5_*.py     statistics from past events (run_stats.py)
 ├── fig1 … fig7_*.py         the original seven explainer figures (run_all.py)
@@ -86,7 +87,7 @@ enso_viz/
 ├── enso_stats.py            seasonal anomalies, event composites, map helpers
 ├── data/
 │   ├── noaa_cache/          NOAA index downloads (refreshed with --refresh)
-│   ├── gridded/             GPCP rainfall + NOAAGlobalTemp (~100 MB)
+│   ├── gridded/             GPCP rainfall, NOAAGlobalTemp, ERSST v5 (~260 MB)
 │   ├── godas_raw/           NOAA yearly GODAS files for months after your depth files
 │   ├── ghcn/                NOAA daily station records (SoCal tab)
 │   ├── cpc_outlook/         NOAA seasonal outlook map files (SoCal tab)

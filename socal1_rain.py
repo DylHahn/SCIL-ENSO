@@ -61,10 +61,11 @@ def main():
     top.set_ylabel("Rain vs. normal (%)")
     top.yaxis.grid(True)
     top.set_axisbelow(True)
-    top.set_title("Los Angeles (downtown): every rainy season since 1950", fontsize=14, loc="left")
+    top.set_title(f"Los Angeles (Downtown/USC): water-year precipitation, {START}–{args.season - 1}",
+                  fontsize=14, loc="left")
     fig.legend(handles=[Patch(color=cols[c], label=c.replace("\n", " ")) for c, _, _ in CATEGORIES],
                loc="lower left", bbox_to_anchor=(0.065, 0.855), ncol=4, fontsize=11.5,
-               labelcolor=COLORS["text_2"], title="Winter type (NOAA El Niño index, Dec–Feb):",
+               labelcolor=COLORS["text_2"], title="ENSO phase (Dec–Feb RONI):",
                title_fontsize=11.5, alignment="left")
 
     # four stations: one dot per season, grouped by category
@@ -83,7 +84,7 @@ def main():
             ax.plot([j - 0.28, j + 0.28], [np.median(v)] * 2, color=COLORS["text"], lw=2, zorder=4)
             wet = int((v > 100).sum())
             strong = c == "Strong El Niño"
-            ax.text(j, -0.04, f"{short[c]}\n{wet}/{len(v)} wet", transform=ax.get_xaxis_transform(),
+            ax.text(j, -0.04, f"{short[c]}\n{wet}/{len(v)} above", transform=ax.get_xaxis_transform(),
                     ha="center", va="top", fontsize=9.5, linespacing=1.2,
                     color=COLORS["text"] if strong else COLORS["text_2"], fontweight="bold" if strong else "normal")
             if c == "Strong El Niño":
@@ -101,15 +102,16 @@ def main():
         ax.set_title(name, fontsize=13.5, loc="left", pad=20)
         ax.text(0, 1.02, RAIN_NOTES[name], transform=ax.transAxes, fontsize=9.5, color=COLORS["text_2"],
                 va="bottom")
-    fig.text(0.07, 0.035, "Each dot is one rainy season; the bar is the typical (median) season. "
-             "“6/7 wet” = 6 of 7 such seasons had more rain than normal.", fontsize=10.5, color=COLORS["text_2"])
+    fig.text(0.07, 0.035, "Each dot is one water year (Oct–Sep); horizontal bars are medians. "
+             "“6/7 above” = 6 of 7 seasons in that category had above-normal precipitation.", fontsize=10.5, color=COLORS["text_2"])
 
     la = next(s for s in summary if s[0] == "Los Angeles")
     sd = next(s for s in summary if s[0] == "San Diego")
-    add_title(fig, "Strong El Niños have usually meant a wet winter in Southern California, but not always",
-              f"In Los Angeles {la[1]} of {la[2]} strong El Niño rainy seasons since 1950 were wetter than normal "
-              f"(typically {la[3]:.0f}% of normal); in San Diego {sd[1]} of {sd[2]}.\nThe big exception: "
-              "2015–16, a super El Niño that left LA with about half its normal rain. Better odds, not a guarantee.")
+    add_title(fig, "Southern California water-year precipitation by ENSO phase, 1951–present",
+              f"Strong El Niño winters have favoured above-normal precipitation: {la[1]} of {la[2]} in Los Angeles "
+              f"(median {la[3]:.0f}% of normal) and {sd[1]} of {sd[2]} in San Diego.\nThe relationship is "
+              "probabilistic: the very strong 2015–16 event produced roughly half of normal precipitation in "
+              "Los Angeles.")
     add_source(fig, f"Data: NOAA NCEI GHCN-Daily station records (rain season Oct–Sep, normal = "
                f"{NORMAL[0]}–{NORMAL[1]}); El Niño strength: NOAA CPC RONI, Dec–Feb. Seasons with large data gaps left out.")
     save(fig, args.out,

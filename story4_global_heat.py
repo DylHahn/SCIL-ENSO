@@ -71,14 +71,14 @@ def main():
     ax.set_ylabel("Warmer than the 20th-century average (°C)")
     ax.yaxis.grid(True)
     ax.set_axisbelow(True)
-    ax.legend(handles=[Patch(color=COLORS["heat"], label="New global record, set during or just after an El Niño winter"),
+    ax.legend(handles=[Patch(color=COLORS["heat"], label="Record year coinciding with an El Niño winter"),
                        Patch(color=COLORS["neutral"], label="Other years")],
               loc="upper left", fontsize=12, labelcolor=COLORS["text_2"])
 
-    add_title(fig, "El Niños push the whole planet to new heat records",
-              "Climate change raises the baseline year after year. El Niño adds a burst of extra heat on top, "
-              "released from the\nPacific into the air. That is why so many new records, like 1998, 2016 "
-              "and 2024, arrived with an El Niño.")
+    add_title(fig, "Global mean surface temperature anomalies and El Niño, 1950–present",
+              "Annual global land and ocean temperature relative to the 1901–2000 mean. El Niño releases heat "
+              "from the tropical Pacific to the\natmosphere, adding to the long-term warming trend; most recent "
+              "record years, including 1998, 2016 and 2024, coincided with El Niño events.")
     add_source(fig, "Data: NOAA NCEI global land & ocean surface temperature (vs. 1901–2000); "
                "El Niño strength from NOAA CPC RONI (Dec–Feb).")
     names = ", ".join(str(y) for y in highlight)

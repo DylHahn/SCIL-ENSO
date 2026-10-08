@@ -81,7 +81,7 @@ def main():
                 fontweight="bold", color=COLORS["el_nino"] if cur else COLORS["text_2"])
         for s in ("left", "bottom"):
             ax.spines[s].set_visible(False)
-    axes[0].text(1.015, 1.03, "Extra warmth,\ntop 200 m,\n180°–80°W", transform=axes[0].transAxes,
+    axes[0].text(1.015, 1.03, "Mean anomaly,\n5–205 m,\n180°–80°W", transform=axes[0].transAxes,
                  fontsize=10.5, color=COLORS["text_2"], va="bottom")
     axes[-1].xaxis.set_major_formatter(FuncFormatter(lon_label))
     axes[-1].set_xticks([140, 160, 180, 200, 220, 240, 260, 280])
@@ -98,10 +98,12 @@ def main():
 
     past = max(heat[:-1])
     ratio = heat[-1] / past if past > 0 else np.nan
-    add_title(fig, f"Underwater, {now}'s El Niño carries far more heat than past giants did",
-              f"Slices of the top 200 m of the Pacific along the equator, each in {calendar.month_name[month]} of "
-              f"a super El Niño year. This year's warm\nlayer holds about {ratio:.1f} times the extra warmth of the "
-              f"biggest past one at the same point in the year, and it keeps feeding the surface for months.")
+    add_title(fig, f"Equatorial subsurface temperature anomalies in {calendar.month_name[month]}: "
+                   f"{now} and past events",
+              f"Depth–longitude sections, 2°S–2°N. The mean anomaly over 5–205 m between 180° and 80°W "
+              f"is {heat[-1]:+.1f} °C, about {ratio:.1f} times the largest\nprevious value at the same stage "
+              f"({max(heat[:-1]):+.1f} °C), indicating a substantial reservoir of subsurface heat to sustain "
+              f"surface warming.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), 2°S–2°N average; differences from the 1991–2020 "
                "monthly normal.")
     save(fig, args.out,

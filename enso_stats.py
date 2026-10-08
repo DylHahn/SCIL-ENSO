@@ -4,6 +4,7 @@ Statistics helpers for the "what El Niño has done before" graphics.
 Gridded data (downloaded once into data/gridded/, see GRIDDED):
   * GPCP v2.3 monthly precipitation, 2.5°, 1979–present (mm/day)
   * NOAAGlobalTemp monthly surface temperature anomalies, 5°, 1850–present (°C)
+  * ERSST v5 monthly sea surface temperature, 2°, 1854–present (°C)
 
 Method, in plain terms
   1. Average each year's months into seasons: Dec–Feb (labelled by the January)
@@ -32,6 +33,8 @@ GRIDDED_DIR = HERE / "data" / "gridded"
 GRIDDED = {
     "rain": ("https://downloads.psl.noaa.gov/Datasets/gpcp/precip.mon.mean.nc", "precip"),
     "temp": ("https://downloads.psl.noaa.gov/Datasets/noaaglobaltemp/air.mon.anom.nc", "air"),
+    # ERSST v5 monthly sea surface temperature, 2°, 1854–present (°C)
+    "sst": ("https://downloads.psl.noaa.gov/Datasets/noaa.ersst.v5/sst.mnmean.nc", "sst"),
 }
 SEASONS = {"Dec–Feb": (12, 1, 2), "Jun–Aug": (6, 7, 8)}
 

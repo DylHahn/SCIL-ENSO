@@ -90,11 +90,11 @@ def main():
                  va="top", color=COLORS["text"])
 
     years = {pd.Timestamp(d).year for d in args.dates}
-    which = f"{years.pop()}'s El Niño" if len(years) == 1 else "El Niño"
-    add_title(fig, f"Watching {which} build beneath the surface",
-              "Slices of the upper ocean along the equator, two months apart. Extra-warm water builds "
-              "below the surface and\nslides east, then reaches the surface near South America, "
-              "where it shows up as El Niño.")
+    span = f"{pd.Timestamp(args.dates[0]):%B}–{pd.Timestamp(args.dates[-1]):%B %Y}"
+    add_title(fig, f"Equatorial subsurface temperature anomalies, {span}",
+              "Depth–longitude sections, 2°S–2°N, at two-month intervals. Warm anomalies form at depth, "
+              "propagate eastward along the\nthermocline as downwelling Kelvin waves and reach the surface "
+              "in the eastern Pacific.")
     lat_txt = f"{abs(args.lat_band[0]):g}°S–{abs(args.lat_band[1]):g}°N"
     add_source(fig, f"Data: NCEP GODAS ocean reanalysis, {lat_txt} average; anomalies vs. 1991–2020 "
                "monthly normals.")

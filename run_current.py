@@ -22,23 +22,29 @@ OUT = HERE / "figures_public" / "current"
 # (script, takes --refresh, caption)
 CURRENT = [
     ("story1_super_el_nino.py", True,
-     "How this El Niño has grown month by month compared with the four biggest since 1950, plus NOAA's forecast."),
+     "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four strongest El Niño "
+     "events since 1950, with NOAA's official forecast."),
     ("compare2_surface.py", True,
-     "The tropical Pacific's surface this August vs. the same month of past super El Niños."),
+     "Tropical Pacific sea surface temperature anomalies in the same month of each very strong El Niño year, with "
+     "Niño 3.4 and tropical-mean values."),
     ("compare1_underwater.py", True,
-     "Below the surface, this El Niño is carrying far more extra heat than past giants did at the same point."),
+     "Equatorial subsurface temperature anomalies at the same stage of each event; the current event holds "
+     "substantially more subsurface heat."),
     ("fig6_equatorial_cross_section.py", False,
-     "This year's warm water building and sliding east beneath the surface, two months at a time."),
+     "Bimonthly equatorial sections for 2026 showing the eastward propagation of subsurface warm anomalies."),
     ("stats4_event_ranking.py", True,
-     "Every big El Niño since 1950 ranked by peak, length and total warmth, with this one finished by NOAA's forecast."),
+     "El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the current event "
+     "completed by NOAA's median forecast."),
     ("story4_global_heat.py", True,
-     "Big El Niños push the whole planet to new heat records, and this year is already running near record warm."),
-    ("stats1_rain_change.py", True,
-     "What past El Niños did to rainfall around the world (measured data, not a forecast)."),
-    ("stats2_rain_odds.py", False,
-     "How often past El Niños brought a drier or wetter season, place by place."),
-    ("stats3_temperature.py", True,
-     "Where El Niño has brought extra warmth or cool, with the long-term warming trend removed."),
+     "Annual global mean surface temperature anomalies; recent record years have coincided with El Niño events."),
+    ("eq1_sst_hovmoller.py", True,
+     "Longitude–time evolution of equatorial sea surface temperature anomalies for 1982–83, 1997–98, 2015–16 and "
+     "the current event."),
+    ("eq2_heat_hovmoller.py", False,
+     "Longitude–time evolution of upper-200 m temperature anomalies along the equator, showing eastward-propagating "
+     "Kelvin waves."),
+    ("eq3_nino_regions.py", True,
+     "Monthly anomalies in the four Niño regions, indicating where along the equator the warming is concentrated."),
 ]
 
 

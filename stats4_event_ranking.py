@@ -54,8 +54,8 @@ def main():
     fig.subplots_adjust(top=1 - 1.75 / (0.48 * len(df) + 2.8), bottom=0.6 / (0.48 * len(df) + 2.8) + 0.04,
                         left=0.12, right=0.98)
     y = np.arange(len(df))
-    panels = [("peak", "Peak strength (°C)", "{:+.1f}"), ("months", "How long (months)", "{:.0f}"),
-              ("total", "Total extra warmth (°C × months)", "{:.0f}")]
+    panels = [("peak", "Peak RONI (°C)", "{:+.1f}"), ("months", "Duration (months)", "{:.0f}"),
+              ("total", "Accumulated intensity (°C·months)", "{:.0f}")]
     for ax, (col, title, fmt) in zip(axes, panels):
         for yi, (_, r) in zip(y, df.iterrows()):
             cur = r["forecast"]
@@ -85,12 +85,12 @@ def main():
 
     cur = df[df["forecast"]]
     rank = int((df["peak"] > cur["peak"].iloc[0]).sum()) + 1 if len(cur) else None
-    headline = (f"If NOAA's forecast holds, {cur['name'].iloc[0]} would be the strongest El Niño on record"
-                if rank == 1 else "How does this El Niño rank?") if len(cur) else "The strongest El Niños since 1950"
+    headline = "El Niño events since 1950: peak strength, duration and accumulated intensity"
     add_title(fig, headline,
-              f"The {len(df)} strongest El Niños since 1950, ranked by peak. Red hatched = this event, finished "
-              "with NOAA's middle forecast; the thin line\nshows NOAA's likely range for its peak. "
-              "Total extra warmth combines strength and length.")
+              f"The {len(df)} strongest events by peak RONI. {cur['name'].iloc[0]} (hatched) combines observations "
+              f"with NOAA's median forecast" + (", which would rank first" if rank == 1 else "")
+              + ";\nthe line marks its 5–95% forecast range. Accumulated intensity is the sum of monthly RONI "
+              "above +0.5 °C.")
     add_source(fig, f"Data: NOAA CPC Relative Oceanic Niño Index (RONI) and official RONI outlook "
                f"({fc.attrs['issued']}). Event = 5+ overlapping seasons at +0.5 °C or more.")
     save(fig, args.out,

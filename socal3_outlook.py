@@ -194,11 +194,10 @@ def main():
             sax.text(x + 0.015, y0 - 0.12, phrase(var, cat, prob), fontsize=11.5, fontweight="bold",
                      color=col if cat != "EC" else COLORS["text_2"], va="center")
 
-    add_title(fig, "NOAA's official outlook for Southern California this winter",
-              f"The chance that rain and temperature end up above or below normal for the season, from NOAA's "
-              f"Climate Prediction Center (issued {issued:%B %-d, %Y}).\n“Equal chances” means no tilt either way. "
-              "These are odds for a whole season, not a forecast for any day: check your local NWS office for "
-              "weather and warnings.")
+    add_title(fig, "NOAA seasonal outlook for Southern California",
+              f"NOAA Climate Prediction Center outlook issued {issued:%B %-d, %Y}: probability of above-, near- "
+              f"or below-normal conditions by season.\n“Equal chances” indicates no preferred category. For daily "
+              "forecasts and warnings, consult the local National Weather Service office.")
     add_source(fig, "Data: NOAA Climate Prediction Center official 3-month outlooks (GIS files, "
                "seasprcp/seastemp_latest). Normal = 1991–2020.")
     la = {var: [(data[var][l][0], *odds_at(data[var][l][3], *CITIES["Los Angeles"])) for l in leads if l in data[var]]

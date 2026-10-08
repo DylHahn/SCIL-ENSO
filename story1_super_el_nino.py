@@ -22,7 +22,7 @@ from enso_common import (FIG_DIR, COLORS, add_source, add_title, apply_style, lo
                          load_cpc_strengths, load_roni, save, season_words)
 
 PAST_EVENTS = [1972, 1982, 1997, 2015]        # the "super" El Niños before 2026 (year the event began)
-STRENGTHS = [(0.5, "Weak"), (1.0, "Moderate"), (1.5, "Strong"), (2.0, "Very strong\n(“super”)")]
+STRENGTHS = [(0.5, "Weak"), (1.0, "Moderate"), (1.5, "Strong"), (2.0, "Very strong")]
 
 
 def main():
@@ -77,40 +77,41 @@ def main():
     ax.plot(now.index[-1], now.iloc[-1], "o", ms=10, color=COLORS["el_nino"],
             mec=COLORS["surface"], mew=2, zorder=5)
     season = season_words(roni.attrs["season"][now.index[-1]])
-    ax.annotate(f"Now ({season} {now.index[-1].year})\n{now.iloc[-1]:+.1f} °C",
+    ax.annotate(f"Latest ({season} {now.index[-1].year})\n{now.iloc[-1]:+.1f} °C",
                 (now.index[-1], now.iloc[-1]), xytext=(-14, 4), textcoords="offset points",
                 ha="right", va="bottom", fontsize=13, fontweight="bold", color=COLORS["text"])
 
     peak = fc["p50"].idxmax()
-    ax.annotate(f"NOAA forecast\nmiddle estimate {fc['p50'].max():+.1f} °C",
+    ax.annotate(f"NOAA forecast peak\n(median) {fc['p50'].max():+.1f} °C",
                 (peak, fc["p50"].max()), xytext=(70, 4), textcoords="offset points",
                 fontsize=12, color=COLORS["text"], va="center",
                 arrowprops=dict(arrowstyle="-", color=COLORS["text_2"], lw=1))
     ax.axhline(record_val, color=COLORS["text_2"], lw=1, ls=(0, (1, 2)))
     ax.text(start + pd.Timedelta(days=10), record_val + 0.05,
-            f"Strongest on record so far: {record_val:+.1f} °C ({record_lbl})",
+            f"Record peak since 1950: {record_val:+.1f} °C ({record_lbl})",
             fontsize=11, color=COLORS["text_2"], va="bottom")
 
     ax.set_xlim(start, end)
     ax.set_ylim(-1.2, 3.4)
-    ax.set_ylabel("Ocean temperature vs. normal (°C)")
+    ax.set_ylabel("Relative Oceanic Niño Index, RONI (°C)")
     ax.yaxis.grid(True)
     ax.set_axisbelow(True)
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%Y"))
 
-    handles = [Line2D([], [], color=COLORS["el_nino"], lw=3.4, label=f"{y0} so far"),
-               Line2D([], [], color=COLORS["el_nino"], lw=2.4, ls=(0, (4, 3)), label="NOAA forecast"),
-               Patch(color=COLORS["el_nino"], alpha=0.35, label="Likely range"),
-               Line2D([], [], color=COLORS["muted"], lw=1.6, label="Past super El Niños: 1972, 1982, 1997, 2015")]
+    handles = [Line2D([], [], color=COLORS["el_nino"], lw=3.4, label=f"{y0}–{str(y0 + 1)[-2:]} observed"),
+               Line2D([], [], color=COLORS["el_nino"], lw=2.4, ls=(0, (4, 3)), label="NOAA forecast (median)"),
+               Patch(color=COLORS["el_nino"], alpha=0.35, label="Forecast range (25–75%, 5–95%)"),
+               Line2D([], [], color=COLORS["muted"], lw=1.6, label="Very strong El Niños: 1972, 1982, 1997, 2015")]
     ax.legend(handles=handles, loc="lower right", ncol=2, fontsize=11.5, labelcolor=COLORS["text_2"],
               bbox_to_anchor=(1.0, 0.0))
 
     vs = strengths["en_vstrong"]
-    add_title(fig, f"{y0} is shaping up to be a Super El Niño",
-              f"NOAA ({outlook.attrs['issued']} outlook): {vs.max():.0f}% chance of a “very strong” El Niño by "
-              f"{season_words(strengths.loc[vs.idxmax(), 'season'])}, with a real chance it beats every\nEl Niño since records "
-              f"began in 1950. Gray lines show the four biggest past events on the same calendar.")
+    add_title(fig, f"The {y0}–{str(y0 + 1)[-2:]} El Niño compared with the strongest events since 1950",
+              f"Relative Oceanic Niño Index (RONI), 3-month means. NOAA's {outlook.attrs['issued']} outlook gives a "
+              f"{vs.max():.0f}% probability of a very strong event (≥ +2.0 °C)\nby "
+              f"{season_words(strengths.loc[vs.idxmax(), 'season'])}; its median forecast peak of {fc['p50'].max():+.1f} °C "
+              f"would exceed the 1950–present record of {record_val:+.1f} °C ({record_lbl}).")
     add_source(fig, "Data: NOAA Climate Prediction Center — Relative Oceanic Niño Index (RONI) and official "
                "RONI outlook. Values are 3-month averages, plotted on the middle month.")
     save(fig, args.out,
