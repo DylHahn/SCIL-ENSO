@@ -145,6 +145,9 @@ DARK = {
 
 def apply_style(theme="light"):
     """theme="dark" swaps COLORS in place, so call this before reading any colour."""
+    import warnings
+    # harmless shapely warning from coastline geometry when drawing maps; it floods the console
+    warnings.filterwarnings("ignore", message="invalid value encountered in create_collection")
     COLORS.update(DARK if theme == "dark" else LIGHT)
     mpl.rcParams.update({
         "font.family": "sans-serif",

@@ -52,10 +52,9 @@ def main():
     hovmoller_figure(
         fields, levels, "RdBu_r", "SST anomaly (°C), 2°S–2°N, relative to 1991–2020",
         title="Equatorial Pacific sea surface temperature anomalies during major El Niño events",
-        subtitle=f"Each panel shows one event from January of its onset year (top) to the following January "
-                 f"(bottom). By {last:%B} {now}, the maximum anomaly\nin the eastern Pacific reached "
-                 f"{peaks[now][1]:+.1f} °C, compared with " + join_and(f"{v:+.1f} °C in {y}" for y, v in same.items())
-                 + " at the same point in the year.",
+        subtitle=f"Monthly SST anomalies along the equator (2°S–2°N). By {last:%B} {now}, the maximum anomaly in "
+                 f"the eastern Pacific reached {peaks[now][1]:+.1f} °C,\ncompared with "
+                 + join_and(f"{v:+.1f} °C in {y}" for y, v in same.items()) + " at the same stage of those events.",
         source="Data: NOAA Extended Reconstructed SST v5 (ERSST), monthly, 2° grid; anomalies relative to the "
                "1991–2020 monthly climatology.",
         out=args.out, highlight=now, cbar_ticks=np.arange(-3, 3.5, 1),

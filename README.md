@@ -54,21 +54,18 @@ Not in the repository: `data/` (NOAA downloads are fetched automatically; the
 GODAS depth files `godasClimatologyData_{depth}m.nc` used for past years in
 graphics 3–4 are your own preprocessed files) and `figures_public/`.
 
-## The Southern California tab
+## The Southern California tab: heat and wildfire
 
 `python run_socal.py` builds these into `figures_public/socal_current/`:
 
 | # | Script | Graphic | Data |
 |---|---|---|---|
-| 1 | `socal3_outlook.py` | NOAA's official rain / temperature odds for this fall and winter, zoomed to SoCal, plus season-by-season odds for Los Angeles | CPC seasonal outlook GIS files (`seas*_latest.zip`, ~50 MB each) |
-| 2 | `socal1_rain.py` | Every LA rainy season since 1950 by El Niño strength, and how often each kind of winter was wet in four cities | GHCN-Daily stations + RONI |
-| 3 | `socal2_heat.py` | Warm nights (≥ 65 °F) and hot days (≥ 90 °F) every summer since 1950, this summer highlighted | GHCN-Daily stations |
+| 1 | `socal5_heat_fire_outlook.py` | Official fire potential (next 4 months) and above-normal temperature probability (next 4 seasons) | NIFC Predictive Services map service; CPC outlook GIS files |
+| 2 | `socal4_heatmap.py` | Summer daytime-high / overnight-low anomaly maps, and regional overnight lows every summer since 1950 | NOAA nClimGrid monthly (SoCal window read over HTTP, cached in `data/nclimgrid/`) |
+| 3 | `socal2_heat.py` | Warm nights (≥ 65 °F) and hot days (≥ 90 °F) per summer at four stations | GHCN-Daily |
 
-Stations (`enso_socal.py`): Los Angeles Downtown/USC, San Diego Lindbergh Field,
-Santa Barbara, and for the Inland Empire Lake Elsinore (rain; nearly complete
-record) and March Air Reserve Base (heat; the only inland station with a complete
-2026 summer, its 1971–2011 gap is shaded on the chart). Fire is covered with an
-honest note and links to official outlooks rather than a homemade forecast.
+Archived (scripts kept, not on the site): `socal1_rain.py` (precipitation by ENSO
+phase) and `socal3_outlook.py` (precipitation and temperature outlook maps).
 
 ## Folder layout
 

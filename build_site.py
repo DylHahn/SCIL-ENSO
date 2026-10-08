@@ -33,9 +33,9 @@ TITLES = {
     "eq1_sst_hovmoller.py": "Equatorial SST evolution (Hovmöller)",
     "eq2_heat_hovmoller.py": "Upper-ocean heat content (Hovmöller)",
     "eq3_nino_regions.py": "Warming across the Niño regions",
-    "socal3_outlook.py": "NOAA seasonal outlook",
-    "socal1_rain.py": "Precipitation by ENSO phase",
-    "socal2_heat.py": "Summer warm nights and hot days",
+    "socal5_heat_fire_outlook.py": "Official heat and wildfire outlook",
+    "socal4_heatmap.py": "Summer 2026 temperature anomalies",
+    "socal2_heat.py": "Warm nights and hot days by station",
 }
 
 PAGES = [
@@ -56,9 +56,9 @@ PAGES = [
     dict(
         slug="socal", tab="Southern California", series=run_socal.SOCAL, src=run_socal.OUT,
         title="El Niño and Southern California", kicker="Southern California",
-        h1="El Niño and Southern California: outlook and historical context",
-        lede="NOAA's seasonal outlook for the coming months, precipitation during past ENSO phases at four "
-             "Southern California stations, and summer temperature extremes since 1950.",
+        h1="Southern California: heat and wildfire",
+        lede="Official wildfire-potential and temperature outlooks for the coming months, and how the summer of "
+             "2026 compares with every summer since 1950 across Southern California.",
         extra="""<section class="note">
   <h2>El Niño and wildfire</h2>
   <p>The influence of El Niño on Southern California wildfire is indirect. Above-normal winter precipitation
@@ -80,8 +80,9 @@ PAGES = [
       <a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php">NOAA Climate Prediction Center</a></li>
   </ul>
 </section>""",
-        data=["Daily station records (GHCN-Daily): NOAA NCEI",
-              "Official 3-month outlooks: NOAA Climate Prediction Center",
+        data=["Gridded monthly temperature (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI",
+              "Significant wildland fire potential outlook: National Interagency Fire Center Predictive Services",
+              "Official 3-month temperature outlooks: NOAA Climate Prediction Center",
               "Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center"],
     ),
 ]

@@ -38,13 +38,14 @@ CURRENT = [
     ("story4_global_heat.py", True,
      "Annual global mean surface temperature anomalies; recent record years have coincided with El Niño events."),
     ("eq1_sst_hovmoller.py", True,
-     "Longitude–time evolution of equatorial sea surface temperature anomalies for 1982–83, 1997–98, 2015–16 and "
-     "the current event."),
+     "Sea surface temperature anomalies along the equator, month by month (rows, top to bottom) and from the "
+     "western Pacific to South America (left to right), for four very strong events."),
     ("eq2_heat_hovmoller.py", False,
-     "Longitude–time evolution of upper-200 m temperature anomalies along the equator, showing eastward-propagating "
-     "Kelvin waves."),
+     "The same layout for the average temperature of the upper 200 m; warm bands sloping down to the right are "
+     "Kelvin waves carrying heat east beneath the surface."),
     ("eq3_nino_regions.py", True,
-     "Monthly anomalies in the four Niño regions, indicating where along the equator the warming is concentrated."),
+     "Location of the four Niño regions and their monthly anomalies, showing where along the equator the warming "
+     "is concentrated."),
 ]
 
 

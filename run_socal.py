@@ -15,15 +15,18 @@ OUT = HERE / "figures_public" / "socal_current"
 
 # (script, takes --refresh, caption)
 SOCAL = [
-    ("socal3_outlook.py", True,
-     "NOAA Climate Prediction Center probabilities for seasonal precipitation and temperature in Southern "
-     "California, with season-by-season values for Los Angeles."),
-    ("socal1_rain.py", True,
-     "Water-year precipitation by ENSO phase at Los Angeles, San Diego, Lake Elsinore and Santa Barbara, "
-     "1951 to present."),
+    ("socal5_heat_fire_outlook.py", True,
+     "Official outlooks: NIFC Predictive Services significant wildland fire potential for the next four months "
+     "and NOAA's probability of above-normal temperature for the next four seasons."),
+    ("socal4_heatmap.py", True,
+     "June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, "
+     "~5 km), and the regional overnight-low anomaly for every summer since 1950."),
     ("socal2_heat.py", True,
-     "June–September counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) at four stations, 1950 to present."),
+     "Station counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) each summer since 1950 at Los Angeles, "
+     "San Diego, the Inland Empire and Santa Barbara."),
 ]
+# Archived (scripts kept, not published): socal1_rain.py (precipitation by ENSO phase),
+# socal3_outlook.py (precipitation and temperature outlook maps).
 
 
 def main():
@@ -31,7 +34,7 @@ def main():
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
     args = ap.parse_args()
-    build_set(SOCAL, OUT, "Southern California and El Niño", args.theme, args.refresh)
+    build_set(SOCAL, OUT, "Southern California: heat and wildfire", args.theme, args.refresh)
 
 
 if __name__ == "__main__":
