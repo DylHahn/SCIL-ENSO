@@ -35,13 +35,13 @@ its earlier output is kept in `figures_public/archive/`.
 
 ## Website (GitHub Pages)
 
-The site at https://dylhahn.github.io/enso-2026 is the `docs/` folder of this
+The site at https://dylhahn.github.io/SCIL-ENSO is the `docs/` folder of this
 repository. To update it after NOAA's monthly releases (2nd Thursday):
 
 ```bash
 python run_current.py --refresh                      # "El Niño 2026" tab
 python run_socal.py --refresh                        # "Southern California" tab
-python build_site.py --repo-url https://github.com/DylHahn/enso-2026
+python build_site.py --repo-url https://github.com/DylHahn/SCIL-ENSO
 git add docs && git commit -m "Update for <month>" && git push
 ```
 

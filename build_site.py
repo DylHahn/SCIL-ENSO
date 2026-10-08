@@ -3,7 +3,7 @@ Build the GitHub Pages site (docs/) from the curated graphics: two tabs.
 
     python run_current.py --refresh     # 1a. rebuild "El Niño 2026" graphics
     python run_socal.py --refresh       # 1b. rebuild "Southern California" graphics
-    python build_site.py --repo-url https://github.com/DylHahn/enso-2026     # 2. write docs/
+    python build_site.py --repo-url https://github.com/DylHahn/SCIL-ENSO     # 2. write docs/
     git add docs && git commit -m "Update for <month>" && git push           # 3. publish
 
 GitHub Pages serves docs/ from the main branch, so step 3 is all it takes to
