@@ -24,6 +24,9 @@ CURRENT = [
     ("story1_super_el_nino.py", True,
      "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four strongest El Niño "
      "events since 1950, with NOAA's official forecast."),
+    ("eq4_event_timeseries.py", True,
+     "Monthly anomaly time series for every El Niño since 1950, aligned by onset year: Niño 3.4 and Niño 1+2 sea "
+     "surface temperature and equatorial upper-ocean temperature."),
     ("compare2_surface.py", True,
      "Tropical Pacific sea surface temperature anomalies in the same month of each very strong El Niño year, with "
      "Niño 3.4 and tropical-mean values."),

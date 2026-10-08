@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SCIL ENSO · El Niño and Southern California</title>
-<meta name="description" content="Official wildfire-potential and temperature outlooks for the coming months, and how the summer of 2026 compares with every summer since 1950 across Southern California.">
+<meta name="description" content="How summer heat across Southern California has increased since 1895, how the summer of 2026 compares, and how warm nights and hot days have changed at individual stations.">
 <style>
   :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
            --accent: #e8574a; --line: #2b2b2a; }
@@ -59,15 +59,15 @@
 <header>
   <p class="kicker">Southern California</p>
   <h1>Southern California: heat and wildfire</h1>
-  <p class="lede">Official wildfire-potential and temperature outlooks for the coming months, and how the summer of 2026 compares with every summer since 1950 across Southern California.</p>
+  <p class="lede">How summer heat across Southern California has increased since 1895, how the summer of 2026 compares, and how warm nights and hot days have changed at individual stations.</p>
   <p class="meta">Updated October 8, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 <nav class="toc" aria-label="Figures on this page"><ol>
-  <li><a href="#g1">Official heat and wildfire outlook</a></li>
+  <li><a href="#g1">Long-term increase in summer heat</a></li>
   <li><a href="#g2">Summer 2026 temperature anomalies</a></li>
   <li><a href="#g3">Warm nights and hot days by station</a></li>
 </ol></nav>
-<figure id="g1"><a href="img/01_socal5_heat_fire_outlook.png" target="_blank" rel="noopener"><img src="img/01_socal5_heat_fire_outlook.png" alt="Maps of the official Southern California outlook. Fire potential (October 2026): October: normal; November: normal; December: normal; January: normal. Los Angeles temperature outlook: Oct–Dec 2026: 40%+ chance above normal; Nov 2026–Jan 2027: 33%+ chance above normal; Dec 2026–Feb 2027: equal chances; Jan–Mar 2027: equal chances." width="2600" height="1800" decoding="async"></a><figcaption><b>Figure 1. Official heat and wildfire outlook.</b> Official outlooks: NIFC Predictive Services significant wildland fire potential for the next four months and NOAA&#x27;s probability of above-normal temperature for the next four seasons.</figcaption></figure>
+<figure id="g1"><a href="img/01_socal6_warming.png" target="_blank" rel="noopener"><img src="img/01_socal6_warming.png" alt="Maps and time series of Southern California summer temperature since 1895. Change from 1951–1980 to 1996–2025: daytime highs +1.1 °C, overnight lows +1.3 °C. Five hottest summers: 2018, 2020, 2021, 2022, 2024." width="2600" height="2240" decoding="async"></a><figcaption><b>Figure 1. Long-term increase in summer heat.</b> Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and the regional summer temperature record since 1895 (NOAA nClimGrid).</figcaption></figure>
 <figure id="g2"><a href="img/02_socal4_heatmap.png" target="_blank" rel="noopener"><img src="img/02_socal4_heatmap.png" alt="Maps of Southern California June–September 2026 temperature anomalies relative to 1991–2020: daytime highs +0.7 °C (7th warmest since 1950), overnight lows +1.7 °C (2nd warmest). Bar chart of the regional overnight-low anomaly for every summer since 1950." width="2600" height="1960" decoding="async"></a><figcaption><b>Figure 2. Summer 2026 temperature anomalies.</b> June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, ~5 km), and the regional overnight-low anomaly for every summer since 1950.</figcaption></figure>
 <figure id="g3"><a href="img/03_socal2_heat.png" target="_blank" rel="noopener"><img src="img/03_socal2_heat.png" alt="Bar charts of warm nights and hot days each summer since 1950 at Los Angeles, San Diego, the Inland Empire and Santa Barbara. Summer 2026: Los Angeles 64 warm nights (12th of 77, typical 40); San Diego 86 warm nights (9th of 77, typical 55); Inland Empire 55 warm nights (2nd of 35, typical 26); Santa Barbara 44 warm nights (1st of 70, typical 4)." width="2600" height="1920" decoding="async"></a><figcaption><b>Figure 3. Warm nights and hot days by station.</b> Station counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) each summer since 1950 at Los Angeles, San Diego, the Inland Empire and Santa Barbara.</figcaption></figure>
 <section class="note">
@@ -95,8 +95,6 @@
   <p><b>Data</b> (all public, from NOAA):</p>
   <ul>
     <li>Gridded monthly temperature (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI</li>
-    <li>Significant wildland fire potential outlook: National Interagency Fire Center Predictive Services</li>
-    <li>Official 3-month temperature outlooks: NOAA Climate Prediction Center</li>
     <li>Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center</li>
   </ul>
   <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and method: <a href="https://github.com/DylHahn/enso-2026">GitHub repository</a>.</p>

@@ -15,9 +15,9 @@ OUT = HERE / "figures_public" / "socal_current"
 
 # (script, takes --refresh, caption)
 SOCAL = [
-    ("socal5_heat_fire_outlook.py", True,
-     "Official outlooks: NIFC Predictive Services significant wildland fire potential for the next four months "
-     "and NOAA's probability of above-normal temperature for the next four seasons."),
+    ("socal6_warming.py", True,
+     "Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and the "
+     "regional summer temperature record since 1895 (NOAA nClimGrid)."),
     ("socal4_heatmap.py", True,
      "June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, "
      "~5 km), and the regional overnight-low anomaly for every summer since 1950."),
@@ -26,7 +26,8 @@ SOCAL = [
      "San Diego, the Inland Empire and Santa Barbara."),
 ]
 # Archived (scripts kept, not published): socal1_rain.py (precipitation by ENSO phase),
-# socal3_outlook.py (precipitation and temperature outlook maps).
+# socal3_outlook.py (precipitation and temperature outlook maps), socal5_heat_fire_outlook.py
+# (official fire-potential and temperature outlook maps).
 
 
 def main():

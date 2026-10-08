@@ -14,6 +14,7 @@ shows how this event compares with past El Niños.
 | # | Script | Graphic | Data |
 |---|---|---|---|
 | 1 | `story1_super_el_nino.py` | This El Niño month by month vs. the four biggest since 1950, plus NOAA's forecast | CPC RONI + outlook |
+| 1b | `eq4_event_timeseries.py` | Anomaly time series for every El Niño since 1950 (Niño 3.4, Niño 1+2, upper ocean) | ERSST v5, GODAS |
 | 2 | `compare2_surface.py` | Tropical Pacific surface now vs. the same month of 1982, 1997, 2015 | NOAAGlobalTemp (iCHARM front page) |
 | 3 | `compare1_underwater.py` | Top 200 m along the equator now vs. the same month of past super El Niños | GODAS |
 | 4 | `fig6_equatorial_cross_section.py` | This year's warm water building and moving east, every two months | GODAS |
@@ -60,12 +61,13 @@ graphics 3–4 are your own preprocessed files) and `figures_public/`.
 
 | # | Script | Graphic | Data |
 |---|---|---|---|
-| 1 | `socal5_heat_fire_outlook.py` | Official fire potential (next 4 months) and above-normal temperature probability (next 4 seasons) | NIFC Predictive Services map service; CPC outlook GIS files |
+| 1 | `socal6_warming.py` | Change maps (1996–2025 vs. 1951–1980), warming stripes and regional summer series since 1895 | NOAA nClimGrid monthly |
 | 2 | `socal4_heatmap.py` | Summer daytime-high / overnight-low anomaly maps, and regional overnight lows every summer since 1950 | NOAA nClimGrid monthly (SoCal window read over HTTP, cached in `data/nclimgrid/`) |
 | 3 | `socal2_heat.py` | Warm nights (≥ 65 °F) and hot days (≥ 90 °F) per summer at four stations | GHCN-Daily |
 
 Archived (scripts kept, not on the site): `socal1_rain.py` (precipitation by ENSO
-phase) and `socal3_outlook.py` (precipitation and temperature outlook maps).
+phase), `socal3_outlook.py` (precipitation and temperature outlook maps) and
+`socal5_heat_fire_outlook.py` (official fire-potential and temperature outlooks).
 
 ## Folder layout
 
