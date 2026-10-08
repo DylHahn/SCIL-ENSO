@@ -40,7 +40,8 @@ repository. To update it after NOAA's monthly releases (2nd Thursday):
 
 ```bash
 python run_current.py --refresh                      # "El Niño 2026" tab
-python run_socal.py --refresh                        # "Southern California" tab
+python run_socal.py --refresh                        # "Southern California Heat" tab
+python run_socal_precip.py --refresh                 # "Southern California Precipitation" tab
 python build_site.py --repo-url https://github.com/DylHahn/SCIL-ENSO
 git add docs && git commit -m "Update for <month>" && git push
 ```
@@ -55,7 +56,7 @@ Not in the repository: `data/` (NOAA downloads are fetched automatically; the
 GODAS depth files `godasClimatologyData_{depth}m.nc` used for past years in
 graphics 3–4 are your own preprocessed files) and `figures_public/`.
 
-## The Southern California tab: heat and wildfire
+## The "Southern California Heat" tab
 
 `python run_socal.py` builds these into `figures_public/socal_current/`:
 
@@ -68,6 +69,16 @@ graphics 3–4 are your own preprocessed files) and `figures_public/`.
 Archived (scripts kept, not on the site): `socal1_rain.py` (precipitation by ENSO
 phase), `socal3_outlook.py` (precipitation and temperature outlook maps) and
 `socal5_heat_fire_outlook.py` (official fire-potential and temperature outlooks).
+
+## The "Southern California Precipitation" tab
+
+`python run_socal_precip.py` builds these into `figures_public/socal_precip_current/`:
+
+| # | Script | Graphic | Data |
+|---|---|---|---|
+| 1 | `socal3_outlook_prcp.py` | NOAA seasonal precipitation outlook map and Los Angeles season-by-season odds | CPC outlook GIS files |
+| 2 | `socal7_precip_composite.py` | Nov–Mar precipitation in strong El Niño winters (% of normal, number wetter) and every winter since 1951 | NOAA nClimGrid monthly precipitation |
+| 3 | `socal1_rain.py` | Water-year precipitation by ENSO phase at four stations | GHCN-Daily |
 
 ## Folder layout
 

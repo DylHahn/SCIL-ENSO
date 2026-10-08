@@ -18,6 +18,7 @@ from PIL import Image
 
 import run_current
 import run_socal
+import run_socal_precip
 from run_story import HERE
 
 DOCS = HERE / "docs"
@@ -35,6 +36,8 @@ TITLES = {
     "eq3_nino_regions.py": "Warming across the Niño regions",
     "socal5_heat_fire_outlook.py": "Official heat and wildfire outlook",
     "socal6_warming.py": "Long-term increase in summer heat",
+    "socal3_outlook_prcp.py": "NOAA seasonal precipitation outlook",
+    "socal7_precip_composite.py": "Precipitation in strong El Niño winters",
     "eq4_event_timeseries.py": "Anomaly time series across events",
     "socal4_heatmap.py": "Summer 2026 temperature anomalies",
     "socal2_heat.py": "Warm nights and hot days by station",
@@ -56,9 +59,9 @@ PAGES = [
               "Monthly Niño region indices (OISST v2.1): NOAA Climate Prediction Center"],
     ),
     dict(
-        slug="socal", tab="Southern California", series=run_socal.SOCAL, src=run_socal.OUT,
-        title="El Niño and Southern California", kicker="Southern California",
-        h1="Southern California: heat and wildfire",
+        slug="socal", tab="Southern California Heat", series=run_socal.SOCAL, src=run_socal.OUT,
+        title="Southern California Heat", kicker="Southern California Heat",
+        h1="Southern California heat",
         lede="How summer heat across Southern California has increased since 1895, how the summer of 2026 "
              "compares, and how warm nights and hot days have changed at individual stations.",
         extra="""<section class="note">
@@ -84,6 +87,32 @@ PAGES = [
 </section>""",
         data=["Gridded monthly temperature (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI",
 
+              "Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center"],
+    ),
+    dict(
+        slug="socal-precip", tab="Southern California Precipitation", series=run_socal_precip.SOCAL_PRECIP,
+        src=run_socal_precip.OUT,
+        title="Southern California Precipitation", kicker="Southern California Precipitation",
+        h1="Southern California precipitation and El Niño",
+        lede="NOAA's seasonal precipitation outlook for the coming winter, and the precipitation Southern "
+             "California received during past strong El Niño winters, region-wide and at individual stations.",
+        extra="""<section class="note">
+  <h2>Interpreting El Niño and Southern California rainfall</h2>
+  <p>Strong El Niño winters have usually, but not always, brought above-normal precipitation to Southern
+  California; the very strong 2015–16 event was drier than normal. Heavy rain on recently burned slopes raises the
+  risk of flooding and debris flows. Seasonal outlooks give probabilities for a whole season and are not forecasts
+  of individual storms.</p>
+  <h2>Official forecasts and warnings</h2>
+  <ul>
+    <li>Storm, flood and flash-flood forecasts and warnings:
+      <a href="https://www.weather.gov/lox/">NWS Los Angeles/Oxnard</a> ·
+      <a href="https://www.weather.gov/sgx/">NWS San Diego</a></li>
+    <li>Seasonal outlook maps for the whole US:
+      <a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php">NOAA Climate Prediction Center</a></li>
+  </ul>
+</section>""",
+        data=["Gridded monthly precipitation (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI",
+              "Official 3-month precipitation outlooks: NOAA Climate Prediction Center",
               "Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center"],
     ),
 ]

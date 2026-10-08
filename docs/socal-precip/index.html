@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCIL ENSO · Southern California Precipitation</title>
+<meta name="description" content="NOAA&#x27;s seasonal precipitation outlook for the coming winter, and the precipitation Southern California received during past strong El Niño winters, region-wide and at individual stations.">
+<style>
+  :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
+           --accent: #e8574a; --line: #2b2b2a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+          font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  .site { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
+           padding: 8px 0 16px; }
+  .site .brand { font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }
+  .site .brand span { color: var(--accent); }
+  .site .author { color: var(--text-2); font-size: 15px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
+  .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
+             margin-bottom: -1px; font-weight: 500; }
+  .tabs a:hover { color: var(--text); }
+  .tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+  header p.kicker { color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+                     font-size: 14px; margin: 0 0 8px; }
+  h1 { font-size: clamp(28px, 4.5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+  h2 { font-size: 22px; margin: 32px 0 8px; }
+  .lede { color: var(--text-2); font-size: 19px; max-width: 760px; margin: 0 0 12px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 40px; }
+  .toc ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px 24px;
+             padding: 20px 24px 20px 44px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
+  .toc a { color: var(--text-2); text-decoration: none; }
+  .toc a:hover { color: var(--text); text-decoration: underline; }
+  figure { margin: 0 0 64px; scroll-margin-top: 24px; }
+  figure a { display: block; }
+  img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
+  figcaption { margin-top: 14px; color: var(--text-2); max-width: 820px; }
+  figcaption b { color: var(--text); }
+  .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
+           color: var(--text-2); }
+  .note h2 { color: var(--text); }
+  .note a, footer a { color: var(--text-2); }
+  .note a:hover, footer a:hover { color: var(--text); }
+  footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
+  footer ul, .note ul { padding-left: 20px; }
+</style>
+</head>
+<body>
+<main>
+<div class="site">
+  <a class="brand" href="../">SCIL <span>ENSO</span></a>
+  <span class="author">Dylan Hahn</span>
+</div>
+<nav class="tabs" aria-label="Pages">
+  <a href="../">El Niño 2026</a>
+  <a href="../socal/">Southern California Heat</a>
+  <a href="../socal-precip/" aria-current="page">Southern California Precipitation</a>
+</nav>
+<header>
+  <p class="kicker">Southern California Precipitation</p>
+  <h1>Southern California precipitation and El Niño</h1>
+  <p class="lede">NOAA&#x27;s seasonal precipitation outlook for the coming winter, and the precipitation Southern California received during past strong El Niño winters, region-wide and at individual stations.</p>
+  <p class="meta">Updated October 8, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+</header>
+<nav class="toc" aria-label="Figures on this page"><ol>
+  <li><a href="#g1">NOAA seasonal precipitation outlook</a></li>
+  <li><a href="#g2">Precipitation in strong El Niño winters</a></li>
+  <li><a href="#g3">socal1_rain</a></li>
+</ol></nav>
+<figure id="g1"><a href="img/01_socal3_outlook_prcp.png" target="_blank" rel="noopener"><img src="img/01_socal3_outlook_prcp.png" alt="Map of NOAA&#x27;s Dec–Feb precipitation outlook for Southern California, issued September 17, 2026. Los Angeles by season: Oct–Dec: 33–40% chance wetter; Nov–Jan: 33–40% chance wetter; Dec–Feb: 50–60% chance wetter; Jan–Mar: 50–60% chance wetter; Feb–Apr: 50–60% chance wetter." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 1. NOAA seasonal precipitation outlook.</b> NOAA Climate Prediction Center probability of above-, near- or below-normal precipitation for Southern California, with season-by-season values for Los Angeles.</figcaption></figure>
+<figure id="g2"><a href="img/02_socal7_precip_composite.png" target="_blank" rel="noopener"><img src="img/02_socal7_precip_composite.png" alt="Maps of Southern California November–March precipitation during 7 strong El Niño winters (1957–58, 1965–66, 1972–73, 1982–83, 1991–92, 1997–98, 2015–16): regional mean 146% of normal, 6 of 7 winters wetter than normal. Bar chart of every winter since 1951 coloured by ENSO phase." width="2600" height="2040" decoding="async"></a><figcaption><b>Figure 2. Precipitation in strong El Niño winters.</b> November–March precipitation across Southern California during the strong El Niño winters since 1951 (NOAA nClimGrid, ~5 km), and the regional total for every winter.</figcaption></figure>
+<figure id="g3"><a href="img/03_socal1_rain.png" target="_blank" rel="noopener"><img src="img/03_socal1_rain.png" alt="Bar chart of every Los Angeles rainy season since 1951 as a percent of normal, coloured by El Niño or La Niña strength, and dot plots for Los Angeles, San Diego, the Inland Empire and Santa Barbara. Los Angeles: 6 of 7 strong El Niño seasons wetter than normal, median 147%; San Diego: 6 of 7 strong El Niño seasons wetter than normal, median 145%; Inland Empire: 4 of 6 strong El Niño seasons wetter than normal, median 113%; Santa Barbara: 3 of 5 strong El Niño seasons wetter than normal, median 104%." width="2600" height="2120" decoding="async"></a><figcaption><b>Figure 3. socal1_rain.</b> Water-year precipitation by ENSO phase at Los Angeles, San Diego, Lake Elsinore and Santa Barbara, 1951 to present.</figcaption></figure>
+<section class="note">
+  <h2>Interpreting El Niño and Southern California rainfall</h2>
+  <p>Strong El Niño winters have usually, but not always, brought above-normal precipitation to Southern
+  California; the very strong 2015–16 event was drier than normal. Heavy rain on recently burned slopes raises the
+  risk of flooding and debris flows. Seasonal outlooks give probabilities for a whole season and are not forecasts
+  of individual storms.</p>
+  <h2>Official forecasts and warnings</h2>
+  <ul>
+    <li>Storm, flood and flash-flood forecasts and warnings:
+      <a href="https://www.weather.gov/lox/">NWS Los Angeles/Oxnard</a> ·
+      <a href="https://www.weather.gov/sgx/">NWS San Diego</a></li>
+    <li>Seasonal outlook maps for the whole US:
+      <a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php">NOAA Climate Prediction Center</a></li>
+  </ul>
+</section>
+<footer>
+  <p><b>Data</b> (all public, from NOAA):</p>
+  <ul>
+    <li>Gridded monthly precipitation (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI</li>
+    <li>Official 3-month precipitation outlooks: NOAA Climate Prediction Center</li>
+    <li>Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center</li>
+  </ul>
+  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and method: <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a>.</p>
+</footer>
+</main>
+</body>
+</html>

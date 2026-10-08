@@ -113,6 +113,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--season", default="DJF", help="season for the two maps (CPC code, e.g. DJF)")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
+    ap.add_argument("--only", choices=["prcp", "temp"], help="show one variable (larger map)")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--out", default=str(FIG_DIR / "socal" / "socal3_outlook.png"))
     args = ap.parse_args()
@@ -121,15 +122,17 @@ def main():
     import cartopy.feature as cfeature
 
     apply_style(args.theme)
-    data = {v: load_leads(v, args.refresh) for v in ("prcp", "temp")}
-    issued = next(iter(data["prcp"].values()))[1]
+    variables = (args.only,) if args.only else ("prcp", "temp")
+    data = {v: load_leads(v, args.refresh) for v in variables}
+    issued = next(iter(data[variables[0]].values()))[1]
     pc = ccrs.PlateCarree()
 
     fig = plt.figure(figsize=(13, 10.4))
-    for k, var in enumerate(("prcp", "temp")):
+    for k, var in enumerate(variables):
         lead = next(l for l, v in data[var].items() if v[0] == args.season)
         code, _, valid, polys = data[var][lead]
-        ax = fig.add_axes([0.03 + k * 0.49, 0.33, 0.46, 0.46], projection=ccrs.LambertConformal(
+        rect = [0.03 + k * 0.49, 0.33, 0.46, 0.46] if len(variables) > 1 else [0.12, 0.33, 0.76, 0.46]
+        ax = fig.add_axes(rect, projection=ccrs.LambertConformal(
             central_longitude=-119, central_latitude=34.5))
         ax.set_extent(EXTENT, crs=pc)
         ax.add_feature(cfeature.OCEAN, facecolor=COLORS["ocean"], zorder=0)
@@ -174,16 +177,16 @@ def main():
     sax.set_ylim(0, 1)
     sax.text(0, 1.0, "Los Angeles, season by season", fontsize=14, fontweight="bold", color=COLORS["text"],
              va="top")
-    leads = [l for l in data["prcp"] if l <= 5]
+    leads = [l for l in data[variables[0]] if l <= 5]
     w = 1 / len(leads)
     for i, lead in enumerate(leads):
         x = i * w
-        code, _, valid, _ = data["prcp"][lead]
+        code, _, valid, _ = data[variables[0]][lead]
         sax.add_patch(FancyBboxPatch((x + 0.004, 0.0), w - 0.008, 0.78, boxstyle="round,pad=0,rounding_size=0.02",
                                      facecolor=COLORS["surface_2"], edgecolor="none", mutation_aspect=4))
         sax.text(x + 0.015, 0.68, season_text(code, valid), fontsize=12,
                  fontweight="bold", color=COLORS["text"], va="top")
-        for j, var in enumerate(("prcp", "temp")):
+        for j, var in enumerate(variables):
             if lead not in data[var]:
                 continue
             cat, prob = odds_at(data[var][lead][3], *CITIES["Los Angeles"])
@@ -194,14 +197,22 @@ def main():
             sax.text(x + 0.015, y0 - 0.12, phrase(var, cat, prob), fontsize=11.5, fontweight="bold",
                      color=col if cat != "EC" else COLORS["text_2"], va="center")
 
-    add_title(fig, "NOAA seasonal outlook for Southern California",
+    what = {"prcp": "precipitation ", "temp": "temperature "}.get(args.only, "")
+    add_title(fig, f"NOAA seasonal {what}outlook for Southern California",
               f"NOAA Climate Prediction Center outlook issued {issued:%B %-d, %Y}: probability of above-, near- "
               f"or below-normal conditions by season.\n“Equal chances” indicates no preferred category. For daily "
               "forecasts and warnings, consult the local National Weather Service office.")
     add_source(fig, "Data: NOAA Climate Prediction Center official 3-month outlooks (GIS files, "
                "seasprcp/seastemp_latest). Normal = 1991–2020.")
     la = {var: [(data[var][l][0], *odds_at(data[var][l][3], *CITIES["Los Angeles"])) for l in leads if l in data[var]]
-          for var in ("prcp", "temp")}
+          for var in variables}
+    if args.only:
+        word = "precipitation" if args.only == "prcp" else "temperature"
+        save(fig, args.out,
+             alt=f"Map of NOAA's {SEASON_NAMES.get(args.season, args.season)} {word} outlook for Southern "
+                 f"California, issued {issued:%B %-d, %Y}. Los Angeles by season: " + "; ".join(
+                     f"{SEASON_NAMES.get(c, c)}: {phrase(args.only, ca, p)}" for c, ca, p in la[args.only]) + ".")
+        return
     save(fig, args.out,
          alt=f"Maps of NOAA's {SEASON_NAMES.get(args.season, args.season)} rain and temperature outlook for "
              f"Southern California, issued {issued:%B %-d, %Y}. Los Angeles by season: " + "; ".join(
