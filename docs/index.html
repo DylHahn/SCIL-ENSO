@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The 2026–27 El Niño in historical context</title>
+<title>SCIL ENSO · The 2026–27 El Niño in historical context</title>
 <meta name="description" content="A strong El Niño is developing in the equatorial Pacific. These figures compare its surface and subsurface evolution with the strongest events since 1950, using NOAA observations, reanalysis and official forecasts.">
 <style>
   :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
@@ -12,6 +12,11 @@
   body { margin: 0; background: var(--bg); color: var(--text);
           font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  .site { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
+           padding: 8px 0 16px; }
+  .site .brand { font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }
+  .site .brand span { color: var(--accent); }
+  .site .author { color: var(--text-2); font-size: 15px; }
   .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
   .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
              margin-bottom: -1px; font-weight: 500; }
@@ -43,6 +48,10 @@
 </head>
 <body>
 <main>
+<div class="site">
+  <a class="brand" href="./">SCIL <span>ENSO</span></a>
+  <span class="author">Dylan Hahn</span>
+</div>
 <nav class="tabs" aria-label="Pages">
   <a href="./" aria-current="page">El Niño 2026</a>
   <a href="socal/">Southern California</a>

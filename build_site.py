@@ -92,7 +92,7 @@ PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title}</title>
+<title>SCIL ENSO · {title}</title>
 <meta name="description" content="{description}">
 <style>
   :root {{ --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
@@ -101,6 +101,11 @@ PAGE = """<!doctype html>
   body {{ margin: 0; background: var(--bg); color: var(--text);
           font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }}
   main {{ max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }}
+  .site {{ display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
+           padding: 8px 0 16px; }}
+  .site .brand {{ font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }}
+  .site .brand span {{ color: var(--accent); }}
+  .site .author {{ color: var(--text-2); font-size: 15px; }}
   .tabs {{ display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }}
   .tabs a {{ padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
              margin-bottom: -1px; font-weight: 500; }}
@@ -132,6 +137,10 @@ PAGE = """<!doctype html>
 </head>
 <body>
 <main>
+<div class="site">
+  <a class="brand" href="{home}">SCIL <span>ENSO</span></a>
+  <span class="author">Dylan Hahn</span>
+</div>
 <nav class="tabs" aria-label="Pages">
 {tabs}
 </nav>
@@ -196,7 +205,7 @@ def build_page(page, repo_url):
         tabs.append(f'  <a href="{href or "./"}"{current}>{html.escape(p["tab"])}</a>')
     repo = (f' Code and method: <a href="{html.escape(repo_url)}">GitHub repository</a>.' if repo_url else "")
     (page_dir / "index.html").write_text(PAGE.format(
-        title=html.escape(page["title"]), description=html.escape(page["lede"]), tabs="\n".join(tabs),
+        title=html.escape(page["title"]), home=up or "./", description=html.escape(page["lede"]), tabs="\n".join(tabs),
         kicker=html.escape(page["kicker"]), h1=html.escape(page["h1"]), lede=html.escape(page["lede"]),
         updated=dt.date.today().strftime("%B %-d, %Y"), toc="\n".join(toc), figures="\n".join(figures),
         extra=page["extra"], data="\n".join(f"    <li>{html.escape(d)}</li>" for d in page["data"]), repo=repo))
