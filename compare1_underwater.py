@@ -21,7 +21,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 
-from enso_common import (FIG_DIR, GODAS_DIR, GODAS_RAW_DIR, COLORS, add_source, add_title, apply_style,
+from enso_common import (temp_cmap, FIG_DIR, GODAS_DIR, GODAS_RAW_DIR, COLORS, add_source, add_title, apply_style,
                          download_godas_year, godas_equatorial_section, lon_label, save)
 from matplotlib.ticker import FuncFormatter
 
@@ -61,11 +61,10 @@ def main():
     fig.subplots_adjust(top=1 - 1.55 / h, bottom=1.45 / h, left=0.08, right=0.85, hspace=0.30)
 
     step = 1.0
-    levels = np.arange(-args.vmax - step / 2, args.vmax + step, step)
-    cmap = plt.get_cmap("RdBu_r", len(levels) - 1)
-    norm = BoundaryNorm(levels, cmap.N)
+    levels = np.arange(12, 31.01, 0.5)                   # actual temperature, rainbow scale
+    cmap, norm = temp_cmap(levels)
     for ax, y, a, t, q in zip(axes, args.years, anoms, temps, heat):
-        cf = ax.contourf(lons, depths, a, levels=levels, cmap=cmap, norm=norm, extend="both")
+        cf = ax.contourf(lons, depths, t, levels=levels, cmap=cmap, norm=norm, extend="both")
         ax.contour(lons, depths, t, levels=[20], colors="black", linewidths=1.5)
         ax.set_ylim(depths.max(), depths.min())
         ax.set_yticks([50, 100, 150, 200])
@@ -90,22 +89,22 @@ def main():
                  color=COLORS["text_2"], ha="right")
 
     cax = fig.add_axes([0.3, 0.72 / h, 0.4, 0.13 / h])
-    cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(-args.vmax, args.vmax + 1, 2))
+    cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(12, 32, 2))
     cb.outline.set_visible(False)
     cb.ax.tick_params(labelsize=10.5, length=0)
-    cb.set_label("Warmer (red) or cooler (blue) than normal, °C   ·   black line: 20 °C, the bottom of the "
+    cb.set_label("Ocean temperature (°C)   ·   black line: 20 °C, the bottom of the "
                  "warm layer", fontsize=11, color=COLORS["text_2"])
 
     past = max(heat[:-1])
     ratio = heat[-1] / past if past > 0 else np.nan
-    add_title(fig, f"Equatorial subsurface temperature anomalies in {calendar.month_name[month]}: "
+    add_title(fig, f"Equatorial upper-ocean temperature in {calendar.month_name[month]}: "
                    f"{now} and past events",
               f"Depth–longitude sections, 2°S–2°N. The mean anomaly over 5–205 m between 180° and 80°W "
               f"is {heat[-1]:+.1f} °C, about {ratio:.1f} times the largest\nprevious value at the same stage "
               f"({max(heat[:-1]):+.1f} °C), indicating a substantial reservoir of subsurface heat to sustain "
               f"surface warming.")
-    add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), 2°S–2°N average; differences from the 1991–2020 "
-               "monthly normal.")
+    add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), 2°S–2°N average. Colours: temperature; values on the right: "
+               "anomaly relative to the 1991–2020 monthly normal.")
     save(fig, args.out,
          alt=f"Depth-by-longitude slices of the equatorial Pacific in {calendar.month_name[month]} of "
              + ", ".join(str(y) for y in args.years) + ". Average extra warmth in the top 200 m from 180° to "

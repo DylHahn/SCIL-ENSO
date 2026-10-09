@@ -20,7 +20,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 
-from enso_common import (FIG_DIR, COLORS, NINO_BOXES, add_source, add_title, apply_style, save)
+from enso_common import (temp_cmap, FIG_DIR, COLORS, NINO_BOXES, add_source, add_title, apply_style, save)
 from enso_stats import load_gridded
 
 
@@ -49,19 +49,19 @@ def main():
     mon = temp.where(temp["time.month"] == month, drop=True)
     normal = mon.sel(time=slice("1991", "2020")).mean("time")
     now = args.years[-1]
+    sst = load_gridded("sst", args.refresh)                 # actual SST for the maps (ERSST v5)
 
     proj = ccrs.PlateCarree(central_longitude=190)
     fig = plt.figure(figsize=(13, 8.0))
-    levels = np.arange(-3.25, 3.5, 0.5)
-    cmap = plt.get_cmap("RdBu_r", len(levels) - 1)
-    norm = BoundaryNorm(levels, cmap.N)
+    levels = np.arange(18, 31.01, 0.5)
+    cmap, norm = temp_cmap(levels)
     n34 = NINO_BOXES["Niño 3.4"]
     stats = []
     for k, y in enumerate(args.years):
         r, c = divmod(k, 2)
         ax = fig.add_axes([0.02 + c * 0.49, 0.53 - r * 0.34, 0.47, 0.25], projection=proj)
-        field = (mon.sel(time=f"{y}-{month:02d}").squeeze("time") - normal)
-        field = field.interp(lat=np.arange(-39.5, 40, 1.0), lon=np.arange(0.5, 360, 1.0))
+        field = sst.sel(time=f"{y}-{month:02d}").squeeze("time")
+        field = field.ffill("lon").bfill("lon").interp(lat=np.arange(-39.5, 40, 1.0), lon=np.arange(0.5, 360, 1.0))
         data, lon = add_cyclic_point(field.values, coord=field["lon"].values)
         cf = ax.contourf(lon, field["lat"].values, data, levels=levels, cmap=cmap, norm=norm, extend="both",
                          transform=ccrs.PlateCarree())
@@ -85,22 +85,22 @@ def main():
                 va="bottom", ha="right")
 
     cax = fig.add_axes([0.25, 0.095, 0.5, 0.02])
-    cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(-3, 3.5, 1))
+    cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(18, 32, 2))
     cb.outline.set_visible(False)
     cb.ax.tick_params(labelsize=11, length=0)
-    cb.set_label("Warmer (red) or cooler (blue) than the 1991–2020 normal for that month, °C   ·   "
+    cb.set_label("Sea surface temperature (°C), ERSST v5   ·   "
                  "black box: Niño 3.4", fontsize=11.5, color=COLORS["text_2"])
 
     cur, past = stats[-1], stats[:-1]
     rel = {y: a - b for y, a, b in stats}            # Niño 3.4 minus the tropics: NOAA's relative view
-    headline = f"Tropical Pacific SST anomalies in {calendar.month_name[month]}: {now} and past very strong events"
+    headline = f"Tropical Pacific sea surface temperature in {calendar.month_name[month]}: {now} and past very strong events"
     rel_past = ", ".join(f"{y} {rel[y]:+.1f}" for y, _, _ in past)
     add_title(fig, headline,
               f"Niño 3.4 anomaly {cur[1]:+.1f} °C, the highest of the four years at this stage. The tropical mean "
               f"(20°S–20°N) is also {cur[2]:+.1f} °C, above any previous event, so relative to\nthe tropics, the "
               f"basis of NOAA's RONI, the anomaly is {rel[now]:+.1f} °C ({rel_past}).")
-    add_source(fig, "Data: NOAAGlobalTemp v6 monthly surface temperature (NOAA NCEI), 5° grid, smoothed for "
-               "display; differences from the 1991–2020 monthly normal.")
+    add_source(fig, "Maps: NOAA ERSST v5 monthly sea surface temperature (2°, smoothed for display). Anomaly values: "
+               "NOAAGlobalTemp v6 relative to the 1991–2020 monthly normal.")
     save(fig, args.out,
          alt=f"Four maps of tropical Pacific surface temperature in {calendar.month_name[month]} of "
              + ", ".join(str(y) for y in args.years) + ". " + "; ".join(

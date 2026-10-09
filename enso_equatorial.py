@@ -58,8 +58,12 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
     small map of the equator above it so the horizontal axis reads as geography."""
     years = list(fields)
     fig = plt.figure(figsize=(13, 10.4))
-    cmap = plt.get_cmap(cmap_name, len(levels) - 1)
-    norm = BoundaryNorm(levels, cmap.N)
+    if cmap_name == "turbo":
+        from enso_common import temp_cmap
+        cmap, norm = temp_cmap(levels)
+    else:
+        cmap = plt.get_cmap(cmap_name, len(levels) - 1)
+        norm = BoundaryNorm(levels, cmap.N)
     width, gap, left = 0.198, 0.022, 0.10
     p_bottom, p_height = 0.19, 0.52
     cf = None

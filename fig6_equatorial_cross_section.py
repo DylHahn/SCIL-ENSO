@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 from matplotlib.ticker import FuncFormatter
 
-from enso_common import (FIG_DIR, GODAS_DIR, GODAS_RAW_DIR, COLORS, add_source, add_title, apply_style,
+from enso_common import (temp_cmap, FIG_DIR, GODAS_DIR, GODAS_RAW_DIR, COLORS, add_source, add_title, apply_style,
                          download_godas_year, godas_equatorial_section, lon_label, save)
 
 
@@ -56,12 +56,11 @@ def main():
                         left=0.09, right=0.86, hspace=0.32)
 
     step = 1.0
-    levels = np.arange(-args.vmax - step / 2, args.vmax + step, step)   # white bin centred on 0
-    cmap = plt.get_cmap("RdBu_r", len(levels) - 1)
-    norm = BoundaryNorm(levels, cmap.N)
+    levels = np.arange(12, 31.01, 0.5)                   # actual temperature, rainbow scale
+    cmap, norm = temp_cmap(levels)
 
     for ax, date, a, t in zip(axes, args.dates, anoms, temps):
-        cf = ax.contourf(lons, depths, a, levels=levels, cmap=cmap, norm=norm, extend="both")
+        cf = ax.contourf(lons, depths, t, levels=levels, cmap=cmap, norm=norm, extend="both")
         if not args.no_isotherm:
             cs = ax.contour(lons, depths, t, levels=[20], colors="black", linewidths=1.6)
         ax.set_ylim(depths.max(), depths.min())
@@ -82,22 +81,22 @@ def main():
                  color=COLORS["text_2"], ha="right")
 
     cax = fig.add_axes([0.88, 0.25, 0.018, 0.5])
-    cb = fig.colorbar(cf, cax=cax, ticks=np.arange(-args.vmax, args.vmax + 1, 2))
+    cb = fig.colorbar(cf, cax=cax, ticks=np.arange(12, 32, 2))
     cb.outline.set_visible(False)
-    cb.set_label("Warmer (red) or cooler (blue)\nthan normal, °C", fontsize=12)
+    cb.set_label("Ocean temperature (°C)", fontsize=12)
     if not args.no_isotherm:
         fig.text(0.875, 0.20, "— 20 °C line:\n   bottom of the\n   warm layer", fontsize=11,
                  va="top", color=COLORS["text"])
 
     years = {pd.Timestamp(d).year for d in args.dates}
     span = f"{pd.Timestamp(args.dates[0]):%B}–{pd.Timestamp(args.dates[-1]):%B %Y}"
-    add_title(fig, f"Equatorial subsurface temperature anomalies, {span}",
-              "Depth–longitude sections, 2°S–2°N, at two-month intervals. Warm anomalies form at depth, "
-              "propagate eastward along the\nthermocline as downwelling Kelvin waves and reach the surface "
-              "in the eastern Pacific.")
+    add_title(fig, f"Equatorial upper-ocean temperature, {span}",
+              "Depth–longitude sections, 2°S–2°N, at two-month intervals. As El Niño develops, the warm upper layer "
+              "deepens in the east\nand the 20 °C line (the base of the warm layer) flattens, carried by downwelling "
+              "Kelvin waves.")
     lat_txt = f"{abs(args.lat_band[0]):g}°S–{abs(args.lat_band[1]):g}°N"
-    add_source(fig, f"Data: NCEP GODAS ocean reanalysis, {lat_txt} average; anomalies vs. 1991–2020 "
-               "monthly normals.")
+    add_source(fig, f"Data: NCEP GODAS ocean reanalysis, {lat_txt} average; monthly mean temperature."
+               "")
     east = (lons >= 180) & (lons <= 280)
     save(fig, args.out,
          alt="Depth-by-longitude slices of the upper 200 m of the equatorial Pacific for "

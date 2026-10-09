@@ -40,7 +40,7 @@ def main():
     for y in args.years:
         months = [m for m in event_months(y) if m in have]
         vals = anom.sel(time=months).values
-        fields[y] = (months, anom["lon"].values, vals)
+        fields[y] = (months, anom["lon"].values, band.sel(time=months).values)   # colours: actual SST
         east = anom["lon"].values >= 210
         peaks[y] = (months[-1], float(np.nanmax(vals[-1][east])))
     now = args.years[-1]
@@ -48,16 +48,16 @@ def main():
     same = {y: float(np.nanmax(anom.sel(time=f"{y}-{last.month:02d}-01").values[anom['lon'].values >= 210]))
             for y in args.years[:-1]}
 
-    levels = np.arange(-3.75, 4.0, 0.5)
+    levels = np.arange(20, 31.01, 0.5)
     hovmoller_figure(
-        fields, levels, "RdBu_r", "SST anomaly (°C), 2°S–2°N, relative to 1991–2020",
-        title="Equatorial Pacific sea surface temperature anomalies during major El Niño events",
-        subtitle=f"Monthly SST anomalies along the equator (2°S–2°N). By {last:%B} {now}, the maximum anomaly in "
+        fields, levels, "turbo", "Sea surface temperature (°C), 2°S–2°N",
+        title="Equatorial Pacific sea surface temperature during major El Niño events",
+        subtitle=f"Monthly sea surface temperature along the equator (2°S–2°N). By {last:%B} {now}, the maximum anomaly in "
                  f"the eastern Pacific reached {peaks[now][1]:+.1f} °C,\ncompared with "
                  + join_and(f"{v:+.1f} °C in {y}" for y, v in same.items()) + " at the same stage of those events.",
-        source="Data: NOAA Extended Reconstructed SST v5 (ERSST), monthly, 2° grid; anomalies relative to the "
-               "1991–2020 monthly climatology.",
-        out=args.out, highlight=now, cbar_ticks=np.arange(-3, 3.5, 1),
+        source="Data: NOAA Extended Reconstructed SST v5 (ERSST), monthly, 2° grid. Values in the text are anomalies "
+               "relative to the 1991–2020 monthly climatology.",
+        out=args.out, highlight=now, cbar_ticks=np.arange(20, 32, 2),
         alt=f"Longitude–time diagrams of sea surface temperature anomalies along the equatorial Pacific for "
             + ", ".join(f"{y}–{str(y + 1)[-2:]}" for y in args.years)
             + f". Maximum eastern Pacific anomaly in {last:%B}: {now} {peaks[now][1]:+.1f} °C; "

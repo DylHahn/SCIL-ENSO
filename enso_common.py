@@ -205,6 +205,14 @@ def save(fig, out_path, alt=None):
     print(f"Saved {out_path}")
 
 
+def temp_cmap(levels):
+    """Rainbow scale for actual ocean temperature (the classic El Niño map look), using matplotlib's
+    "turbo". Two extra colours for values below / above the range."""
+    from matplotlib.colors import BoundaryNorm
+    cmap = plt.get_cmap("turbo", len(levels) + 1)
+    return cmap, BoundaryNorm(levels, cmap.N, extend="both")
+
+
 def lon_label(x, _pos=None):
     x = float(x) % 360
     if np.isclose(x, 180):
