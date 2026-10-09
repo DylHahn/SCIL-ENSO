@@ -22,8 +22,8 @@ OUT = HERE / "figures_public" / "current"
 # (script, takes --refresh, caption)
 CURRENT = [
     ("anim1_sst.py", True,
-     "Animated month-by-month sea surface temperature anomalies across the tropical Pacific, January to the latest "
-     "month, for 2026 and the same months of 1997."),
+     "Animated month-by-month sea surface temperature across the tropical Pacific (NOAA OISST, 0.25°), January to "
+     "the latest month, for 2026, 1997 and the 1991–2020 normal."),
     ("story1_super_el_nino.py", True,
      "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four strongest El Niño "
      "events since 1950, with NOAA's official forecast."),
@@ -37,8 +37,8 @@ CURRENT = [
      "Equatorial subsurface temperature anomalies at the same stage of each event; the current event holds "
      "substantially more subsurface heat."),
     ("anim2_subsurface.py", False,
-     "Animated equatorial depth–longitude sections, January to the latest month, showing subsurface warm "
-     "anomalies moving east in 2026 and 1997."),
+     "Animated equatorial upper-ocean temperature sections for 2026, 1997 and the 1991–2020 normal; during El Niño "
+     "the warm layer deepens in the east and the 20 °C line flattens."),
     ("stats4_event_ranking.py", True,
      "El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the current event "
      "completed by NOAA's median forecast."),

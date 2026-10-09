@@ -89,3 +89,54 @@ def anomalies_and_mhw(sst):
     run_len = above.groupby(run_id).transform("sum")
     mhw = above & (run_len >= 5)
     return anom, mhw
+
+
+# ---------------------------------------------------------------------------
+# Monthly OISST v2.1 (0.25°) for the tropical Pacific, for the animations
+# ---------------------------------------------------------------------------
+PSL_OISST = "https://downloads.psl.noaa.gov/Datasets/noaa.oisst.v2.highres/{name}"
+PACIFIC = dict(lat=(-25, 25), lon=(110, 290))
+
+
+def pacific_monthly(months, refresh=False):
+    """(time, lat, lon) monthly mean SST (°C) over the tropical Pacific for the requested months.
+    Reads only this window from NOAA PSL's 2.2 GB file over HTTP and caches it."""
+    import xarray as xr
+    path = HERE / "data" / "oisst_monthly" / "pacific_sst.nc"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    have = None
+    if path.exists():
+        with xr.open_dataarray(path) as da:
+            have = da.load()
+    want = pd.DatetimeIndex(months)
+    got = pd.DatetimeIndex([]) if have is None else pd.to_datetime(have["time"].values)
+    missing = want.difference(got) if not refresh else want
+    if len(missing):
+        print(f"Reading {len(missing)} months of OISST for the tropical Pacific from NOAA PSL ...")
+        with xr.open_dataset(PSL_OISST.format(name="sst.mon.mean.nc") + "#mode=bytes") as ds:
+            avail = set(pd.to_datetime(ds["time"].values))
+            pick = [t for t in missing if t in avail]
+            new = (ds["sst"].sel(time=pick, lat=slice(*PACIFIC["lat"]), lon=slice(*PACIFIC["lon"])).load()
+                   if pick else None)
+        if new is None:                                    # requested months not published yet
+            return have.sel(time=have["time"].isin(want.values))
+        if have is not None:
+            have = have.drop_sel(time=[t for t in pick if t in set(got)])
+        have = new if have is None else xr.concat([have, new], "time").sortby("time")
+        have.name = "sst"
+        have.to_netcdf(path)
+    return have.sel(time=have["time"].isin(want.values))
+
+
+def pacific_normals():
+    """(month, lat, lon) 1991–2020 monthly normal SST (°C), from NOAA PSL's long-term-mean file."""
+    import urllib.request
+    import xarray as xr
+    path = HERE / "data" / "oisst_monthly" / "sst.mon.ltm.1991-2020.nc"
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        print("Downloading OISST 1991–2020 monthly normals (46 MB) ...")
+        urllib.request.urlretrieve(PSL_OISST.format(name="sst.mon.ltm.1991-2020.nc"), path)
+    with xr.open_dataset(path, decode_times=False) as ds:
+        ltm = ds["sst"].sel(lat=slice(*PACIFIC["lat"]), lon=slice(*PACIFIC["lon"])).load()
+    return ltm.rename(time="month").assign_coords(month=range(1, 13))
