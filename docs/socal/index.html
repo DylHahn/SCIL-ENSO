@@ -7,41 +7,62 @@
 <meta name="description" content="How summer heat across Southern California has increased since 1895, how the summer of 2026 compares, and how warm nights and hot days have changed at individual stations.">
 <style>
   :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
-           --accent: #e8574a; --line: #2b2b2a; }
+          --accent: #e8574a; --line: #2b2b2a; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
-          font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+         font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  a { color: var(--text-2); }
+  a:hover { color: var(--text); }
   .site { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
-           padding: 8px 0 16px; }
+          padding: 8px 0 16px; }
   .site .brand { font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }
   .site .brand span { color: var(--accent); }
   .site .author { color: var(--text-2); font-size: 15px; }
   .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
   .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
-             margin-bottom: -1px; font-weight: 500; }
+            margin-bottom: -1px; font-weight: 500; }
   .tabs a:hover { color: var(--text); }
   .tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
   header p.kicker { color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
-                     font-size: 14px; margin: 0 0 8px; }
+                    font-size: 14px; margin: 0 0 8px; }
   h1 { font-size: clamp(28px, 4.5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
   h2 { font-size: 22px; margin: 32px 0 8px; }
   .lede { color: var(--text-2); font-size: 19px; max-width: 760px; margin: 0 0 12px; }
-  .meta { color: var(--muted); font-size: 14px; margin: 0 0 40px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .summary { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0;
+             padding: 20px 28px 22px; margin: 0 0 40px; }
+  .summary h2 { margin: 0 0 12px; font-size: 20px; }
+  .summary dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; }
+  .summary dt { color: var(--text); font-weight: 600; }
+  .summary dd { margin: 0; color: var(--text-2); }
+  .summary .asof { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+  @media (max-width: 640px) { .summary dl { grid-template-columns: 1fr; gap: 2px 0; }
+                              .summary dd { margin-bottom: 10px; } }
   .toc ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px 24px;
-             padding: 20px 24px 20px 44px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
+            padding: 20px 24px 20px 44px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
   .toc a { color: var(--text-2); text-decoration: none; }
   .toc a:hover { color: var(--text); text-decoration: underline; }
+  h2.section { font-size: 26px; margin: 8px 0 24px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
   figure { margin: 0 0 64px; scroll-margin-top: 24px; }
   figure a { display: block; }
   img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
   figcaption { margin-top: 14px; color: var(--text-2); max-width: 820px; }
+  figcaption a { display: inline; }
   figcaption b { color: var(--text); }
   .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
-           color: var(--text-2); }
+          color: var(--text-2); }
   .note h2 { color: var(--text); }
-  .note a, footer a { color: var(--text-2); }
-  .note a:hover, footer a:hover { color: var(--text); }
+  .prose { color: var(--text-2); max-width: 900px; margin: 0 0 56px; }
+  .prose h2 { color: var(--text); }
+  .prose dt { color: var(--text); font-weight: 600; margin-top: 12px; }
+  .prose dd { margin: 2px 0 0 0; }
+  .prose li { margin-bottom: 8px; }
+  .prose b { color: var(--text); }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 8px 0 12px; }
+  .prose th, .prose td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .prose th { color: var(--text); font-weight: 600; }
+  .prose code { background: var(--surface); padding: 1px 6px; border-radius: 4px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
@@ -56,23 +77,25 @@
   <a href="../">El Niño 2026</a>
   <a href="../socal/" aria-current="page">Southern California Heat</a>
   <a href="../socal-precip/">Southern California Precipitation</a>
+  <a href="../methods/">Methods &amp; data</a>
 </nav>
 <header>
   <p class="kicker">Southern California Heat</p>
   <h1>Southern California heat</h1>
   <p class="lede">How summer heat across Southern California has increased since 1895, how the summer of 2026 compares, and how warm nights and hot days have changed at individual stations.</p>
-  <p class="meta">Updated October 8, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 9, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
+
 <nav class="toc" aria-label="Figures on this page"><ol>
   <li><a href="#g1">Long-term increase in summer heat</a></li>
   <li><a href="#g2">Marine heat in the Southern California Bight</a></li>
   <li><a href="#g3">Summer 2026 temperature anomalies</a></li>
   <li><a href="#g4">Warm nights and hot days by station</a></li>
 </ol></nav>
-<figure id="g1"><a href="img/01_socal6_warming.png" target="_blank" rel="noopener"><img src="img/01_socal6_warming.png" alt="Maps and time series of Southern California summer temperature since 1895. Change from 1951–1980 to 1996–2025: daytime highs +1.1 °C, overnight lows +1.3 °C. Five hottest summers: 2018, 2020, 2021, 2022, 2024." width="2600" height="2240" decoding="async"></a><figcaption><b>Figure 1. Long-term increase in summer heat.</b> Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and the regional summer temperature record since 1895 (NOAA nClimGrid).</figcaption></figure>
-<figure id="g2"><a href="img/02_socal8_marine_heat.png" target="_blank" rel="noopener"><img src="img/02_socal8_marine_heat.png" alt="Marine heatwave days and sea surface temperature anomalies in the Southern California Bight since 1982. By 23 September 2026: 220 heatwave days; same date in 1997: 15, 2015: 156. Recent 30-day mean anomaly +2.9 °C." width="2600" height="2000" decoding="async"></a><figcaption><b>Figure 2. Marine heat in the Southern California Bight.</b> Daily sea surface temperature and marine heatwave days in the Southern California Bight since 1982 (NOAA OISST), with 2026 compared with 1997 and 2015.</figcaption></figure>
-<figure id="g3"><a href="img/03_socal4_heatmap.png" target="_blank" rel="noopener"><img src="img/03_socal4_heatmap.png" alt="Maps of Southern California June–September 2026 temperature anomalies relative to 1991–2020: daytime highs +0.7 °C (7th warmest since 1950), overnight lows +1.7 °C (2nd warmest). Bar chart of the regional overnight-low anomaly for every summer since 1950." width="2600" height="1960" decoding="async"></a><figcaption><b>Figure 3. Summer 2026 temperature anomalies.</b> June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, ~5 km), and the regional overnight-low anomaly for every summer since 1950.</figcaption></figure>
-<figure id="g4"><a href="img/04_socal2_heat.png" target="_blank" rel="noopener"><img src="img/04_socal2_heat.png" alt="Bar charts of warm nights and hot days each summer since 1950 at Los Angeles, San Diego, the Inland Empire and Santa Barbara. Summer 2026: Los Angeles 64 warm nights (12th of 77, typical 40); San Diego 86 warm nights (9th of 77, typical 55); Inland Empire 55 warm nights (2nd of 35, typical 26); Santa Barbara 44 warm nights (1st of 70, typical 4)." width="2600" height="1920" decoding="async"></a><figcaption><b>Figure 4. Warm nights and hot days by station.</b> Station counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) each summer since 1950 at Los Angeles, San Diego, the Inland Empire and Santa Barbara.</figcaption></figure>
+<figure id="g1"><a href="img/01_socal_warming_since_1895.png" target="_blank" rel="noopener"><img src="img/01_socal_warming_since_1895.png" alt="Maps and time series of Southern California summer temperature since 1895. Change from 1951–1980 to 1996–2025: daytime highs +1.1 °C, overnight lows +1.3 °C. Five hottest summers: 2018, 2020, 2021, 2022, 2024." width="2600" height="2240" decoding="async"></a><figcaption><b>Figure 1. Long-term increase in summer heat.</b> Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and the regional summer temperature record since 1895 (NOAA nClimGrid).</figcaption></figure>
+<figure id="g2"><a href="img/02_socal_marine_heat.png" target="_blank" rel="noopener"><img src="img/02_socal_marine_heat.png" alt="Marine heatwave days and sea surface temperature anomalies in the Southern California Bight since 1982. By 23 September 2026: 220 heatwave days; same date in 1997: 15, 2015: 156. Recent 30-day mean anomaly +2.9 °C." width="2600" height="2000" decoding="async"></a><figcaption><b>Figure 2. Marine heat in the Southern California Bight.</b> Daily sea surface temperature and marine heatwave days in the Southern California Bight since 1982 (NOAA OISST), with 2026 compared with 1997 and 2015.</figcaption></figure>
+<figure id="g3"><a href="img/03_socal_summer_anomalies.png" target="_blank" rel="noopener"><img src="img/03_socal_summer_anomalies.png" alt="Maps of Southern California June–September 2026 temperature anomalies relative to 1991–2020: daytime highs +0.7 °C (7th warmest since 1950), overnight lows +1.7 °C (2nd warmest). Bar chart of the regional overnight-low anomaly for every summer since 1950." width="2600" height="1960" decoding="async"></a><figcaption><b>Figure 3. Summer 2026 temperature anomalies.</b> June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, ~5 km), and the regional overnight-low anomaly for every summer since 1950.</figcaption></figure>
+<figure id="g4"><a href="img/04_socal_station_heat.png" target="_blank" rel="noopener"><img src="img/04_socal_station_heat.png" alt="Bar charts of warm nights and hot days each summer since 1950 at Los Angeles, San Diego, the Inland Empire and Santa Barbara. Summer 2026: Los Angeles 64 warm nights (12th of 77, typical 40); San Diego 86 warm nights (9th of 77, typical 55); Inland Empire 55 warm nights (2nd of 35, typical 26); Santa Barbara 44 warm nights (1st of 70, typical 4)." width="2600" height="1920" decoding="async"></a><figcaption><b>Figure 4. Warm nights and hot days by station.</b> Station counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) each summer since 1950 at Los Angeles, San Diego, the Inland Empire and Santa Barbara.</figcaption></figure>
 <section class="note">
   <h2>El Niño and wildfire</h2>
   <p>The influence of El Niño on Southern California wildfire is indirect. Above-normal winter precipitation
@@ -90,17 +113,17 @@
       <a href="https://gacc.nifc.gov/oscc/predictive/outlooks/">Predictive Services, South Ops</a></li>
     <li>Active fires and evacuations: <a href="https://www.fire.ca.gov/incidents">CAL FIRE incidents</a></li>
     <li>Heat safety: <a href="https://www.weather.gov/safety/heat">National Weather Service</a></li>
-    <li>Seasonal outlook maps for the whole US:
-      <a href="https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php">NOAA Climate Prediction Center</a></li>
   </ul>
 </section>
 <footer>
   <p><b>Data</b> (all public, from NOAA):</p>
   <ul>
     <li>Gridded monthly temperature (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI</li>
+    <li>Daily sea surface temperature (OISST v2.1): NOAA NCEI, via NOAA CoastWatch ERDDAP</li>
     <li>Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center</li>
   </ul>
-  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and method: <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a>.</p>
+  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and methods:
+  <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
 </footer>
 </main>
 </body>

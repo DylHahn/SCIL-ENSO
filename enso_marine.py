@@ -124,6 +124,10 @@ def pacific_monthly(months, refresh=False):
             have = have.drop_sel(time=[t for t in pick if t in set(got)])
         have = new if have is None else xr.concat([have, new], "time").sortby("time")
         have.name = "sst"
+        # drop the source file's packing/fill metadata, which conflicts once months from separate reads are merged
+        have.encoding = {}
+        for k in ("missing_value", "_FillValue", "scale_factor", "add_offset"):
+            have.attrs.pop(k, None)
         have.to_netcdf(path)
     return have.sel(time=have["time"].isin(want.values))
 

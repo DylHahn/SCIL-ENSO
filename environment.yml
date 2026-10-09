@@ -11,4 +11,5 @@ dependencies:
   - xarray
   - netcdf4
   - cartopy
+  - scipy
   - pillow

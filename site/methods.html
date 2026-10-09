@@ -1,0 +1,100 @@
+<section class="prose">
+<h2>Data sources</h2>
+<table>
+  <thead><tr><th>Dataset</th><th>Provider</th><th>Resolution</th><th>Used for</th></tr></thead>
+  <tbody>
+    <tr><td>Relative Oceanic Niño Index (RONI); official RONI outlook and strength probabilities</td><td>NOAA Climate Prediction Center (CPC)</td><td>3-month means</td><td>Event strength, event definitions, forecasts, forecast verification, ENSO phase of each winter</td></tr>
+    <tr><td>Monthly Niño region indices</td><td>NOAA CPC (OISST v2.1)</td><td>Monthly</td><td>Niño 4, 3.4, 3 and 1+2 anomalies</td></tr>
+    <tr><td>NCEP Global Ocean Data Assimilation System (GODAS)</td><td>NOAA NCEP, via NOAA PSL</td><td>1° × ⅓°, 10 m levels (5–205 m used), monthly</td><td>Upper-ocean temperature sections, Hovmöller and animation</td></tr>
+    <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
+    <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series, tropical Pacific maps</td></tr>
+    <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
+    <tr><td>nClimGrid monthly</td><td>NOAA NCEI</td><td>~5 km (1/24°), 1895–present</td><td>Southern California temperature and precipitation maps</td></tr>
+    <tr><td>Global Historical Climatology Network Daily (GHCN-Daily)</td><td>NOAA NCEI</td><td>Individual stations, daily</td><td>Station warm nights, hot days and rainfall</td></tr>
+    <tr><td>Official 3-month precipitation outlook</td><td>NOAA CPC (GIS files)</td><td>Probability categories</td><td>Southern California precipitation outlook</td></tr>
+  </tbody>
+</table>
+<p>All data are public. Most of these datasets can also be explored on <a href="https://icharm.sdsu.edu/">iCHARM</a>.</p>
+
+<h2>Definitions</h2>
+<dl>
+  <dt>Anomaly</dt>
+  <dd>The difference from the 1991–2020 average for the same calendar month (or season). The only exception is the
+  annual global temperature series, which NOAA NCEI reports relative to 1901–2000.</dd>
+  <dt>Relative Oceanic Niño Index (RONI)</dt>
+  <dd>NOAA's official El Niño index since 2026: the Niño 3.4 sea surface temperature anomaly measured relative to
+  the tropical-mean anomaly, so that the warming of the whole tropical ocean is not counted as El Niño. Values are
+  overlapping 3-month means, plotted on the middle month (Dec–Feb on January).</dd>
+  <dt>El Niño event and strength</dt>
+  <dd>Five or more consecutive overlapping 3-month seasons with RONI ≥ +0.5 °C. Strength by peak value: weak
+  (+0.5 to +1.0 °C), moderate (+1.0 to +1.5), strong (+1.5 to +2.0), very strong (≥ +2.0). Winters are classified
+  by their Dec–Feb RONI.</dd>
+  <dt>Onset year</dt>
+  <dd>The calendar year in which an event's peak season begins; the 1997–98 event has onset year 1997. Events are
+  compared at the same calendar month of their onset years.</dd>
+  <dt>Niño regions</dt>
+  <dd>Niño 4: 160°E–150°W, 5°S–5°N. Niño 3.4: 170°W–120°W, 5°S–5°N. Niño 3: 150°W–90°W, 5°S–5°N.
+  Niño 1+2: 90°W–80°W, 10°S–0°.</dd>
+  <dt>Upper-ocean temperature</dt>
+  <dd>GODAS temperature averaged over 2°S–2°N (cosine-weighted) and, where a single value is quoted, over
+  5–205 m and 180°–80°W. The 20 °C isotherm marks the base of the warm upper layer (the thermocline).</dd>
+  <dt>Marine heatwave</dt>
+  <dd>Following Hobday et al. (2016): daily SST above the 90th percentile for that day of the year (1991–2020,
+  11-day window) for at least five consecutive days, using the area mean over 32.5–34.5°N, 117.5–120.5°W
+  (Southern California Bight).</dd>
+  <dt>Warm night and hot day</dt>
+  <dd>A day with a minimum temperature of at least 65 °F, or a maximum of at least 90 °F, during June–September.</dd>
+  <dt>Water year</dt>
+  <dd>October to September, labelled by the year in which it ends (as reported by the National Weather Service).</dd>
+</dl>
+
+<h2>Methods by figure</h2>
+<ul>
+  <li><b>Animations.</b> Monthly fields are shown in sequence; intermediate frames are linear interpolations between
+  consecutive months for smooth playback only and pause on each actual month. The colour scale is “turbo”, a
+  perceptually improved rainbow scale for absolute temperature.</li>
+  <li><b>Event development and ranking.</b> RONI for every event since 1950. The current event is completed with
+  NOAA's median forecast and its 5–95% range. Accumulated intensity is the sum of monthly RONI values above
+  +0.5 °C over the event.</li>
+  <li><b>Comparisons with past events.</b> Each year is shown in the same calendar month as the latest month with
+  data for 2026. The tropical-mean anomaly is the area-weighted mean over 20°S–20°N.</li>
+  <li><b>Hovmöller diagrams.</b> Longitude–time sections along the equator (2°S–2°N) from January of the onset year
+  to the following January; each row is one month.</li>
+  <li><b>Forecast verification.</b> Every official CPC strength forecast issued since April 2026, when the RONI-based
+  forecasts began, compared with the category later observed. Lead time is the number of months from the issue
+  month to the centre month of the target season.</li>
+  <li><b>Global temperature.</b> A record year is one warmer than every earlier year in the NCEI series; highlighted
+  records coincided with an El Niño winter (Dec–Feb RONI ≥ +1.0 °C).</li>
+  <li><b>Southern California maps.</b> nClimGrid over 32.45–35.15°N, 121.0–114.4°W (land only). Summer is
+  June–September. Long-term change compares 1996–2025 with 1951–1980; trends are least-squares fits from 1950.</li>
+  <li><b>Southern California precipitation.</b> Region-wide composites use November–March totals in winters with
+  Dec–Feb RONI ≥ +1.5 °C; areas averaging less than 20 mm are left blank. The outlook value for Los Angeles is the
+  highest-probability category covering the city.</li>
+  <li><b>Stations.</b> GHCN-Daily records with quality-flagged values removed: Los Angeles Downtown/USC
+  (USW00093134), San Diego Lindbergh Field (USW00023188), Santa Barbara (USC00047902), March Air Reserve Base for
+  inland heat (USW00023119; no data 1971–2011) and Lake Elsinore for inland rainfall (USC00042805). Summers need at
+  least 110 of 122 days of data; rainy seasons need at least 145 of 151 days in November–March.</li>
+</ul>
+
+<h2>Limitations</h2>
+<ul>
+  <li>Only seven strong or very strong El Niño winters have occurred since 1950, so historical relationships rest
+  on small samples and individual events can differ substantially (for example, 2015–16 in Southern California).</li>
+  <li>Values for 2026 are preliminary and may be revised. GODAS is typically released about one month after
+  surface datasets, so subsurface figures may end a month earlier.</li>
+  <li>Absolute temperatures include the long-term warming trend; event strength is therefore judged with the
+  relative index (RONI) and with anomalies, not with absolute temperature.</li>
+  <li>Seasonal outlooks are probabilities for a season and are not forecasts of individual storms or heat events.
+  For day-to-day decisions, use National Weather Service forecasts and warnings.</li>
+  <li>Rainbow colour scales are less distinguishable for readers with colour-vision deficiency; numerical values
+  are given in titles, captions and image descriptions.</li>
+</ul>
+
+<h2>Updates and reproducibility</h2>
+<p>Figures are rebuilt after NOAA's monthly releases (ENSO update on the second Thursday, seasonal outlooks on the
+third Thursday). All code is in the <a href="{repo}">GitHub repository</a>; <code>python update_site.py --refresh</code>
+downloads the latest data and rebuilds every figure and page.</p>
+
+<h2>Citation</h2>
+<p>Hahn, D. ({year}). <i>SCIL ENSO: The 2026–27 El Niño in historical context.</i> {site}</p>
+</section>
