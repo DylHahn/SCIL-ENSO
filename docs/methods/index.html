@@ -63,6 +63,12 @@
   .prose th, .prose td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
   .prose th { color: var(--text); font-weight: 600; }
   .prose code { background: var(--surface); padding: 1px 6px; border-radius: 4px; }
+  @media (max-width: 640px) {
+    .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            margin-bottom: 28px; }
+    .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
+    .prose table { display: block; overflow-x: auto; }
+  }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
