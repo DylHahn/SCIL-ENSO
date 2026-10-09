@@ -39,6 +39,10 @@ TITLES = {
     "socal3_outlook_prcp.py": "NOAA seasonal precipitation outlook",
     "socal7_precip_composite.py": "Precipitation in strong El Niño winters",
     "socal1_rain.py": "Station precipitation by ENSO phase",
+    "anim1_sst.py": "Animation: surface anomalies, 2026 and 1997",
+    "anim2_subsurface.py": "Animation: subsurface anomalies, 2026 and 1997",
+    "eq5_forecast_verification.py": "Verification of NOAA's 2026 forecasts",
+    "socal8_marine_heat.py": "Marine heat in the Southern California Bight",
     "eq4_event_timeseries.py": "Anomaly time series across events",
     "socal4_heatmap.py": "Summer 2026 temperature anomalies",
     "socal2_heat.py": "Warm nights and hot days by station",
@@ -215,18 +219,25 @@ def build_page(page, repo_url):
     for i, (script, _, caption) in enumerate(series, 1):
         stem = f"{i:02d}_{script.replace('.py', '')}"
         shutil.copy2(src / f"{stem}.png", img_dir / f"{stem}.png")
+        # animations: an animated WebP sits next to the PNG (the PNG stays as the full-size final frame)
+        animated = (src / f"{stem}.webp").exists()
+        if animated:
+            shutil.copy2(src / f"{stem}.webp", img_dir / f"{stem}.webp")
+        shown = f"{stem}.webp" if animated else f"{stem}.png"
         alt_file = src / f"{stem}.alt.txt"
         alt = alt_file.read_text().strip() if alt_file.exists() else caption
         short = TITLES.get(script, script.replace(".py", ""))
         toc.append(f'  <li><a href="#g{i}">{html.escape(short)}</a></li>')
-        with Image.open(img_dir / f"{stem}.png") as im:
+        with Image.open(img_dir / shown) as im:
             w, h = im.size
         figures.append(
-            f'<figure id="g{i}"><a href="img/{stem}.png" target="_blank" rel="noopener">'
+            f'<figure id="g{i}"><a href="img/{shown}" target="_blank" rel="noopener">'
             # width/height reserve the space before the image arrives; with only a few images
             # everything loads up front so no figure is skipped near the bottom of the page
-            f'<img src="img/{stem}.png" alt="{html.escape(alt)}" width="{w}" height="{h}" decoding="async"></a>'
-            f"<figcaption><b>Figure {i}. {html.escape(short)}.</b> {html.escape(caption)}</figcaption></figure>")
+            f'<img src="img/{shown}" alt="{html.escape(alt)}" width="{w}" height="{h}" decoding="async"></a>'
+            f"<figcaption><b>Figure {i}. {html.escape(short)}.</b> {html.escape(caption)}"
+            + (f' <a href="img/{stem}.png" target="_blank" rel="noopener">Still image of the final frame.</a>'
+               if animated else "") + "</figcaption></figure>")
 
     up = "../" if page["slug"] else ""
     tabs = []

@@ -18,6 +18,9 @@ SOCAL = [
     ("socal6_warming.py", True,
      "Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and the "
      "regional summer temperature record since 1895 (NOAA nClimGrid)."),
+    ("socal8_marine_heat.py", True,
+     "Daily sea surface temperature and marine heatwave days in the Southern California Bight since 1982 "
+     "(NOAA OISST), with 2026 compared with 1997 and 2015."),
     ("socal4_heatmap.py", True,
      "June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, "
      "~5 km), and the regional overnight-low anomaly for every summer since 1950."),

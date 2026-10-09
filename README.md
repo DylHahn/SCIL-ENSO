@@ -80,6 +80,19 @@ phase), `socal3_outlook.py` (precipitation and temperature outlook maps) and
 | 2 | `socal7_precip_composite.py` | Nov–Mar precipitation in strong El Niño winters (% of normal, number wetter) and every winter since 1951 | NOAA nClimGrid monthly precipitation |
 | 3 | `socal1_rain.py` | Water-year precipitation by ENSO phase at four stations | GHCN-Daily |
 
+## Animations, marine heat and forecast verification
+
+| Script | Graphic | Data |
+|---|---|---|
+| `anim1_sst.py` | Animated tropical Pacific SST anomalies, Jan → latest month, current year vs. 1997 (`--compare` to change) | ERSST v5 |
+| `anim2_subsurface.py` | Animated equatorial depth–longitude sections, current year vs. 1997 | GODAS |
+| `eq5_forecast_verification.py` | Every NOAA strength forecast since April 2026 checked against the observed RONI | CPC strength-probability archive |
+| `socal8_marine_heat.py` | Marine heatwave days and daily SST anomalies in the Southern California Bight since 1982 | NOAA OISST v2.1 via CoastWatch ERDDAP (cached per year in `data/oisst/`) |
+
+Animations are written as animated WebP (`<name>.webp`, ~1 MB, plays as an ordinary
+image in all modern browsers) plus a PNG of the final frame; `build_site.py`
+publishes the WebP and links the still image from the caption.
+
 ## Folder layout
 
 ```
