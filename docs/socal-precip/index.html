@@ -117,6 +117,51 @@
   .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
   .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
   .ex-table th { color: var(--text); font-weight: 600; }
+  /* "Start here" explainer */
+  .explainer { background: var(--surface); border-radius: 10px; padding: 20px 24px 18px; margin: 0 0 40px; }
+  .explainer h2 { margin: 0 0 14px; font-size: 22px; }
+  .ex-diagrams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  @media (max-width: 760px) { .ex-diagrams { grid-template-columns: 1fr; } }
+  .ex-diagrams svg { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px;
+                     color: var(--text-2); font-family: inherit; }
+  .dg-title { fill: var(--text); font-size: 17px; font-weight: 700; }
+  .dg-accent { fill: var(--accent); }
+  .dg-label { fill: var(--text); font-size: 13px; font-weight: 600; }
+  .dg-small { fill: var(--text-2); font-size: 12px; }
+  .dg-dark { fill: #fff; }
+  .dg-light { fill: #cde2fb; }
+  .dg-land { fill: #3a3936; }
+  .dg-thermo { fill: none; stroke: #fff; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .8; }
+  .dg-cloud { fill: #77766f; }
+  .dg-rain line { stroke: #86b6ef; stroke-width: 2; stroke-linecap: round; }
+  .dg-wind line, .dg-flow line, .dg-up line { stroke: currentColor; stroke-width: 2.5; }
+  .dg-wind { color: var(--text); }
+  .dg-flow { color: #fff; }
+  .dg-up { color: #cde2fb; }
+  .ex-text { color: var(--text-2); max-width: 900px; }
+  .ex-text p { margin: 10px 0; }
+  .ex-text b { color: var(--text); }
+  .ex-more { font-size: 15px; }
+  /* reading aids */
+  .takeaway { color: var(--text); font-size: 18px; font-weight: 600; line-height: 1.45; margin: 0 0 12px;
+              max-width: 900px; padding-left: 12px; border-left: 3px solid var(--accent); }
+  .how { margin-top: 10px; }
+  .how summary { cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600; width: fit-content; }
+  .how p { margin: 6px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 15.5px; }
+  .term { border-bottom: 1px dotted var(--muted); cursor: help; }
+  .term:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; border-radius: 2px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .gloss-tip { position: absolute; z-index: 10; max-width: min(320px, calc(100vw - 32px)); background: var(--bg);
+               color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
+               font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
+  .gloss-tip b { color: var(--text); display: block; }
+  .player { position: relative; }
+  .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
+          font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
+          border-radius: 999px; padding: 12px 22px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5);
+          white-space: nowrap; }
+  .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
+  .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
@@ -136,18 +181,19 @@
 <header>
   <p class="kicker">Southern California Precipitation</p>
   <h1>Southern California precipitation and El Niño</h1>
-  <p class="lede">NOAA&#x27;s seasonal precipitation outlook for the coming winter, and the precipitation Southern California received during past strong El Niño winters, region-wide and at individual stations.</p>
+  <p class="lede">NOAA&#x27;s seasonal precipitation outlook for the coming winter, and the precipitation Southern California received during past strong <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span> winters, region-wide and at individual stations.</p>
   <p class="meta">Updated October 13, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
+
 
 <nav class="toc" aria-label="Figures on this page"><ol>
   <li><a href="#g1">NOAA seasonal precipitation outlook</a></li>
   <li><a href="#g2">Precipitation in strong El Niño winters</a></li>
   <li><a href="#g3">Station precipitation by ENSO phase</a></li>
 </ol></nav>
-<figure id="g1"><a href="img/01_socal_precip_outlook.png" target="_blank" rel="noopener"><img src="img/01_socal_precip_outlook.png" alt="Map of NOAA&#x27;s Dec–Feb precipitation outlook for Southern California, issued September 17, 2026. Los Angeles by season: Oct–Dec: 33–40% chance wetter; Nov–Jan: 33–40% chance wetter; Dec–Feb: 50–60% chance wetter; Jan–Mar: 50–60% chance wetter; Feb–Apr: 50–60% chance wetter." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 1. NOAA seasonal precipitation outlook.</b> NOAA Climate Prediction Center probability of above-, near- or below-normal precipitation for Southern California, with season-by-season values for Los Angeles.</figcaption></figure>
-<figure id="g2"><a href="img/02_socal_precip_el_nino_winters.png" target="_blank" rel="noopener"><img src="img/02_socal_precip_el_nino_winters.png" alt="Maps of Southern California November–March precipitation during 7 strong El Niño winters (1957–58, 1965–66, 1972–73, 1982–83, 1991–92, 1997–98, 2015–16): regional mean 146% of normal, 6 of 7 winters wetter than normal. Bar chart of every winter since 1951 coloured by ENSO phase." width="2600" height="2040" decoding="async"></a><figcaption><b>Figure 2. Precipitation in strong El Niño winters.</b> November–March precipitation across Southern California during the strong El Niño winters since 1951 (NOAA nClimGrid, ~5 km), and the regional total for every winter.</figcaption></figure>
-<figure id="g3"><a href="img/03_socal_station_precip.png" target="_blank" rel="noopener"><img src="img/03_socal_station_precip.png" alt="Bar chart of every Los Angeles rainy season since 1951 as a percent of normal, coloured by El Niño or La Niña strength, and dot plots for Los Angeles, San Diego, the Inland Empire and Santa Barbara. Los Angeles: 6 of 7 strong El Niño seasons wetter than normal, median 147%; San Diego: 6 of 7 strong El Niño seasons wetter than normal, median 145%; Inland Empire: 4 of 6 strong El Niño seasons wetter than normal, median 113%; Santa Barbara: 3 of 5 strong El Niño seasons wetter than normal, median 104%." width="2600" height="2120" decoding="async"></a><figcaption><b>Figure 3. Station precipitation by ENSO phase.</b> Water-year precipitation by ENSO phase at Los Angeles, San Diego, Lake Elsinore and Santa Barbara, 1951 to present.</figcaption></figure>
+<figure id="g1"><p class="takeaway">NOAA&#x27;s outlook favours a wetter-than-normal winter in Southern California, most strongly from December onward.</p><a href="img/01_socal_precip_outlook.png" target="_blank" rel="noopener"><img src="img/01_socal_precip_outlook.png" alt="Map of NOAA&#x27;s Dec–Feb precipitation outlook for Southern California, issued September 17, 2026. Los Angeles by season: Oct–Dec: 33–40% chance wetter; Nov–Jan: 33–40% chance wetter; Dec–Feb: 50–60% chance wetter; Jan–Mar: 50–60% chance wetter; Feb–Apr: 50–60% chance wetter." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 1. NOAA seasonal precipitation outlook.</b> NOAA Climate Prediction Center probability of above-, near- or below-normal precipitation for Southern California, with season-by-season values for Los Angeles.</figcaption></figure>
+<figure id="g2"><p class="takeaway">Most strong El Niño winters, though not all, have been wetter than normal across Southern California.</p><a href="img/02_socal_precip_el_nino_winters.png" target="_blank" rel="noopener"><img src="img/02_socal_precip_el_nino_winters.png" alt="Maps of Southern California November–March precipitation during 7 strong El Niño winters (1957–58, 1965–66, 1972–73, 1982–83, 1991–92, 1997–98, 2015–16): regional mean 146% of normal, 6 of 7 winters wetter than normal. Bar chart of every winter since 1951 coloured by ENSO phase." width="2600" height="2040" decoding="async"></a><figcaption><b>Figure 2. Precipitation in strong El Niño winters.</b> November–March precipitation across Southern California during the strong El Niño winters since 1951 (NOAA <span class="term" tabindex="0" data-def="NOAA&#x27;s gridded (about 5 km) monthly temperature and precipitation for the United States since 1895.">nClimGrid<span class="vh"> (NOAA&#x27;s gridded (about 5 km) monthly temperature and precipitation for the United States since 1895.)</span></span>, ~5 km), and the regional total for every winter.</figcaption></figure>
+<figure id="g3"><p class="takeaway">Strong El Niño seasons have usually been wet in Los Angeles and San Diego; the signal is weaker inland and farther north.</p><a href="img/03_socal_station_precip.png" target="_blank" rel="noopener"><img src="img/03_socal_station_precip.png" alt="Bar chart of every Los Angeles rainy season since 1951 as a percent of normal, coloured by El Niño or La Niña strength, and dot plots for Los Angeles, San Diego, the Inland Empire and Santa Barbara. Los Angeles: 6 of 7 strong El Niño seasons wetter than normal, median 147%; San Diego: 6 of 7 strong El Niño seasons wetter than normal, median 145%; Inland Empire: 4 of 6 strong El Niño seasons wetter than normal, median 113%; Santa Barbara: 3 of 5 strong El Niño seasons wetter than normal, median 104%." width="2600" height="2120" decoding="async"></a><figcaption><b>Figure 3. Station precipitation by ENSO phase.</b> Water-year precipitation by <span class="term" tabindex="0" data-def="El Niño–Southern Oscillation: the cycle of El Niño, neutral and La Niña conditions and the related swing in air pressure across the tropical Pacific.">ENSO<span class="vh"> (El Niño–Southern Oscillation: the cycle of El Niño, neutral and La Niña conditions and the related swing in air pressure across the tropical Pacific.)</span></span> phase at Los Angeles, San Diego, Lake Elsinore and Santa Barbara, 1951 to present.</figcaption></figure>
 <section class="note">
   <h2>Interpreting El Niño and Southern California rainfall</h2>
   <p>Strong El Niño winters have usually, but not always, brought above-normal precipitation to Southern
@@ -174,5 +220,35 @@
   <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
 </footer>
 </main>
+<script>
+// Glossary: show a term's definition on hover, keyboard focus or tap
+(() => {
+  const tip = document.createElement("div");
+  tip.className = "gloss-tip"; tip.hidden = true; document.body.appendChild(tip);
+  const show = t => {
+    tip.replaceChildren();
+    const b = document.createElement("b"); b.textContent = t.firstChild.textContent;
+    tip.append(b, document.createTextNode(t.dataset.def)); tip.hidden = false;
+    const r = t.getBoundingClientRect(), w = tip.offsetWidth;
+    tip.style.left = Math.max(16, Math.min(r.left + scrollX, scrollX + innerWidth - w - 16)) + "px";
+    tip.style.top = (r.bottom + scrollY + 6) + "px";
+  };
+  const hide = () => { tip.hidden = true; };
+  document.querySelectorAll(".term").forEach(t => {
+    t.addEventListener("mouseenter", () => show(t)); t.addEventListener("mouseleave", hide);
+    t.addEventListener("focus", () => show(t)); t.addEventListener("blur", hide);
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+})();
+// Animations load only when played
+document.querySelectorAll(".player .play").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const img = btn.parentElement.querySelector("img");
+    btn.disabled = true; btn.textContent = "Loading animation…";
+    img.addEventListener("load", () => btn.remove(), {once: true});
+    img.src = img.dataset.anim;
+  });
+});
+</script>
 </body>
 </html>

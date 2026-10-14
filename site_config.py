@@ -20,7 +20,7 @@ PAGES = [
         lede="A strong El Niño is developing in the equatorial Pacific. These figures compare its surface and "
              "subsurface evolution with the strongest events since 1950, using NOAA observations, reanalysis "
              "and official forecasts.",
-        summary=True,
+        summary=True, explainer=True,
         figures=[
             ("section", "Why this El Niño is different"),
             ("differences",),
@@ -169,3 +169,146 @@ PAGES = [
         data=[],
     ),
 ]
+
+
+# ---------------------------------------------------------------------------------------------
+# Per-figure reading aids, keyed by script. `takeaway` is shown in bold above the caption and
+# `how` in a collapsible "How to read this figure" note. Takeaways describe the current data:
+# re-read them at each monthly update.
+# ---------------------------------------------------------------------------------------------
+FIGURE_NOTES = {
+    "anim_timeseries.py": dict(
+        takeaway="At the latest month, 2026 is warmer than every El Niño since 1950 at the same stage, both at the "
+                 "surface and in the upper ocean.",
+        how="Each line is one El Niño. The horizontal axis runs from January of the year the event began to June of "
+            "the following year; the vertical axis shows how much warmer than normal the water was. A line above the "
+            "others at a given month means that event was further developed at that point in the year."),
+    "interactive_data.py": dict(
+        takeaway="Pick a measure and a month to see where 2026 ranks among every El Niño since 1950."),
+    "anim_sst.py": dict(
+        takeaway="Water warmer than 28 °C, normally confined to the western Pacific, now reaches farther east along "
+                 "the equator than in 2015, 1997 or 1982 at the same point in the year.",
+        how="Each map shows the actual sea surface temperature for one month. Red and dark red are warmer than about "
+            "28 °C (inside the black line), warm enough to fuel heavy tropical rainfall. Compare each year with the "
+            "Normal panel at the bottom: during El Niño the warm area spreads east toward South America."),
+    "anim_upper_ocean.py": dict(
+        takeaway="In 2026 the 20 °C line is nearly flat across the Pacific: the cold water that normally lies close "
+                 "to the surface in the east has been pushed down.",
+        how="Each panel is a vertical slice through the ocean along the equator, from Asia (left) to South America "
+            "(right) and from the surface (top) to 200 m depth (bottom). Warm colours above the black line are the "
+            "warm upper layer. Normally the line rises toward the east; during El Niño it flattens."),
+    "anim_warm_water.py": dict(
+        takeaway="More warm water is stored along the equator in 2026 than at the same stage of 2015, 1997 or 1982.",
+        how="Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C "
+            "isotherm). Dark red means warm water extends deep; blue means the warm layer is thin. Watch the band "
+            "between the dashed lines: during El Niño the red area spreads east along the equator."),
+    "roni_vs_past_events.py": dict(
+        takeaway="NOAA's official outlook places the peak of this event above the strongest El Niño since 1950."),
+    "forecast_verification.py": dict(
+        takeaway="NOAA's confidence in a very strong peak has risen with every forecast issued since April 2026."),
+    "surface_comparison.py": dict(
+        takeaway="In the same month, 2026 is warmer than past very strong events both in the Niño 3.4 region and "
+                 "across the tropical Pacific as a whole."),
+    "subsurface_comparison.py": dict(
+        takeaway="The upper ocean holds far more extra heat in 2026 than in any past very strong event at the same "
+                 "stage.",
+        how="Each panel is a vertical slice along the equator, from Asia (left) to South America (right), down to "
+            "200 m. Colours show how much warmer (red) or cooler (blue) than normal the water is."),
+    "hovmoller_sst.py": dict(
+        takeaway="Surface warming in the eastern Pacific is stronger in 2026 than at the same time in any past very "
+                 "strong event.",
+        how="Time runs down the page, one row per month; position runs left to right from the western Pacific to "
+            "South America. Red marks warmer-than-normal water. Warmth that slants down and to the right is moving "
+            "east over time."),
+    "hovmoller_upper_ocean.py": dict(
+        takeaway="Warm water spreading east beneath the surface has built a larger heat reservoir in 2026 than in "
+                 "past very strong events.",
+        how="Same layout as the previous figure, for the average temperature of the top 200 m. Diagonal streaks "
+            "running down and to the right are Kelvin waves: pulses of warm water that cross the Pacific beneath "
+            "the surface in two to three months."),
+    "nino_regions.py": dict(
+        takeaway="Warming is strongest near South America and weakest in the western Pacific, a pattern closest to "
+                 "1997–98.",
+        how="The map shows the four standard boxes along the equator, from Niño 4 in the west to Niño 1+2 off South "
+            "America. Each chart plots how much warmer than normal one box has been, month by month."),
+    "event_ranking.py": dict(
+        takeaway="If NOAA's median forecast is realised, 2026–27 would rank first by peak strength among El Niño "
+                 "events since 1950."),
+    "global_temperature.py": dict(
+        takeaway="Many of the record-warm years since 1950 coincided with El Niño, which temporarily adds to the "
+                 "long-term warming."),
+    "socal_warming_since_1895.py": dict(
+        takeaway="Summer nights across Southern California have warmed more than summer days since the mid-20th "
+                 "century."),
+    "socal_marine_heat.py": dict(
+        takeaway="Coastal waters off Southern California have had more marine heatwave days in 2026 than in any "
+                 "previous year by the same date.",
+        how="A marine heatwave day is part of a spell of at least five days when the water is warmer than 90% of "
+            "past values for that time of year. Each year is compared through the same calendar date."),
+    "socal_summer_anomalies.py": dict(
+        takeaway="Summer 2026 nights were among the warmest on record across the region; daytime highs were less "
+                 "exceptional."),
+    "socal_station_heat.py": dict(
+        takeaway="Warm nights were far more frequent than usual in summer 2026 at every station, and Santa Barbara "
+                 "set a record."),
+    "socal_precip_outlook.py": dict(
+        takeaway="NOAA's outlook favours a wetter-than-normal winter in Southern California, most strongly from "
+                 "December onward."),
+    "socal_precip_el_nino_winters.py": dict(
+        takeaway="Most strong El Niño winters, though not all, have been wetter than normal across Southern "
+                 "California."),
+    "socal_station_precip.py": dict(
+        takeaway="Strong El Niño seasons have usually been wet in Los Angeles and San Diego; the signal is weaker "
+                 "inland and farther north."),
+}
+
+# Terms explained on hover (first use on each page) and listed on the Methods page.
+GLOSSARY = {
+    "El Niño": "A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in "
+               "winds and rainfall, recurring every two to seven years.",
+    "La Niña": "The cool counterpart of El Niño: below-normal ocean temperatures in the central and eastern "
+               "equatorial Pacific.",
+    "ENSO": "El Niño–Southern Oscillation: the cycle of El Niño, neutral and La Niña conditions and the related "
+            "swing in air pressure across the tropical Pacific.",
+    "anomaly": "The difference from normal (the 1991–2020 average) for the same time of year; +2 °C means 2 °C "
+               "warmer than usual.",
+    "anomalies": "Differences from normal (the 1991–2020 average) for the same time of year.",
+    "Relative Oceanic Niño Index": "NOAA's official El Niño index (RONI): the Niño 3.4 anomaly measured relative to "
+                                   "the average of the whole tropical ocean, so that general warming is not counted "
+                                   "as El Niño. Three-month averages.",
+    "RONI": "Relative Oceanic Niño Index, NOAA's official El Niño index: the Niño 3.4 anomaly measured relative to "
+            "the average of the whole tropical ocean. Three-month averages.",
+    "Niño 3.4": "A region of the central equatorial Pacific (5°S–5°N, 170°W–120°W) whose temperature is the main "
+                "measure of El Niño.",
+    "Niño 1+2": "The region off the coasts of Peru and Ecuador (10°S–0°, 90°W–80°W).",
+    "Niño 3": "The eastern equatorial Pacific, 5°S–5°N, 150°W–90°W.",
+    "Niño 4": "The western-central equatorial Pacific, 5°S–5°N, 160°E–150°W.",
+    "thermocline": "The layer where temperature drops quickly with depth, separating warm surface water from cold "
+                   "deep water; in the tropics it is marked by the 20 °C isotherm.",
+    "20 °C isotherm": "The depth at which the ocean is 20 °C, used to mark the base of the warm upper layer.",
+    "warm water volume": "The volume of water warmer than 20 °C near the equator (5°S–5°N, 120°E–80°W). It builds "
+                         "up before an El Niño and is drained by it.",
+    "warm pool": "The large area of very warm water (above about 28 °C) normally found in the western tropical "
+                 "Pacific.",
+    "upwelling": "The rise of cold, deep water toward the surface, normally strong along the equator and off "
+                 "South America.",
+    "trade winds": "Steady easterly winds over the tropical Pacific that push warm surface water toward the west.",
+    "Kelvin waves": "Pulses of warm water that travel east along the equator beneath the surface, crossing the "
+                    "Pacific in two to three months.",
+    "Hovmöller": "A diagram with position on one axis and time on the other, used to follow features as they move.",
+    "reanalysis": "A best estimate of past ocean or weather conditions, made by combining observations with a "
+                  "numerical model.",
+    "GODAS": "NOAA's Global Ocean Data Assimilation System, an ocean reanalysis that estimates temperature below "
+             "the surface.",
+    "OISST": "NOAA's Optimum Interpolation Sea Surface Temperature: a daily 0.25° analysis of satellite, ship and "
+             "buoy data since 1981.",
+    "ERSST": "NOAA's Extended Reconstructed Sea Surface Temperature: a monthly 2° record since 1854.",
+    "nClimGrid": "NOAA's gridded (about 5 km) monthly temperature and precipitation for the United States since "
+                 "1895.",
+    "GHCN-Daily": "NOAA's Global Historical Climatology Network of daily weather-station records.",
+    "marine heatwave": "A spell of at least five days when sea surface temperature is above the 90th percentile for "
+                       "the time of year (Hobday et al., 2016).",
+    "water year": "October to September, labelled by the year in which it ends.",
+    "Santa Ana": "Dry, often strong offshore winds that blow from the interior toward the Southern California "
+                 "coast, mainly in autumn and winter.",
+}

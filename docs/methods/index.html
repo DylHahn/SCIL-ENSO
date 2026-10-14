@@ -117,6 +117,51 @@
   .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
   .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
   .ex-table th { color: var(--text); font-weight: 600; }
+  /* "Start here" explainer */
+  .explainer { background: var(--surface); border-radius: 10px; padding: 20px 24px 18px; margin: 0 0 40px; }
+  .explainer h2 { margin: 0 0 14px; font-size: 22px; }
+  .ex-diagrams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  @media (max-width: 760px) { .ex-diagrams { grid-template-columns: 1fr; } }
+  .ex-diagrams svg { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px;
+                     color: var(--text-2); font-family: inherit; }
+  .dg-title { fill: var(--text); font-size: 17px; font-weight: 700; }
+  .dg-accent { fill: var(--accent); }
+  .dg-label { fill: var(--text); font-size: 13px; font-weight: 600; }
+  .dg-small { fill: var(--text-2); font-size: 12px; }
+  .dg-dark { fill: #fff; }
+  .dg-light { fill: #cde2fb; }
+  .dg-land { fill: #3a3936; }
+  .dg-thermo { fill: none; stroke: #fff; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .8; }
+  .dg-cloud { fill: #77766f; }
+  .dg-rain line { stroke: #86b6ef; stroke-width: 2; stroke-linecap: round; }
+  .dg-wind line, .dg-flow line, .dg-up line { stroke: currentColor; stroke-width: 2.5; }
+  .dg-wind { color: var(--text); }
+  .dg-flow { color: #fff; }
+  .dg-up { color: #cde2fb; }
+  .ex-text { color: var(--text-2); max-width: 900px; }
+  .ex-text p { margin: 10px 0; }
+  .ex-text b { color: var(--text); }
+  .ex-more { font-size: 15px; }
+  /* reading aids */
+  .takeaway { color: var(--text); font-size: 18px; font-weight: 600; line-height: 1.45; margin: 0 0 12px;
+              max-width: 900px; padding-left: 12px; border-left: 3px solid var(--accent); }
+  .how { margin-top: 10px; }
+  .how summary { cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600; width: fit-content; }
+  .how p { margin: 6px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 15.5px; }
+  .term { border-bottom: 1px dotted var(--muted); cursor: help; }
+  .term:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; border-radius: 2px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .gloss-tip { position: absolute; z-index: 10; max-width: min(320px, calc(100vw - 32px)); background: var(--bg);
+               color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
+               font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
+  .gloss-tip b { color: var(--text); display: block; }
+  .player { position: relative; }
+  .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
+          font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
+          border-radius: 999px; padding: 12px 22px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5);
+          white-space: nowrap; }
+  .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
+  .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
@@ -139,6 +184,7 @@
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
   <p class="meta">Updated October 13, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
+
 
 
 
@@ -190,6 +236,38 @@
   <dd>A day with a minimum temperature of at least 65 °F, or a maximum of at least 90 °F, during June–September.</dd>
   <dt>Water year</dt>
   <dd>October to September, labelled by the year in which it ends (as reported by the National Weather Service).</dd>
+</dl>
+
+<h2>Glossary</h2>
+<p>Plain-language definitions of the terms that are underlined on the other pages.</p>
+<dl>
+  <dt>20 °C isotherm</dt><dd>The depth at which the ocean is 20 °C, used to mark the base of the warm upper layer.</dd>
+  <dt>anomaly</dt><dd>The difference from normal (the 1991–2020 average) for the same time of year; +2 °C means 2 °C warmer than usual.</dd>
+  <dt>El Niño</dt><dd>A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.</dd>
+  <dt>ENSO</dt><dd>El Niño–Southern Oscillation: the cycle of El Niño, neutral and La Niña conditions and the related swing in air pressure across the tropical Pacific.</dd>
+  <dt>ERSST</dt><dd>NOAA&#x27;s Extended Reconstructed Sea Surface Temperature: a monthly 2° record since 1854.</dd>
+  <dt>GHCN-Daily</dt><dd>NOAA&#x27;s Global Historical Climatology Network of daily weather-station records.</dd>
+  <dt>GODAS</dt><dd>NOAA&#x27;s Global Ocean Data Assimilation System, an ocean reanalysis that estimates temperature below the surface.</dd>
+  <dt>Hovmöller</dt><dd>A diagram with position on one axis and time on the other, used to follow features as they move.</dd>
+  <dt>Kelvin waves</dt><dd>Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in two to three months.</dd>
+  <dt>La Niña</dt><dd>The cool counterpart of El Niño: below-normal ocean temperatures in the central and eastern equatorial Pacific.</dd>
+  <dt>marine heatwave</dt><dd>A spell of at least five days when sea surface temperature is above the 90th percentile for the time of year (Hobday et al., 2016).</dd>
+  <dt>nClimGrid</dt><dd>NOAA&#x27;s gridded (about 5 km) monthly temperature and precipitation for the United States since 1895.</dd>
+  <dt>Niño 1+2</dt><dd>The region off the coasts of Peru and Ecuador (10°S–0°, 90°W–80°W).</dd>
+  <dt>Niño 3</dt><dd>The eastern equatorial Pacific, 5°S–5°N, 150°W–90°W.</dd>
+  <dt>Niño 3.4</dt><dd>A region of the central equatorial Pacific (5°S–5°N, 170°W–120°W) whose temperature is the main measure of El Niño.</dd>
+  <dt>Niño 4</dt><dd>The western-central equatorial Pacific, 5°S–5°N, 160°E–150°W.</dd>
+  <dt>OISST</dt><dd>NOAA&#x27;s Optimum Interpolation Sea Surface Temperature: a daily 0.25° analysis of satellite, ship and buoy data since 1981.</dd>
+  <dt>reanalysis</dt><dd>A best estimate of past ocean or weather conditions, made by combining observations with a numerical model.</dd>
+  <dt>Relative Oceanic Niño Index</dt><dd>NOAA&#x27;s official El Niño index (RONI): the Niño 3.4 anomaly measured relative to the average of the whole tropical ocean, so that general warming is not counted as El Niño. Three-month averages.</dd>
+  <dt>RONI</dt><dd>Relative Oceanic Niño Index, NOAA&#x27;s official El Niño index: the Niño 3.4 anomaly measured relative to the average of the whole tropical ocean. Three-month averages.</dd>
+  <dt>Santa Ana</dt><dd>Dry, often strong offshore winds that blow from the interior toward the Southern California coast, mainly in autumn and winter.</dd>
+  <dt>thermocline</dt><dd>The layer where temperature drops quickly with depth, separating warm surface water from cold deep water; in the tropics it is marked by the 20 °C isotherm.</dd>
+  <dt>trade winds</dt><dd>Steady easterly winds over the tropical Pacific that push warm surface water toward the west.</dd>
+  <dt>upwelling</dt><dd>The rise of cold, deep water toward the surface, normally strong along the equator and off South America.</dd>
+  <dt>warm pool</dt><dd>The large area of very warm water (above about 28 °C) normally found in the western tropical Pacific.</dd>
+  <dt>warm water volume</dt><dd>The volume of water warmer than 20 °C near the equator (5°S–5°N, 120°E–80°W). It builds up before an El Niño and is drained by it.</dd>
+  <dt>water year</dt><dd>October to September, labelled by the year in which it ends.</dd>
 </dl>
 
 <h2>Methods by figure</h2>
@@ -259,5 +337,35 @@ downloads the latest data and rebuilds every figure and page.</p>
   <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
 </footer>
 </main>
+<script>
+// Glossary: show a term's definition on hover, keyboard focus or tap
+(() => {
+  const tip = document.createElement("div");
+  tip.className = "gloss-tip"; tip.hidden = true; document.body.appendChild(tip);
+  const show = t => {
+    tip.replaceChildren();
+    const b = document.createElement("b"); b.textContent = t.firstChild.textContent;
+    tip.append(b, document.createTextNode(t.dataset.def)); tip.hidden = false;
+    const r = t.getBoundingClientRect(), w = tip.offsetWidth;
+    tip.style.left = Math.max(16, Math.min(r.left + scrollX, scrollX + innerWidth - w - 16)) + "px";
+    tip.style.top = (r.bottom + scrollY + 6) + "px";
+  };
+  const hide = () => { tip.hidden = true; };
+  document.querySelectorAll(".term").forEach(t => {
+    t.addEventListener("mouseenter", () => show(t)); t.addEventListener("mouseleave", hide);
+    t.addEventListener("focus", () => show(t)); t.addEventListener("blur", hide);
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+})();
+// Animations load only when played
+document.querySelectorAll(".player .play").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const img = btn.parentElement.querySelector("img");
+    btn.disabled = true; btn.textContent = "Loading animation…";
+    img.addEventListener("load", () => btn.remove(), {once: true});
+    img.src = img.dataset.anim;
+  });
+});
+</script>
 </body>
 </html>

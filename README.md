@@ -25,6 +25,9 @@ python update_site.py --refresh          # download the latest data, rebuild eve
 git add docs && git commit -m "Update for <month>" && git push
 ```
 
+After the update, re-read the bold takeaways in `site_config.py` (FIGURE_NOTES): they describe the
+current data and may need rewording as the event evolves.
+
 GitHub Pages republishes the site a minute or two after the push. Other options:
 
 ```bash
@@ -39,10 +42,12 @@ python hovmoller_sst.py                     # build any single figure into figur
 
 ```
 update_site.py          one command: build all figures, then write docs/
-site_config.py          tabs, figures (in order), short titles, captions and page text
+site_config.py          tabs, figures (in order), short titles, captions, page text, per-figure
+                        takeaways and "How to read" notes (FIGURE_NOTES), hover glossary (GLOSSARY)
 summary.py              "What's happening now" and "Why this El Niño is different", from the latest data
 site/explorer.html      interactive event explorer (data from interactive_data.py)
-site/page.html          page layout and styles;  site/methods.html  Methods & data text
+site/page.html          page layout, styles, glossary tooltips and click-to-play animations
+site/methods.html       Methods & data text;  site/explainer.html  "Start here" diagram and text
 docs/                   the published website (GitHub Pages)
 
 Figures, El Niño tab              Figures, Southern California tabs
