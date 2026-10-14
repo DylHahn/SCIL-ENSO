@@ -108,6 +108,15 @@ def differences_html(gloss):
     return f'<ol class="diffs">\n{rows}\n</ol>' if items else ""
 
 
+def toc_html(groups):
+    groups = [(h, items) for h, items in groups if items]
+    if not groups:
+        return ""
+    parts = [(f'<div class="toc-group"><p>{html.escape(h)}</p>' if h else '<div class="toc-group">')
+             + f'<ol>{"".join(items)}</ol></div>' for h, items in groups]
+    return f'<nav class="toc" aria-label="Figures on this page">\n' + "\n".join(parts) + "\n</nav>"
+
+
 def write_page(page):
     src = BUILD / page["key"]
     page_dir = DOCS / page["slug"] if page["slug"] else DOCS
@@ -120,10 +129,12 @@ def write_page(page):
     gloss = Glosser()
     lede = gloss(page["lede"])
     summary = summary_html(gloss) if page.get("summary") else ""
-    toc, body, n = [], [], 0
+    toc, body, n = [[None, []]], [], 0           # table of contents: [section heading, entries] groups
     for entry in page["figures"]:
-        if entry[0] == "section":
-            body.append(f'<h2 class="section">{html.escape(entry[1])}</h2>')
+        if entry[0] == "section":                  # ("section", heading[, short introduction])
+            toc.append([entry[1], []])
+            body.append(f'<h2 class="section">{html.escape(entry[1])}</h2>'
+                        + (f'<p class="intro">{gloss(entry[2])}</p>' if len(entry) > 2 else ""))
             continue
         if entry[0] == "differences":
             body.append(differences_html(gloss))
@@ -136,7 +147,7 @@ def write_page(page):
         how = (f'<details class="how"><summary>How to read this figure</summary><p>{gloss(notes["how"])}</p>'
                f'</details>') if notes.get("how") else ""
         cap = f"<b>Figure {n}. {html.escape(short)}.</b> {gloss(caption)}"
-        toc.append(f'  <li><a href="#g{n}">{html.escape(short)}</a></li>')
+        toc[-1][1].append(f'<li value="{n}"><a href="#g{n}">{html.escape(short)}</a></li>')
         if is_interactive(script):
             if not (src / f"{s}.json").exists():
                 raise SystemExit(f"Missing {s}.json: run update_site.py without --site-only first.")
@@ -192,7 +203,7 @@ def write_page(page):
         h1=html.escape(page["h1"]), lede=lede, updated=dt.date.today().strftime("%B %-d, %Y"),
         fullres=" Select a figure to view it at full resolution." if n else "",
         summary=summary, explainer=(SITE / "explainer.html").read_text() if page.get("explainer") else "",
-        toc=f'<nav class="toc" aria-label="Figures on this page"><ol>\n{chr(10).join(toc)}\n</ol></nav>' if toc else "",
+        toc=toc_html(toc),
         figures="\n".join(body), extra=extra, data=data, repo=REPO_URL)
     (page_dir / "index.html").write_text(page_html)
     print(f"Wrote {page_dir / 'index.html'} ({n} figures)")
