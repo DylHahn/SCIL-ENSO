@@ -38,6 +38,10 @@ PAGES = [
             ("anim_upper_ocean.py", False, "Animation: upper-ocean temperature, 2026 and past very strong events",
              "Animated equatorial upper-ocean temperature sections for 2026, 1982, 1997, 2015 and the 1991–2020 "
              "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
+            ("anim_warm_water.py", False, "Animation: warm water moving across the Pacific",
+             "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July of "
+             "the year before onset, for 2026, 1982, 1997, 2015 and the 1991–2020 normal, with the equatorial warm "
+             "water volume (5°S–5°N) and its departure from normal."),
             ("section", "Current state and forecast"),
             ("roni_vs_past_events.py", True, "Event development vs. past very strong events",
              "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four strongest "

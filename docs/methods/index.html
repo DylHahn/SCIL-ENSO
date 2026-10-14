@@ -151,7 +151,7 @@
     <tr><td>Monthly Niño region indices</td><td>NOAA CPC (OISST v2.1)</td><td>Monthly</td><td>Niño 4, 3.4, 3 and 1+2 anomalies</td></tr>
     <tr><td>NCEP Global Ocean Data Assimilation System (GODAS)</td><td>NOAA NCEP, via NOAA PSL</td><td>1° × ⅓°, 10 m levels (5–205 m used), monthly</td><td>Upper-ocean temperature sections, Hovmöller and animation</td></tr>
     <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
-    <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series, tropical Pacific maps</td></tr>
+    <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series and interactive explorer, tropical Pacific maps</td></tr>
     <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
     <tr><td>nClimGrid monthly</td><td>NOAA NCEI</td><td>~5 km (1/24°), 1895–present</td><td>Southern California temperature and precipitation maps</td></tr>
     <tr><td>Global Historical Climatology Network Daily (GHCN-Daily)</td><td>NOAA NCEI</td><td>Individual stations, daily</td><td>Station warm nights, hot days and rainfall</td></tr>
@@ -197,6 +197,16 @@
   <li><b>Animations.</b> Monthly fields are shown in sequence; intermediate frames are linear interpolations between
   consecutive months for smooth playback only and pause on each actual month. The colour scale is “turbo”, a
   perceptually improved rainbow scale for absolute temperature.</li>
+  <li><b>“Why this El Niño is different”, time-series animation and interactive explorer.</b> Area-weighted
+  monthly anomalies of ERSST v5 over each Niño region and the GODAS upper-200 m mean (2°S–2°N, 180°–80°W), relative
+  to 1991–2020, for every El Niño since 1950 (1980 for GODAS), aligned on January of the onset year. “At this
+  stage” compares every event in the same calendar month as the latest 2026 value. The statements are recomputed
+  at every update and appear only while the data support them. ERSST and the CPC OISST-based indices differ by
+  up to a few tenths of a degree.</li>
+  <li><b>Warm water animation.</b> The depth of the 20 °C isotherm is found in each GODAS column by linear
+  interpolation between the 10 m levels (5–205 m); columns warmer than 20 °C throughout are assigned 205 m. Warm
+  water volume is the volume above that depth over 5°S–5°N, 120°E–80°W (the NOAA PMEL definition), computed from
+  GODAS. The normal panel uses the 20 °C depth of the 1991–2020 monthly mean temperature.</li>
   <li><b>Event development and ranking.</b> RONI for every event since 1950. The current event is completed with
   NOAA's median forecast and its 5–95% range. Accumulated intensity is the sum of monthly RONI values above
   +0.5 °C over the event.</li>
