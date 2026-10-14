@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import io
 import os
+import time
 import urllib.request
 from pathlib import Path
 
@@ -527,8 +528,18 @@ def download_godas_year(year, refresh=False):
         return p
     GODAS_RAW_DIR.mkdir(parents=True, exist_ok=True)
     url = f"https://downloads.psl.noaa.gov/Datasets/godas/pottmp.{year}.nc"
-    print(f"Downloading {url} ...")
-    urllib.request.urlretrieve(url, p)
+    tmp = p.with_suffix(".part")
+    for attempt in range(1, 5):                    # PSL occasionally drops connections
+        print(f"Downloading {url} ...", flush=True)
+        try:
+            urllib.request.urlretrieve(url, tmp)
+            break
+        except OSError as exc:
+            if attempt == 4:
+                raise
+            print(f"  failed ({exc}); retrying in {10 * attempt} s")
+            time.sleep(10 * attempt)
+    tmp.replace(p)                                 # never leave a partial file under the real name
     return p
 
 

@@ -69,6 +69,54 @@
     .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
     .prose table { display: block; overflow-x: auto; }
   }
+  .diffs { counter-reset: d; list-style: none; padding: 0; margin: 0 0 48px; display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .diffs li { counter-increment: d; background: var(--surface); border-radius: 10px; padding: 16px 18px 16px 52px;
+              position: relative; color: var(--text-2); font-size: 15.5px; line-height: 1.55; }
+  .diffs li::before { content: counter(d); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px;
+                      border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700;
+                      font-size: 14px; display: grid; place-items: center; }
+  .diffs b { display: block; color: var(--text); font-size: 16.5px; margin-bottom: 4px; }
+  /* interactive event explorer */
+  .explorer { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .ex-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ex-controls button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                        border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .ex-controls button:hover { color: var(--text); border-color: var(--muted); }
+  .ex-controls button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .ex-desc { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .ex-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
+  .ex-chart { position: relative; outline: none; touch-action: pan-y; }
+  .ex-chart:focus-visible { box-shadow: 0 0 0 2px var(--muted); border-radius: 6px; }
+  .explorer svg { display: block; width: 100%; overflow: visible; }
+  .explorer .ex-gl { stroke: var(--line); stroke-width: 1; }
+  .explorer .ex-zero { stroke: var(--text-2); stroke-width: 1; }
+  .explorer .ex-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .explorer .ex-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer; }
+  .explorer .ex-tick { fill: var(--muted); font-size: 12px; }
+  .explorer .ex-sub { font-size: 11px; }
+  .explorer .ex-lab { fill: var(--text-2); font-size: 12.5px; font-weight: 600; }
+  .explorer .ex-now { fill: var(--text); font-weight: 700; }
+  .ex-tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line);
+            border-radius: 8px; padding: 8px 10px; font-size: 13px; min-width: 210px; z-index: 2;
+            box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+  .ex-tip p { margin: 0; line-height: 1.55; color: var(--text-2); white-space: nowrap; }
+  .ex-tip .ex-tip-h { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+  .ex-tip b { color: var(--text); margin-right: 2px; }
+  .ex-tip .ex-now span:last-child { color: var(--text); font-weight: 600; }
+  .ex-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle;
+            margin-right: 7px; }
+  .ex-rank-title { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+  .ex-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 12px 0 4px;
+               font-size: 14px; color: var(--text-2); }
+  .ex-legend select { font: inherit; font-size: 13px; color: var(--text-2); background: var(--bg);
+                      border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+  .ex-table summary { cursor: pointer; color: var(--text-2); font-size: 14px; margin: 8px 0; }
+  .ex-table-wrap { overflow-x: auto; }
+  .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+  .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
+  .ex-table th { color: var(--text); font-weight: 600; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
@@ -89,7 +137,7 @@
   <p class="kicker">El Niño 2026–27</p>
   <h1>The 2026–27 El Niño in historical context</h1>
   <p class="lede">A strong El Niño is developing in the equatorial Pacific. These figures compare its surface and subsurface evolution with the strongest events since 1950, using NOAA observations, reanalysis and official forecasts.</p>
-  <p class="meta">Updated October 9, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 13, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 <section class="summary" aria-label="Summary">
   <h2>What's happening now</h2>
@@ -97,40 +145,325 @@
     <dt>Current strength</dt><dd>NOAA&#x27;s Relative Oceanic Niño Index reached +1.7 °C for Jul–Sep 2026, a strong El Niño. The monthly Niño 3.4 anomaly was +2.8 °C in September.</dd>
     <dt>Compared with past events</dt><dd>In September, Niño 3.4 (+2.8 °C, against +1.8 °C in 1997) and Niño 1+2 (+4.7 °C, against +3.6 °C in 1997) are warmer than in 1982, 1997 and 2015 at the same point in the year.</dd>
     <dt>Below the surface</dt><dd>In August, the upper 200 m of the central and eastern equatorial Pacific was +4.2 °C above normal, compared with at most +2.6 °C (1997) in past very strong events at the same stage.</dd>
-    <dt>Forecast</dt><dd>NOAA&#x27;s October 2026 outlook gives a 100% probability of a very strong event (≥ +2.0 °C), with a median forecast peak of +2.6 °C in Nov 2026–Jan 2027, above the 1950–present record of +2.4 °C (1982–83).</dd>
+    <dt>Forecast</dt><dd>NOAA&#x27;s October 2026 outlook gives a 100% probability of a very strong event (≥ +2.0 °C), with a median forecast peak of +2.7 °C in Oct–Dec 2026, above the 1950–present record of +2.4 °C (1982–83).</dd>
     <dt>Southern California</dt><dd>Coastal waters have recorded 220 marine heatwave days in 2026 through 23 September, the most on record for the date. NOAA&#x27;s outlook gives Los Angeles a 50–60% chance of a wetter-than-normal December–February.</dd>
   </dl>
-  <p class="asof">Computed from the latest NOAA data when this page was built (October 9, 2026).</p>
+  <p class="asof">Computed from the latest NOAA data when this page was built (October 13, 2026).</p>
 </section>
 <nav class="toc" aria-label="Figures on this page"><ol>
-  <li><a href="#g1">Animation: sea surface temperature</a></li>
-  <li><a href="#g2">Event development vs. past very strong events</a></li>
-  <li><a href="#g3">Anomaly time series across events</a></li>
-  <li><a href="#g4">Sea surface temperature by event</a></li>
-  <li><a href="#g5">Upper-ocean temperature by event</a></li>
-  <li><a href="#g6">Animation: upper-ocean temperature</a></li>
-  <li><a href="#g7">Equatorial SST evolution (Hovmöller)</a></li>
-  <li><a href="#g8">Upper-ocean heat content (Hovmöller)</a></li>
-  <li><a href="#g9">Warming across the Niño regions</a></li>
-  <li><a href="#g10">Ranking of El Niño events since 1950</a></li>
-  <li><a href="#g11">Verification of NOAA&#x27;s 2026 forecasts</a></li>
-  <li><a href="#g12">Global temperature and El Niño</a></li>
+  <li><a href="#g1">Animation: development compared with every El Niño since 1950</a></li>
+  <li><a href="#g2">Interactive: explore every El Niño since 1950</a></li>
+  <li><a href="#g3">Animation: sea surface temperature, 2026 and past very strong events</a></li>
+  <li><a href="#g4">Animation: upper-ocean temperature, 2026 and past very strong events</a></li>
+  <li><a href="#g5">Event development vs. past very strong events</a></li>
+  <li><a href="#g6">Verification of NOAA&#x27;s 2026 forecasts</a></li>
+  <li><a href="#g7">Sea surface temperature by event</a></li>
+  <li><a href="#g8">Upper-ocean temperature by event</a></li>
+  <li><a href="#g9">Equatorial SST evolution (Hovmöller)</a></li>
+  <li><a href="#g10">Upper-ocean heat content (Hovmöller)</a></li>
+  <li><a href="#g11">Warming across the Niño regions</a></li>
+  <li><a href="#g12">Ranking of El Niño events since 1950</a></li>
+  <li><a href="#g13">Global temperature and El Niño</a></li>
 </ol></nav>
-<h2 class="section">Current state</h2>
-<figure id="g1"><a href="img/01_anim_sst.webp" target="_blank" rel="noopener"><img src="img/01_anim_sst.webp" alt="Animated maps of tropical Pacific sea surface temperature from January to September for 2026, 1997 and the 1991–2020 normal. In September, the Niño 3.4 region averaged 29.6 °C in 2026, 28.6 °C in 1997 and 26.7 °C normally." width="1494" height="1380" decoding="async"></a><figcaption><b>Figure 1. Animation: sea surface temperature.</b> Animated month-by-month sea surface temperature across the tropical Pacific (NOAA OISST, 0.25°), January to the latest month, for 2026, 1997 and the 1991–2020 normal. <a href="img/01_anim_sst.png" target="_blank" rel="noopener">Still image of the final frame.</a></figcaption></figure>
-<figure id="g2"><a href="img/02_roni_vs_past_events.png" target="_blank" rel="noopener"><img src="img/02_roni_vs_past_events.png" alt="Line chart of El Niño strength from January 2026 to June 2027. 2026 rose from -0.9 °C in January to +1.7 °C now; NOAA&#x27;s forecast peaks near +2.7 °C, above the record of +2.4 °C set in 1982–83." width="2600" height="1520" decoding="async"></a><figcaption><b>Figure 2. Event development vs. past very strong events.</b> Development of the 2026–27 event in NOAA&#x27;s Relative Oceanic Niño Index alongside the four strongest El Niño events since 1950, with NOAA&#x27;s official forecast.</figcaption></figure>
-<figure id="g3"><a href="img/03_event_timeseries.png" target="_blank" rel="noopener"><img src="img/03_event_timeseries.png" alt="Three panels of monthly anomaly time series for every El Niño since 1950, aligned by onset year: Niño 3.4 sea surface temperature: current +2.9 °C, highest past value at the same stage +2.2 °C (2015–16); Niño 1+2 sea surface temperature: current +4.4 °C, highest past value at the same stage +3.8 °C (1997–98); Upper-ocean (0–200 m) temperature: current +4.2 °C, highest past value at the same stage +2.6 °C (1997–98)." width="2600" height="1380" decoding="async"></a><figcaption><b>Figure 3. Anomaly time series across events.</b> Monthly anomaly time series for every El Niño since 1950, aligned by onset year: Niño 3.4 and Niño 1+2 sea surface temperature and equatorial upper-ocean temperature.</figcaption></figure>
+<h2 class="section">Why this El Niño is different</h2>
+<ol class="diffs">
+  <li><b>Warmest El Niño on record at this stage</b> In September, the Niño 3.4 anomaly was +2.9 °C, against a previous high of +2.2 °C (2015–16) among the 22 El Niño events since 1950 at the same point in the year.</li>
+  <li><b>Fastest development since 1950</b> Niño 3.4 has warmed by 3.4 °C since January, more than any previous El Niño over the same months (previous largest: 2.7 °C in 1997–98).</li>
+  <li><b>Record warmth across the whole equatorial Pacific</b> At their peaks, past very strong events were strongest either near South America (1982, 1997) or farther west (2015). In September, the current event is the warmest on record at this stage in all four Niño regions (previous high in brackets): Niño 4 +1.2 °C (+1.1 °C), Niño 3.4 +2.9 °C (+2.2 °C), Niño 3 +3.7 °C (+2.8 °C), Niño 1+2 +4.4 °C (+3.8 °C).</li>
+  <li><b>Far more heat below the surface</b> In August, the upper 200 m of the equatorial Pacific (180°–80°W) was +4.2 °C above normal, against a previous high of +2.6 °C (1997–98) among the 13 El Niño events since 1980. This reservoir of heat can sustain surface warming over the coming months.</li>
+  <li><b>Forecast to set a new record</b> NOAA&#x27;s October 2026 outlook places the median peak at +2.7 °C on the RONI scale, above the record of +2.4 °C set in 1982–83.</li>
+</ol>
+<figure id="g1"><a href="img/01_anim_timeseries.webp" target="_blank" rel="noopener"><img src="img/01_anim_timeseries.webp" alt="Animated line charts in which every El Niño since 1950 advances month by month from January of its onset year. Niño 3.4 sea surface temperature: +2.9 °C in Sep, against a previous maximum of +2.2 °C at the same stage; Niño 1+2 sea surface temperature: +4.4 °C in Sep, against a previous maximum of +3.8 °C at the same stage; Upper-ocean (0–200 m) temperature: +4.2 °C in Aug, against a previous maximum of +2.6 °C at the same stage." width="1430" height="814" decoding="async"></a><figcaption><b>Figure 1. Animation: development compared with every El Niño since 1950.</b> Monthly Niño 3.4, Niño 1+2 and upper-ocean anomalies for every El Niño since 1950, aligned by onset year and drawn month by month; the box in each panel ranks the current event against all past events at the same stage. <a href="img/01_anim_timeseries.png" target="_blank" rel="noopener">Still image of the final frame.</a></figcaption></figure>
+<figure id="g2" class="explorer" data-src="img/02_interactive_data.json">
+  <div class="ex-controls" role="group" aria-label="Measure shown"></div>
+  <p class="ex-desc"></p>
+  <div class="ex-grid">
+    <div class="ex-chart" tabindex="0" role="img" aria-label="Line chart of every El Niño event since 1950. Use the left and right arrow keys to move between months.">
+      <svg class="ex-lines" aria-hidden="true"></svg>
+      <div class="ex-tip" hidden></div>
+    </div>
+    <div class="ex-rank">
+      <p class="ex-rank-title"></p>
+      <svg class="ex-bars" aria-hidden="true"></svg>
+    </div>
+  </div>
+  <div class="ex-legend"></div>
+  <details class="ex-table">
+    <summary>Show the data as a table</summary>
+    <div class="ex-table-wrap"></div>
+  </details>
+  <figcaption><b>Figure 2. Interactive: explore every El Niño since 1950.</b> Choose a measure, then move across the chart to compare all events month by month; the bars rank every event at the selected month. Select any gray line, or use the menu, to highlight another event.</figcaption>
+  <noscript><p>This interactive chart needs JavaScript. The same data appear in the figures below.</p></noscript>
+</figure>
+<script>
+(() => {
+  const root = document.getElementById("g2");
+  const NS = "http://www.w3.org/2000/svg";
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const COL = {1972: "#9085e9", 1982: "#3987e5", 1997: "#199e70", 2015: "#c98500"};
+  const NOW_COL = "#e8574a", PICK_COL = "#d55181", GRAY = "#5f5e59";
+  let D, m, month = 0, picked = null;
+
+  const el = (tag, attrs = {}, parent) => {
+    const e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    if (parent) parent.appendChild(e);
+    return e;
+  };
+  const html = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+  const fmt = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + " °C";
+  const monthName = k => `${MON[k % 12]} ${D.now + Math.floor(k / 12)}`;
+  const stage = k => `${MON[k % 12]} of ${Math.floor(k / 12) ? "the following year" : "the onset year"}`;
+  const label = y => D.events.find(e => e.year === +y).label;
+  const colour = y => +y === D.now ? NOW_COL : COL[y] || (+y === picked ? PICK_COL : GRAY);
+  const featured = y => +y === D.now || COL[y] || +y === picked;
+  const nowSeries = () => m.series[D.now];
+  const lastNow = () => nowSeries().reduce((a, v, i) => v != null ? i : a, 0);
+  const valuesAt = k => Object.entries(m.series).filter(([, v]) => v[k] != null)
+    .map(([y, v]) => ({year: +y, v: v[k]})).sort((a, b) => b.v - a.v);
+
+  function controls() {
+    const box = root.querySelector(".ex-controls");
+    D.measures.forEach((x, i) => {
+      const b = html("button", "", x.name);
+      b.type = "button";
+      b.setAttribute("aria-pressed", i === 0);
+      b.addEventListener("click", () => {
+        box.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", o === b));
+        select(x);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function select(x) {
+    m = x;
+    month = lastNow();
+    root.querySelector(".ex-desc").textContent = m.description + ".";
+    drawLines(); drawBars(); legend(); table();
+  }
+
+  // ---- line chart -------------------------------------------------------------------------------
+  let geo;
+  function drawLines() {
+    const svg = root.querySelector(".ex-lines");
+    svg.replaceChildren();
+    const W = svg.clientWidth || 700, H = Math.max(300, Math.min(440, W * 0.62));
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    const L = 44, R = 64, T = 14, B = 40, n = D.n_months;
+    const all = Object.values(m.series).flat().concat((m.forecast || []).map(f => f[1])).filter(v => v != null);
+    let lo = Math.floor(Math.min(...all) - 0.2), hi = Math.ceil(Math.max(...all) + 0.2);
+    const step = hi - lo > 5 ? 1 : 0.5;
+    const X = k => L + (W - L - R) * k / (n - 1), Y = v => T + (H - T - B) * (hi - v) / (hi - lo);
+    geo = {X, Y, L, R, T, B, W, H, n};
+    for (let v = lo; v <= hi + 1e-9; v += step) {
+      el("line", {x1: L, x2: W - R, y1: Y(v), y2: Y(v), class: v === 0 ? "ex-zero" : "ex-gl"}, svg);
+      el("text", {x: L - 8, y: Y(v) + 4, class: "ex-tick", "text-anchor": "end"}, svg).textContent =
+        (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v);
+    }
+    for (let k = 0; k < n; k += 3) {
+      const t = el("text", {x: X(k), y: H - B + 18, class: "ex-tick", "text-anchor": "middle"}, svg);
+      t.textContent = MON[k % 12];
+      if (k % 12 === 0) el("text", {x: X(k), y: H - B + 32, class: "ex-tick ex-sub", "text-anchor": "middle"}, svg)
+        .textContent = k ? "following year" : "onset year";
+    }
+    el("text", {x: 12, y: T + (H - T - B) / 2, class: "ex-tick", transform: `rotate(-90 12 ${T + (H - T - B) / 2})`,
+                "text-anchor": "middle"}, svg).textContent = "Anomaly (°C)";
+    const path = vals => {
+      let d = "", pen = false;
+      vals.forEach((v, k) => {
+        if (v == null) { pen = false; return; }
+        d += `${pen ? "L" : "M"}${X(k).toFixed(1)},${Y(v).toFixed(1)}`; pen = true;
+      });
+      return d;
+    };
+    const order = Object.keys(m.series).sort((a, b) => (featured(a) ? 1 : 0) - (featured(b) ? 1 : 0) || a - b);
+    const ends = [];
+    for (const y of order) {
+      const vals = m.series[y], f = featured(y), now = +y === D.now;
+      // wide transparent hit line so thin gray lines are easy to pick
+      const hit = el("path", {d: path(vals), class: "ex-hit"}, svg);
+      hit.addEventListener("click", () => { if (!COL[y] && +y !== D.now) { picked = picked === +y ? null : +y; select(m); } });
+      el("path", {d: path(vals), stroke: colour(y), "stroke-width": now ? 3.5 : f ? 2.2 : 1.1,
+                  "stroke-opacity": f ? 1 : 0.6, fill: "none", "stroke-linejoin": "round", "stroke-linecap": "round",
+                  "pointer-events": "none"}, svg);
+      if (f) {
+        const k = vals.reduce((a, v, i) => v != null ? i : a, 0);
+        ends.push({y, k, v: vals[k]});
+      }
+    }
+    if (m.forecast) {
+      const k0 = lastNow(), pts = [[k0, nowSeries()[k0]], ...m.forecast];
+      el("path", {d: pts.map((p, i) => `${i ? "L" : "M"}${X(p[0])},${Y(p[1])}`).join(""), stroke: NOW_COL,
+                  "stroke-width": 2.2, "stroke-dasharray": "5 4", fill: "none"}, svg);
+      const f = m.forecast.reduce((a, b) => b[1] > a[1] ? b : a);
+      el("text", {x: X(f[0]), y: Y(f[1]) - 10, class: "ex-lab", "text-anchor": "middle"}, svg).textContent =
+        `NOAA outlook (${m.forecast_issued}): peak ${fmt(f[1])}`;
+    }
+    // direct labels at line ends, nudged apart
+    const placed = [];
+    ends.sort((a, b) => b.v - a.v).forEach(e => {
+      let ly = Y(e.v) + 4;
+      while (placed.some(p => Math.abs(p.ly - ly) < 14 && Math.abs(p.x - X(e.k)) < 46)) ly += 14;
+      placed.push({ly, x: X(e.k)});
+      if (+e.y === D.now) el("circle", {cx: X(e.k), cy: Y(e.v), r: 5, fill: NOW_COL, stroke: "var(--bg)", "stroke-width": 2}, svg);
+      el("text", {x: X(e.k) + 8, y: ly, class: "ex-lab" + (+e.y === D.now ? " ex-now" : "")}, svg).textContent =
+        +e.y === D.now ? `${e.y} ${fmt(e.v)}` : e.y;
+    });
+    geo.cross = el("line", {y1: T, y2: H - B, class: "ex-cross"}, svg);
+    geo.dots = el("g", {}, svg);
+    setMonth(month);
+  }
+
+  function setMonth(k) {
+    month = Math.max(0, Math.min(D.n_months - 1, k));
+    const {X, Y} = geo;
+    geo.cross.setAttribute("x1", X(month)); geo.cross.setAttribute("x2", X(month));
+    geo.dots.replaceChildren();
+    for (const [y, v] of Object.entries(m.series))
+      if (featured(y) && v[month] != null)
+        el("circle", {cx: X(month), cy: Y(v[month]), r: 4, fill: colour(y), stroke: "var(--bg)", "stroke-width": 2}, geo.dots);
+    drawBars();
+  }
+
+  function tooltip(show, px) {
+    const tip = root.querySelector(".ex-tip");
+    if (!show) { tip.hidden = true; return; }
+    const rows = valuesAt(month);
+    tip.replaceChildren(html("p", "ex-tip-h", stage(month)));
+    const shown = rows.filter((r, i) => i < 5 || featured(r.year));
+    shown.forEach(r => {
+      const p = html("p", "ex-tip-row" + (r.year === D.now ? " ex-now" : ""));
+      const key = html("span", "ex-key"); key.style.background = colour(r.year);
+      p.append(key, html("b", "", fmt(r.v)), html("span", "", ` ${label(r.year)} · ${rows.indexOf(r) + 1} of ${rows.length}`));
+      tip.appendChild(p);
+    });
+    const fc = (m.forecast || []).find(f => f[0] === month);
+    if (fc) {
+      const p = html("p", "ex-tip-row ex-now"), key = html("span", "ex-key");
+      key.style.background = NOW_COL;
+      p.append(key, html("b", "", fmt(fc[1])), html("span", "", ` ${label(D.now)} · NOAA outlook median`));
+      tip.appendChild(p);
+    }
+    tip.hidden = false;
+    const box = root.querySelector(".ex-chart").getBoundingClientRect();
+    const left = px + 16 + tip.offsetWidth > box.width ? px - 16 - tip.offsetWidth : px + 16;
+    tip.style.left = Math.max(0, left) + "px";
+    tip.style.top = geo.T + "px";
+  }
+
+  function wireChart() {
+    const box = root.querySelector(".ex-chart");
+    const fromEvent = e => {
+      const r = box.getBoundingClientRect(), x = e.clientX - r.left;
+      const k = Math.round((x - geo.L) / (geo.W - geo.L - geo.R) * (geo.n - 1));
+      setMonth(k);
+      tooltip(true, geo.X(month));
+    };
+    box.addEventListener("pointermove", fromEvent);
+    box.addEventListener("pointerdown", fromEvent);
+    box.addEventListener("pointerleave", () => tooltip(false));
+    box.addEventListener("focus", () => tooltip(true, geo.X(month)));
+    box.addEventListener("blur", () => tooltip(false));
+    box.addEventListener("keydown", e => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      setMonth(month + (e.key === "ArrowRight" ? 1 : -1));
+      tooltip(true, geo.X(month));
+    });
+  }
+
+  // ---- ranking bars at the selected month ---------------------------------------------------------
+  function drawBars() {
+    const rows = valuesAt(month);
+    const r = rows.findIndex(x => x.year === D.now) + 1;
+    root.querySelector(".ex-rank-title").textContent = r
+      ? `${stage(month)}: ${D.now} ranks ${r} of ${rows.length}`
+      : `${stage(month)}: all events (no ${D.now} data yet)`;
+    const svg = root.querySelector(".ex-bars");
+    svg.replaceChildren();
+    const W = svg.clientWidth || 320, bh = 15, gap = 2, T = 4, H = T + rows.length * (bh + gap) + 4;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    const lo = Math.min(0, ...rows.map(x => x.v)), hi = Math.max(0, ...rows.map(x => x.v));
+    const L = 62, R = 58, X = v => L + (W - L - R) * (v - lo) / ((hi - lo) || 1);
+    rows.forEach((x, i) => {
+      const y = T + i * (bh + gap), x0 = X(Math.min(0, x.v)), w = Math.abs(X(x.v) - X(0));
+      el("rect", {x: x0, y, width: Math.max(1, w), height: bh, rx: 3, fill: colour(x.year),
+                  "fill-opacity": featured(x.year) ? 1 : 0.55}, svg);
+      el("text", {x: L - 6, y: y + bh - 3, class: "ex-tick" + (x.year === D.now ? " ex-now" : ""), "text-anchor": "end"}, svg)
+        .textContent = label(x.year);
+      el("text", {x: X(Math.max(0, x.v)) + 5, y: y + bh - 3, class: "ex-tick" + (x.year === D.now ? " ex-now" : "")}, svg)
+        .textContent = fmt(x.v);
+    });
+    el("line", {x1: X(0), x2: X(0), y1: 0, y2: H, class: "ex-zero"}, svg);
+  }
+
+  // ---- legend, extra highlight and table --------------------------------------------------------
+  function legend() {
+    const box = root.querySelector(".ex-legend");
+    box.replaceChildren();
+    const item = (y, text) => {
+      const s = html("span", "ex-item"); const k = html("span", "ex-key"); k.style.background = colour(y);
+      s.append(k, document.createTextNode(text)); box.appendChild(s);
+    };
+    item(D.now, label(D.now) + (m.forecast ? " (dashed: NOAA outlook)" : ""));
+    D.highlight.forEach(y => m.series[y] && item(y, label(y)));
+    if (picked && m.series[picked]) item(picked, label(picked));
+    const g = html("span", "ex-item"); const k = html("span", "ex-key"); k.style.background = GRAY;
+    g.append(k, document.createTextNode("Other El Niño events")); box.appendChild(g);
+    const sel = html("select"); sel.setAttribute("aria-label", "Highlight another event");
+    sel.appendChild(new Option("Highlight another event…", ""));
+    D.events.filter(e => e.year !== D.now && !COL[e.year] && m.series[e.year])
+      .forEach(e => sel.appendChild(new Option(e.label, e.year, false, e.year === picked)));
+    sel.addEventListener("change", () => { picked = sel.value ? +sel.value : null; select(m); });
+    box.appendChild(sel);
+  }
+
+  function table() {
+    const k = lastNow(), wrap = root.querySelector(".ex-table-wrap");
+    const t = html("table"), head = t.createTHead().insertRow();
+    ["Event", "Peak RONI", `Value in ${MON[k % 12]} (same stage as latest ${D.now})`, "Maximum, Jan–following Jun"]
+      .forEach(h => head.appendChild(html("th", "", h)));
+    const body = t.createTBody();
+    valuesAt(k).forEach(r => {
+      const row = body.insertRow(), ev = D.events.find(e => e.year === r.year), v = m.series[r.year];
+      const max = Math.max(...v.filter(x => x != null));
+      [ev.label, ev.peak == null ? "in progress" : fmt(ev.peak), fmt(r.v), fmt(max)]
+        .forEach(c => row.insertCell().textContent = c);
+    });
+    wrap.replaceChildren(t);
+  }
+
+  fetch(root.dataset.src).then(r => r.json()).then(d => {
+    D = d; controls(); wireChart(); select(D.measures[0]);
+    let w = 0;
+    new ResizeObserver(() => { const nw = root.clientWidth; if (nw !== w) { w = nw; drawLines(); } })
+      .observe(root);
+  });
+})();
+</script>
+
+<figure id="g3"><a href="img/03_anim_sst.webp" target="_blank" rel="noopener"><img src="img/03_anim_sst.webp" alt="Animated maps of tropical Pacific sea surface temperature from January to September for 2026, 1982, 1997, 2015 and the 1991–2020 normal. In September, the Niño 3.4 region averaged 29.6 °C in 2026, 28.0 °C in 1982, 28.6 °C in 1997, 28.5 °C in 2015, and 26.7 °C normally." width="1430" height="2028" decoding="async"></a><figcaption><b>Figure 3. Animation: sea surface temperature, 2026 and past very strong events.</b> Animated month-by-month sea surface temperature across the tropical Pacific (NOAA OISST, 0.25°), January to the latest month, for 2026, 1982, 1997, 2015 and the 1991–2020 normal, with the Niño 3.4 average for each. <a href="img/03_anim_sst.png" target="_blank" rel="noopener">Still image of the final frame.</a></figcaption></figure>
+<figure id="g4"><a href="img/04_anim_upper_ocean.webp" target="_blank" rel="noopener"><img src="img/04_anim_upper_ocean.webp" alt="Animated depth–longitude sections of equatorial Pacific ocean temperature from January to August for 2026, 1982, 1997 and 2015 and the 1991–2020 normal. In August, the upper 200 m east of 180° departed from normal by +4.2 °C in 2026, +2.0 °C in 1982, +2.6 °C in 1997 and +2.3 °C in 2015." width="1494" height="1822" decoding="async"></a><figcaption><b>Figure 4. Animation: upper-ocean temperature, 2026 and past very strong events.</b> Animated equatorial upper-ocean temperature sections for 2026, 1982, 1997, 2015 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens. <a href="img/04_anim_upper_ocean.png" target="_blank" rel="noopener">Still image of the final frame.</a></figcaption></figure>
+<h2 class="section">Current state and forecast</h2>
+<figure id="g5"><a href="img/05_roni_vs_past_events.png" target="_blank" rel="noopener"><img src="img/05_roni_vs_past_events.png" alt="Line chart of El Niño strength from January 2026 to June 2027. 2026 rose from -0.9 °C in January to +1.7 °C now; NOAA&#x27;s forecast peaks near +2.7 °C, above the record of +2.4 °C set in 1982–83." width="2600" height="1520" decoding="async"></a><figcaption><b>Figure 5. Event development vs. past very strong events.</b> Development of the 2026–27 event in NOAA&#x27;s Relative Oceanic Niño Index alongside the four strongest El Niño events since 1950, with NOAA&#x27;s official forecast.</figcaption></figure>
+<figure id="g6"><a href="img/06_forecast_verification.png" target="_blank" rel="noopener"><img src="img/06_forecast_verification.png" alt="Verification of NOAA&#x27;s 2026 El Niño strength forecasts. For Jul–Sep 2026 (observed +1.69 °C, strong), forecasts by issue month gave the observed category: April 11%; May 17%; June 36%; July 57%; August 76%. Probability of a very strong peak in Nov 2026–Jan 2027 by issue: April 25%; May 37%; June 63%; July 75%; August 90%; September 93%; October 96%." width="2600" height="1840" decoding="async"></a><figcaption><b>Figure 6. Verification of NOAA&#x27;s 2026 forecasts.</b> Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and how confidence in a very strong peak has evolved.</figcaption></figure>
 <h2 class="section">Compared with past very strong events</h2>
-<figure id="g4"><a href="img/04_surface_comparison.png" target="_blank" rel="noopener"><img src="img/04_surface_comparison.png" alt="Four maps of tropical Pacific surface temperature in August of 1982, 1997, 2015, 2026. 1982: Niño 3.4 +0.5 °C, whole tropics -0.3 °C; 1997: Niño 3.4 +1.7 °C, whole tropics +0.1 °C; 2015: Niño 3.4 +1.7 °C, whole tropics +0.4 °C; 2026: Niño 3.4 +2.1 °C, whole tropics +0.8 °C." width="2600" height="1600" decoding="async"></a><figcaption><b>Figure 4. Sea surface temperature by event.</b> Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with Niño 3.4 and tropical-mean anomalies.</figcaption></figure>
-<figure id="g5"><a href="img/05_subsurface_comparison.png" target="_blank" rel="noopener"><img src="img/05_subsurface_comparison.png" alt="Depth-by-longitude slices of the equatorial Pacific in August of 1982, 1997, 2015, 2026. Average extra warmth in the top 200 m from 180° to 80°W: 1982: +2.0 °C; 1997: +2.6 °C; 2015: +2.3 °C; 2026: +4.2 °C." width="2600" height="2440" decoding="async"></a><figcaption><b>Figure 5. Upper-ocean temperature by event.</b> Equatorial upper-ocean temperature at the same stage of each event; the current event holds substantially more subsurface heat.</figcaption></figure>
-<figure id="g6"><a href="img/06_anim_upper_ocean.webp" target="_blank" rel="noopener"><img src="img/06_anim_upper_ocean.webp" alt="Animated depth–longitude sections of equatorial Pacific ocean temperature from January to August for 2026, 1997 and the 1991–2020 normal. In August, the upper 200 m east of 180° was +4.2 °C above normal in 2026 and +2.6 °C in 1997." width="1494" height="1218" decoding="async"></a><figcaption><b>Figure 6. Animation: upper-ocean temperature.</b> Animated equatorial upper-ocean temperature sections for 2026, 1997 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens. <a href="img/06_anim_upper_ocean.png" target="_blank" rel="noopener">Still image of the final frame.</a></figcaption></figure>
-<figure id="g7"><a href="img/07_hovmoller_sst.png" target="_blank" rel="noopener"><img src="img/07_hovmoller_sst.png" alt="Longitude–time diagrams of sea surface temperature anomalies along the equatorial Pacific for 1982–83, 1997–98, 2015–16, 2026–27. Maximum eastern Pacific anomaly in September: 2026 +4.7 °C; 1982 +2.5 °C; 1997 +3.7 °C; 2015 +3.0 °C." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 7. Equatorial SST evolution (Hovmöller).</b> Sea surface temperature along the equator, month by month (rows, top to bottom) and from the western Pacific to South America (left to right), for four very strong events.</figcaption></figure>
-<figure id="g8"><a href="img/08_hovmoller_upper_ocean.png" target="_blank" rel="noopener"><img src="img/08_hovmoller_upper_ocean.png" alt="Longitude–time diagrams of upper-200 m temperature anomalies along the equatorial Pacific for 1982–83, 1997–98, 2015–16 and 2026–27. Central–eastern Pacific mean in August: 2026 +4.2 °C; 1982 +2.0 °C; 1997 +2.6 °C; 2015 +2.3 °C." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 8. Upper-ocean heat content (Hovmöller).</b> The same layout for the average temperature of the upper 200 m; warm water spreading east beneath the surface marks Kelvin waves.</figcaption></figure>
-<figure id="g9"><a href="img/09_nino_regions.png" target="_blank" rel="noopener"><img src="img/09_nino_regions.png" alt="Line charts of monthly SST anomalies in the Niño 4, 3.4, 3 and 1+2 regions for 1982–83, 1997–98, 2015–16 and 2026–27. In September 2026: Niño 4 +0.9 °C; Niño 3.4 +2.8 °C; Niño 3 +3.6 °C; Niño 1+2 +4.7 °C. Closest past event at the same stage: 1997–98." width="2600" height="1840" decoding="async"></a><figcaption><b>Figure 9. Warming across the Niño regions.</b> Location of the four Niño regions and their monthly anomalies, showing where along the equator the warming is concentrated.</figcaption></figure>
-<figure id="g10"><a href="img/10_event_ranking.png" target="_blank" rel="noopener"><img src="img/10_event_ranking.png" alt="Ranked bar charts of the 12 strongest El Niños since 1950 by peak strength, length in months and total extra warmth. 2026–27: peak +2.7 °C, 10 months (forecast); 1982–83: peak +2.4 °C, 13 months; 1997–98: peak +2.3 °C, 12 months; 2015–16: peak +2.2 °C, 14 months; 1991–92: peak +2.1 °C, 15 months; 1965–66: peak +2.0 °C, 12 months; 1972–73: peak +2.0 °C, 12 months; 1957–58: peak +1.9 °C, 16 months; 2009–10: peak +1.5 °C, 7 months; 1986–87: peak +1.5 °C, 17 months; 2023–24: peak +1.4 °C, 8 months; 2002–03: peak +1.3 °C, 7 months." width="2600" height="1712" decoding="async"></a><figcaption><b>Figure 10. Ranking of El Niño events since 1950.</b> El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the current event completed by NOAA&#x27;s median forecast.</figcaption></figure>
-<h2 class="section">Forecasts and global context</h2>
-<figure id="g11"><a href="img/11_forecast_verification.png" target="_blank" rel="noopener"><img src="img/11_forecast_verification.png" alt="Verification of NOAA&#x27;s 2026 El Niño strength forecasts. For Jul–Sep 2026 (observed +1.69 °C, strong), forecasts by issue month gave the observed category: April 11%; May 17%; June 36%; July 57%; August 76%. Probability of a very strong peak in Nov 2026–Jan 2027 by issue: April 25%; May 37%; June 63%; July 75%; August 90%; September 93%; October 96%." width="2600" height="1840" decoding="async"></a><figcaption><b>Figure 11. Verification of NOAA&#x27;s 2026 forecasts.</b> Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and how confidence in a very strong peak has evolved.</figcaption></figure>
-<figure id="g12"><a href="img/12_global_temperature.png" target="_blank" rel="noopener"><img src="img/12_global_temperature.png" alt="Bar chart of global temperature each year since 1950, rising over time. Highlighted record years that came with an El Niño winter: 1995, 1998, 2010, 2016, 2024. 2026 so far is +1.16 °C above the 20th-century average." width="2600" height="1480" decoding="async"></a><figcaption><b>Figure 12. Global temperature and El Niño.</b> Annual global mean surface temperature anomalies; recent record years have coincided with El Niño events.</figcaption></figure>
+<figure id="g7"><a href="img/07_surface_comparison.png" target="_blank" rel="noopener"><img src="img/07_surface_comparison.png" alt="Four maps of tropical Pacific surface temperature in August of 1982, 1997, 2015, 2026. 1982: Niño 3.4 +0.5 °C, whole tropics -0.3 °C; 1997: Niño 3.4 +1.7 °C, whole tropics +0.1 °C; 2015: Niño 3.4 +1.7 °C, whole tropics +0.4 °C; 2026: Niño 3.4 +2.1 °C, whole tropics +0.8 °C." width="2600" height="1600" decoding="async"></a><figcaption><b>Figure 7. Sea surface temperature by event.</b> Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with Niño 3.4 and tropical-mean anomalies.</figcaption></figure>
+<figure id="g8"><a href="img/08_subsurface_comparison.png" target="_blank" rel="noopener"><img src="img/08_subsurface_comparison.png" alt="Depth-by-longitude slices of the equatorial Pacific in August of 1982, 1997, 2015, 2026. Average extra warmth in the top 200 m from 180° to 80°W: 1982: +2.0 °C; 1997: +2.6 °C; 2015: +2.3 °C; 2026: +4.2 °C." width="2600" height="2440" decoding="async"></a><figcaption><b>Figure 8. Upper-ocean temperature by event.</b> Equatorial upper-ocean temperature at the same stage of each event; the current event holds substantially more subsurface heat.</figcaption></figure>
+<figure id="g9"><a href="img/09_hovmoller_sst.png" target="_blank" rel="noopener"><img src="img/09_hovmoller_sst.png" alt="Longitude–time diagrams of sea surface temperature anomalies along the equatorial Pacific for 1982–83, 1997–98, 2015–16, 2026–27. Maximum eastern Pacific anomaly in September: 2026 +4.7 °C; 1982 +2.5 °C; 1997 +3.7 °C; 2015 +3.0 °C." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 9. Equatorial SST evolution (Hovmöller).</b> Sea surface temperature along the equator, month by month (rows, top to bottom) and from the western Pacific to South America (left to right), for four very strong events.</figcaption></figure>
+<figure id="g10"><a href="img/10_hovmoller_upper_ocean.png" target="_blank" rel="noopener"><img src="img/10_hovmoller_upper_ocean.png" alt="Longitude–time diagrams of upper-200 m temperature anomalies along the equatorial Pacific for 1982–83, 1997–98, 2015–16 and 2026–27. Central–eastern Pacific mean in August: 2026 +4.2 °C; 1982 +2.0 °C; 1997 +2.6 °C; 2015 +2.3 °C." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 10. Upper-ocean heat content (Hovmöller).</b> The same layout for the average temperature of the upper 200 m; warm water spreading east beneath the surface marks Kelvin waves.</figcaption></figure>
+<figure id="g11"><a href="img/11_nino_regions.png" target="_blank" rel="noopener"><img src="img/11_nino_regions.png" alt="Line charts of monthly SST anomalies in the Niño 4, 3.4, 3 and 1+2 regions for 1982–83, 1997–98, 2015–16 and 2026–27. In September 2026: Niño 4 +0.9 °C; Niño 3.4 +2.8 °C; Niño 3 +3.6 °C; Niño 1+2 +4.7 °C. Closest past event at the same stage: 1997–98." width="2600" height="1840" decoding="async"></a><figcaption><b>Figure 11. Warming across the Niño regions.</b> Location of the four Niño regions and their monthly anomalies, showing where along the equator the warming is concentrated.</figcaption></figure>
+<figure id="g12"><a href="img/12_event_ranking.png" target="_blank" rel="noopener"><img src="img/12_event_ranking.png" alt="Ranked bar charts of the 12 strongest El Niños since 1950 by peak strength, length in months and total extra warmth. 2026–27: peak +2.7 °C, 10 months (forecast); 1982–83: peak +2.4 °C, 13 months; 1997–98: peak +2.3 °C, 12 months; 2015–16: peak +2.2 °C, 14 months; 1991–92: peak +2.1 °C, 15 months; 1965–66: peak +2.0 °C, 12 months; 1972–73: peak +2.0 °C, 12 months; 1957–58: peak +1.9 °C, 16 months; 2009–10: peak +1.5 °C, 7 months; 1986–87: peak +1.5 °C, 17 months; 2023–24: peak +1.4 °C, 8 months; 2002–03: peak +1.3 °C, 7 months." width="2600" height="1712" decoding="async"></a><figcaption><b>Figure 12. Ranking of El Niño events since 1950.</b> El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the current event completed by NOAA&#x27;s median forecast.</figcaption></figure>
+<h2 class="section">Global context</h2>
+<figure id="g13"><a href="img/13_global_temperature.png" target="_blank" rel="noopener"><img src="img/13_global_temperature.png" alt="Bar chart of global temperature each year since 1950, rising over time. Highlighted record years that came with an El Niño winter: 1995, 1998, 2010, 2016, 2024. 2026 so far is +1.16 °C above the 20th-century average." width="2600" height="1480" decoding="async"></a><figcaption><b>Figure 13. Global temperature and El Niño.</b> Annual global mean surface temperature anomalies; recent record years have coincided with El Niño events.</figcaption></figure>
 
 <footer>
   <p><b>Data</b> (all public, from NOAA):</p>

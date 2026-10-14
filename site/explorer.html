@@ -1,0 +1,275 @@
+<figure id="{{ID}}" class="explorer" data-src="{{DATA}}">
+  <div class="ex-controls" role="group" aria-label="Measure shown"></div>
+  <p class="ex-desc"></p>
+  <div class="ex-grid">
+    <div class="ex-chart" tabindex="0" role="img" aria-label="Line chart of every El Niño event since 1950. Use the left and right arrow keys to move between months.">
+      <svg class="ex-lines" aria-hidden="true"></svg>
+      <div class="ex-tip" hidden></div>
+    </div>
+    <div class="ex-rank">
+      <p class="ex-rank-title"></p>
+      <svg class="ex-bars" aria-hidden="true"></svg>
+    </div>
+  </div>
+  <div class="ex-legend"></div>
+  <details class="ex-table">
+    <summary>Show the data as a table</summary>
+    <div class="ex-table-wrap"></div>
+  </details>
+  <figcaption>{{CAPTION}}</figcaption>
+  <noscript><p>This interactive chart needs JavaScript. The same data appear in the figures below.</p></noscript>
+</figure>
+<script>
+(() => {
+  const root = document.getElementById("{{ID}}");
+  const NS = "http://www.w3.org/2000/svg";
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const COL = {1972: "#9085e9", 1982: "#3987e5", 1997: "#199e70", 2015: "#c98500"};
+  const NOW_COL = "#e8574a", PICK_COL = "#d55181", GRAY = "#5f5e59";
+  let D, m, month = 0, picked = null;
+
+  const el = (tag, attrs = {}, parent) => {
+    const e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    if (parent) parent.appendChild(e);
+    return e;
+  };
+  const html = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+  const fmt = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + " °C";
+  const monthName = k => `${MON[k % 12]} ${D.now + Math.floor(k / 12)}`;
+  const stage = k => `${MON[k % 12]} of ${Math.floor(k / 12) ? "the following year" : "the onset year"}`;
+  const label = y => D.events.find(e => e.year === +y).label;
+  const colour = y => +y === D.now ? NOW_COL : COL[y] || (+y === picked ? PICK_COL : GRAY);
+  const featured = y => +y === D.now || COL[y] || +y === picked;
+  const nowSeries = () => m.series[D.now];
+  const lastNow = () => nowSeries().reduce((a, v, i) => v != null ? i : a, 0);
+  const valuesAt = k => Object.entries(m.series).filter(([, v]) => v[k] != null)
+    .map(([y, v]) => ({year: +y, v: v[k]})).sort((a, b) => b.v - a.v);
+
+  function controls() {
+    const box = root.querySelector(".ex-controls");
+    D.measures.forEach((x, i) => {
+      const b = html("button", "", x.name);
+      b.type = "button";
+      b.setAttribute("aria-pressed", i === 0);
+      b.addEventListener("click", () => {
+        box.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", o === b));
+        select(x);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function select(x) {
+    m = x;
+    month = lastNow();
+    root.querySelector(".ex-desc").textContent = m.description + ".";
+    drawLines(); drawBars(); legend(); table();
+  }
+
+  // ---- line chart -------------------------------------------------------------------------------
+  let geo;
+  function drawLines() {
+    const svg = root.querySelector(".ex-lines");
+    svg.replaceChildren();
+    const W = svg.clientWidth || 700, H = Math.max(300, Math.min(440, W * 0.62));
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    const L = 44, R = 64, T = 14, B = 40, n = D.n_months;
+    const all = Object.values(m.series).flat().concat((m.forecast || []).map(f => f[1])).filter(v => v != null);
+    let lo = Math.floor(Math.min(...all) - 0.2), hi = Math.ceil(Math.max(...all) + 0.2);
+    const step = hi - lo > 5 ? 1 : 0.5;
+    const X = k => L + (W - L - R) * k / (n - 1), Y = v => T + (H - T - B) * (hi - v) / (hi - lo);
+    geo = {X, Y, L, R, T, B, W, H, n};
+    for (let v = lo; v <= hi + 1e-9; v += step) {
+      el("line", {x1: L, x2: W - R, y1: Y(v), y2: Y(v), class: v === 0 ? "ex-zero" : "ex-gl"}, svg);
+      el("text", {x: L - 8, y: Y(v) + 4, class: "ex-tick", "text-anchor": "end"}, svg).textContent =
+        (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v);
+    }
+    for (let k = 0; k < n; k += 3) {
+      const t = el("text", {x: X(k), y: H - B + 18, class: "ex-tick", "text-anchor": "middle"}, svg);
+      t.textContent = MON[k % 12];
+      if (k % 12 === 0) el("text", {x: X(k), y: H - B + 32, class: "ex-tick ex-sub", "text-anchor": "middle"}, svg)
+        .textContent = k ? "following year" : "onset year";
+    }
+    el("text", {x: 12, y: T + (H - T - B) / 2, class: "ex-tick", transform: `rotate(-90 12 ${T + (H - T - B) / 2})`,
+                "text-anchor": "middle"}, svg).textContent = "Anomaly (°C)";
+    const path = vals => {
+      let d = "", pen = false;
+      vals.forEach((v, k) => {
+        if (v == null) { pen = false; return; }
+        d += `${pen ? "L" : "M"}${X(k).toFixed(1)},${Y(v).toFixed(1)}`; pen = true;
+      });
+      return d;
+    };
+    const order = Object.keys(m.series).sort((a, b) => (featured(a) ? 1 : 0) - (featured(b) ? 1 : 0) || a - b);
+    const ends = [];
+    for (const y of order) {
+      const vals = m.series[y], f = featured(y), now = +y === D.now;
+      // wide transparent hit line so thin gray lines are easy to pick
+      const hit = el("path", {d: path(vals), class: "ex-hit"}, svg);
+      hit.addEventListener("click", () => { if (!COL[y] && +y !== D.now) { picked = picked === +y ? null : +y; select(m); } });
+      el("path", {d: path(vals), stroke: colour(y), "stroke-width": now ? 3.5 : f ? 2.2 : 1.1,
+                  "stroke-opacity": f ? 1 : 0.6, fill: "none", "stroke-linejoin": "round", "stroke-linecap": "round",
+                  "pointer-events": "none"}, svg);
+      if (f) {
+        const k = vals.reduce((a, v, i) => v != null ? i : a, 0);
+        ends.push({y, k, v: vals[k]});
+      }
+    }
+    if (m.forecast) {
+      const k0 = lastNow(), pts = [[k0, nowSeries()[k0]], ...m.forecast];
+      el("path", {d: pts.map((p, i) => `${i ? "L" : "M"}${X(p[0])},${Y(p[1])}`).join(""), stroke: NOW_COL,
+                  "stroke-width": 2.2, "stroke-dasharray": "5 4", fill: "none"}, svg);
+      const f = m.forecast.reduce((a, b) => b[1] > a[1] ? b : a);
+      el("text", {x: X(f[0]), y: Y(f[1]) - 10, class: "ex-lab", "text-anchor": "middle"}, svg).textContent =
+        `NOAA outlook (${m.forecast_issued}): peak ${fmt(f[1])}`;
+    }
+    // direct labels at line ends, nudged apart
+    const placed = [];
+    ends.sort((a, b) => b.v - a.v).forEach(e => {
+      let ly = Y(e.v) + 4;
+      while (placed.some(p => Math.abs(p.ly - ly) < 14 && Math.abs(p.x - X(e.k)) < 46)) ly += 14;
+      placed.push({ly, x: X(e.k)});
+      if (+e.y === D.now) el("circle", {cx: X(e.k), cy: Y(e.v), r: 5, fill: NOW_COL, stroke: "var(--bg)", "stroke-width": 2}, svg);
+      el("text", {x: X(e.k) + 8, y: ly, class: "ex-lab" + (+e.y === D.now ? " ex-now" : "")}, svg).textContent =
+        +e.y === D.now ? `${e.y} ${fmt(e.v)}` : e.y;
+    });
+    geo.cross = el("line", {y1: T, y2: H - B, class: "ex-cross"}, svg);
+    geo.dots = el("g", {}, svg);
+    setMonth(month);
+  }
+
+  function setMonth(k) {
+    month = Math.max(0, Math.min(D.n_months - 1, k));
+    const {X, Y} = geo;
+    geo.cross.setAttribute("x1", X(month)); geo.cross.setAttribute("x2", X(month));
+    geo.dots.replaceChildren();
+    for (const [y, v] of Object.entries(m.series))
+      if (featured(y) && v[month] != null)
+        el("circle", {cx: X(month), cy: Y(v[month]), r: 4, fill: colour(y), stroke: "var(--bg)", "stroke-width": 2}, geo.dots);
+    drawBars();
+  }
+
+  function tooltip(show, px) {
+    const tip = root.querySelector(".ex-tip");
+    if (!show) { tip.hidden = true; return; }
+    const rows = valuesAt(month);
+    tip.replaceChildren(html("p", "ex-tip-h", stage(month)));
+    const shown = rows.filter((r, i) => i < 5 || featured(r.year));
+    shown.forEach(r => {
+      const p = html("p", "ex-tip-row" + (r.year === D.now ? " ex-now" : ""));
+      const key = html("span", "ex-key"); key.style.background = colour(r.year);
+      p.append(key, html("b", "", fmt(r.v)), html("span", "", ` ${label(r.year)} · ${rows.indexOf(r) + 1} of ${rows.length}`));
+      tip.appendChild(p);
+    });
+    const fc = (m.forecast || []).find(f => f[0] === month);
+    if (fc) {
+      const p = html("p", "ex-tip-row ex-now"), key = html("span", "ex-key");
+      key.style.background = NOW_COL;
+      p.append(key, html("b", "", fmt(fc[1])), html("span", "", ` ${label(D.now)} · NOAA outlook median`));
+      tip.appendChild(p);
+    }
+    tip.hidden = false;
+    const box = root.querySelector(".ex-chart").getBoundingClientRect();
+    const left = px + 16 + tip.offsetWidth > box.width ? px - 16 - tip.offsetWidth : px + 16;
+    tip.style.left = Math.max(0, left) + "px";
+    tip.style.top = geo.T + "px";
+  }
+
+  function wireChart() {
+    const box = root.querySelector(".ex-chart");
+    const fromEvent = e => {
+      const r = box.getBoundingClientRect(), x = e.clientX - r.left;
+      const k = Math.round((x - geo.L) / (geo.W - geo.L - geo.R) * (geo.n - 1));
+      setMonth(k);
+      tooltip(true, geo.X(month));
+    };
+    box.addEventListener("pointermove", fromEvent);
+    box.addEventListener("pointerdown", fromEvent);
+    box.addEventListener("pointerleave", () => tooltip(false));
+    box.addEventListener("focus", () => tooltip(true, geo.X(month)));
+    box.addEventListener("blur", () => tooltip(false));
+    box.addEventListener("keydown", e => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      setMonth(month + (e.key === "ArrowRight" ? 1 : -1));
+      tooltip(true, geo.X(month));
+    });
+  }
+
+  // ---- ranking bars at the selected month ---------------------------------------------------------
+  function drawBars() {
+    const rows = valuesAt(month);
+    const r = rows.findIndex(x => x.year === D.now) + 1;
+    root.querySelector(".ex-rank-title").textContent = r
+      ? `${stage(month)}: ${D.now} ranks ${r} of ${rows.length}`
+      : `${stage(month)}: all events (no ${D.now} data yet)`;
+    const svg = root.querySelector(".ex-bars");
+    svg.replaceChildren();
+    const W = svg.clientWidth || 320, bh = 15, gap = 2, T = 4, H = T + rows.length * (bh + gap) + 4;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("height", H);
+    const lo = Math.min(0, ...rows.map(x => x.v)), hi = Math.max(0, ...rows.map(x => x.v));
+    const L = 62, R = 58, X = v => L + (W - L - R) * (v - lo) / ((hi - lo) || 1);
+    rows.forEach((x, i) => {
+      const y = T + i * (bh + gap), x0 = X(Math.min(0, x.v)), w = Math.abs(X(x.v) - X(0));
+      el("rect", {x: x0, y, width: Math.max(1, w), height: bh, rx: 3, fill: colour(x.year),
+                  "fill-opacity": featured(x.year) ? 1 : 0.55}, svg);
+      el("text", {x: L - 6, y: y + bh - 3, class: "ex-tick" + (x.year === D.now ? " ex-now" : ""), "text-anchor": "end"}, svg)
+        .textContent = label(x.year);
+      el("text", {x: X(Math.max(0, x.v)) + 5, y: y + bh - 3, class: "ex-tick" + (x.year === D.now ? " ex-now" : "")}, svg)
+        .textContent = fmt(x.v);
+    });
+    el("line", {x1: X(0), x2: X(0), y1: 0, y2: H, class: "ex-zero"}, svg);
+  }
+
+  // ---- legend, extra highlight and table --------------------------------------------------------
+  function legend() {
+    const box = root.querySelector(".ex-legend");
+    box.replaceChildren();
+    const item = (y, text) => {
+      const s = html("span", "ex-item"); const k = html("span", "ex-key"); k.style.background = colour(y);
+      s.append(k, document.createTextNode(text)); box.appendChild(s);
+    };
+    item(D.now, label(D.now) + (m.forecast ? " (dashed: NOAA outlook)" : ""));
+    D.highlight.forEach(y => m.series[y] && item(y, label(y)));
+    if (picked && m.series[picked]) item(picked, label(picked));
+    const g = html("span", "ex-item"); const k = html("span", "ex-key"); k.style.background = GRAY;
+    g.append(k, document.createTextNode("Other El Niño events")); box.appendChild(g);
+    const sel = html("select"); sel.setAttribute("aria-label", "Highlight another event");
+    sel.appendChild(new Option("Highlight another event…", ""));
+    D.events.filter(e => e.year !== D.now && !COL[e.year] && m.series[e.year])
+      .forEach(e => sel.appendChild(new Option(e.label, e.year, false, e.year === picked)));
+    sel.addEventListener("change", () => { picked = sel.value ? +sel.value : null; select(m); });
+    box.appendChild(sel);
+  }
+
+  function table() {
+    const k = lastNow(), wrap = root.querySelector(".ex-table-wrap");
+    const t = html("table"), head = t.createTHead().insertRow();
+    ["Event", "Peak RONI", `Value in ${MON[k % 12]} (same stage as latest ${D.now})`, "Maximum, Jan–following Jun"]
+      .forEach(h => head.appendChild(html("th", "", h)));
+    const body = t.createTBody();
+    valuesAt(k).forEach(r => {
+      const row = body.insertRow(), ev = D.events.find(e => e.year === r.year), v = m.series[r.year];
+      const max = Math.max(...v.filter(x => x != null));
+      [ev.label, ev.peak == null ? "in progress" : fmt(ev.peak), fmt(r.v), fmt(max)]
+        .forEach(c => row.insertCell().textContent = c);
+    });
+    wrap.replaceChildren(t);
+  }
+
+  fetch(root.dataset.src).then(r => r.json()).then(d => {
+    D = d; controls(); wireChart(); select(D.measures[0]);
+    let w = 0;
+    new ResizeObserver(() => { const nw = root.clientWidth; if (nw !== w) { w = nw; drawLines(); } })
+      .observe(root);
+  });
+})();
+</script>

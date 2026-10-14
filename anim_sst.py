@@ -1,16 +1,17 @@
 """
-Animation 1 — Tropical Pacific sea surface temperature, month by month: 2026, 1997 and normal
+Animation 1 — Tropical Pacific sea surface temperature, month by month: 2026, the past very
+strong El Niños (1982, 1997, 2015) and normal
 
 Monthly mean sea surface temperature from NOAA OISST v2.1 (0.25°) from January to
 the latest available month of the current year, for the current year (top), the
-same months of 1997 (middle) and the 1991–2020 normal for each month (bottom),
+same months of each past very strong El Niño and the 1991–2020 normal (bottom),
 in the classic rainbow colour scale used for El Niño maps (here "turbo", a
 perceptually improved rainbow). The black line marks the 28 °C isotherm, the
 edge of the warm pool that drives tropical rainfall. Frames are interpolated
 between months for smooth playback.
 
     python anim_sst.py
-    python anim_sst.py --compare 2015
+    python anim_sst.py --compare 1997 2015
 """
 import argparse
 import calendar
@@ -21,14 +22,15 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 
 from enso_anim import AnimationFrames, interpolate_months
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style
+from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, join_and
 from enso_marine import PACIFIC, pacific_monthly, pacific_normals
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--year", type=int, default=2026)
-    ap.add_argument("--compare", type=int, default=1997)
+    ap.add_argument("--compare", type=int, nargs="+", default=[1982, 1997, 2015],
+                    help="past onset years to show (OISST begins in September 1981)")
     ap.add_argument("--steps", type=int, default=4, help="interpolated frames per month")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
@@ -43,10 +45,12 @@ def main():
     probe = [pd.Timestamp(args.year, m, 1) for m in range(1, 13)]
     cur = pacific_monthly(probe, args.refresh)
     months = list(pd.to_datetime(cur["time"].values))
-    comp = pacific_monthly([pd.Timestamp(args.compare, m.month, 1) for m in months])
+    comp = pacific_monthly([pd.Timestamp(y, m.month, 1) for y in args.compare for m in months])
+    n = len(months)
     normals = pacific_normals()
-    rows = [(str(args.year), cur.values), (str(args.compare), comp.values),
-            ("Normal (1991–2020)", normals.sel(month=[m.month for m in months]).values)]
+    rows = ([(str(args.year), cur.values)]
+            + [(str(y), comp.values[i * n:(i + 1) * n]) for i, y in enumerate(args.compare)]
+            + [("Normal (1991–2020)", normals.sel(month=[m.month for m in months]).values)])
     lon, lat = cur["lon"].values, cur["lat"].values
 
     from scipy.ndimage import gaussian_filter
@@ -56,7 +60,10 @@ def main():
         filled = np.where(np.isfinite(a), a, np.nanmean(a))
         return gaussian_filter(filled, 2.5)
 
-    fig = plt.figure(figsize=(13, 12.0))
+    # fixed sizes in inches so the layout works for any number of rows
+    top_in, row_in, map_in, bottom_in = 1.75, 3.05, 2.6, 1.45
+    H = top_in + row_in * len(rows) + bottom_in
+    fig = plt.figure(figsize=(13, H))
     proj = ccrs.PlateCarree(central_longitude=200)
     pc = ccrs.PlateCarree()
     levels = np.arange(18, 32.01, 0.5)
@@ -64,7 +71,7 @@ def main():
     norm = BoundaryNorm(levels, cmap.N, extend="both")
     meshes, labels, axes = [], [], []
     for k, (name, stack) in enumerate(rows):
-        ax = fig.add_axes([0.06, 0.642 - k * 0.254, 0.90, 0.2167], projection=proj)
+        ax = fig.add_axes([0.06, 1 - (top_in + row_in * k + map_in) / H, 0.90, map_in / H], projection=proj)
         ax.set_extent([PACIFIC["lon"][0], PACIFIC["lon"][1], -20, 20], crs=pc)
         meshes.append(ax.pcolormesh(lon, lat, stack[0], cmap=cmap, norm=norm, transform=pc, shading="nearest",
                                     rasterized=True, zorder=1))
@@ -82,21 +89,23 @@ def main():
         ax.spines["geo"].set_edgecolor(COLORS["el_nino"] if is_cur else COLORS["grid"])
         ax.spines["geo"].set_linewidth(2 if is_cur else 0.8)
         axes.append(ax)
-    cax = fig.add_axes([0.25, 0.068, 0.5, 0.014])
+    cax = fig.add_axes([0.25, 0.82 / H, 0.5, 0.17 / H])
     cb = fig.colorbar(meshes[0], cax=cax, orientation="horizontal", ticks=np.arange(18, 33, 2))
     cb.outline.set_visible(False)
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("Monthly mean sea surface temperature (°C) · black line: 28 °C, the edge of the warm pool",
                  fontsize=11, color=COLORS["text_2"])
-    add_title(fig, f"Tropical Pacific sea surface temperature, January–{months[-1]:%B}: {args.year}, "
-                   f"{args.compare} and normal",
+    years = ", ".join(str(y) for y in args.compare)
+    add_title(fig, f"Tropical Pacific sea surface temperature, Jan–{months[-1]:%b}: {args.year} compared "
+                   f"with {join_and(str(y) for y in args.compare)}",
               "Normally the warmest water (red) is pooled in the western Pacific and cool water rises along the "
-              "equator off South America.\nDuring El Niño the warm pool spreads east and the cool tongue weakens; "
-              "compare each year with the normal panel below.")
+              "equator off South America.\nDuring El Niño the warm pool spreads east and the cool tongue weakens. "
+              "The value at right of each panel is the Niño 3.4 average.")
     add_source(fig, "Data: NOAA OISST v2.1 monthly mean (0.25°), via NOAA PSL; normal = 1991–2020 monthly mean. "
                "Frames are interpolated between months for display.")
 
-    frames = AnimationFrames(fig, dpi=115)
+    box = lambda a: float(np.nanmean(a[(lat >= -5) & (lat <= 5)][:, (lon >= 190) & (lon <= 240)]))
+    frames = AnimationFrames(fig, dpi=110)
     seqs = [interpolate_months(stack, args.steps) for _, stack in rows]
     iso = [None] * len(rows)
     for i, pos in enumerate(seqs[0][1]):
@@ -104,20 +113,20 @@ def main():
         for r, (name, _) in enumerate(rows):
             field = seqs[r][0][i]
             meshes[r].set_array(field.ravel())
-            year = name if r < 2 else ""
-            labels[r].set_text(f"{calendar.month_name[months[k].month]} {year}".strip())
+            year = name if r < len(rows) - 1 else ""
+            month = f"{calendar.month_name[months[k].month]} {year}".strip()
+            labels[r].set_text(f"{month}  ·  Niño 3.4 {box(field):.1f} °C")
             if iso[r] is not None:
                 iso[r].remove()
             iso[r] = axes[r].contour(lon, lat, smooth(field), levels=[28], colors="black", linewidths=1.0,
                                      transform=pc, zorder=2.5)
         frames.grab(800 if abs(pos - round(pos)) < 1e-9 else 90)
     frames.durations[-1] = 3000
-    box = lambda a: float(np.nanmean(a[(lat >= -5) & (lat <= 5)][:, (lon >= 190) & (lon <= 240)]))
     frames.save(args.out, quality=86,
                 alt=f"Animated maps of tropical Pacific sea surface temperature from January to {months[-1]:%B} for "
-                    f"{args.year}, {args.compare} and the 1991–2020 normal. In {months[-1]:%B}, the Niño 3.4 region "
-                    f"averaged {box(rows[0][1][-1]):.1f} °C in {args.year}, {box(rows[1][1][-1]):.1f} °C in "
-                    f"{args.compare} and {box(rows[2][1][-1]):.1f} °C normally.")
+                    f"{args.year}, {years} and the 1991–2020 normal. In {months[-1]:%B}, the Niño 3.4 region "
+                    f"averaged " + ", ".join(f"{box(st[-1]):.1f} °C in {nm}" for nm, st in rows[:-1])
+                    + f", and {box(rows[-1][1][-1]):.1f} °C normally.")
 
 
 if __name__ == "__main__":

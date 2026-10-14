@@ -70,8 +70,7 @@ def subsurface():
 def forecast():
     out = load_cpc_outlook()
     st = load_cpc_strengths()
-    issued = pd.Timestamp(out.attrs["issued"])
-    future = out[out.index - pd.DateOffset(months=1) > issued]
+    future = out[out.index > load_roni().index[-1]]          # seasons after the latest observation, as in the figure
     peak_t = future["p50"].idxmax()
     vs = st["en_vstrong"].astype(float)
     record = max(find_events(load_roni()), key=lambda e: e.max())
@@ -106,6 +105,91 @@ def southern_california():
     return ("Southern California", ". ".join(parts) + ".")
 
 
+# ---------------------------------------------------------------------------------------------
+# "Why this El Niño is different": the current event against every El Niño since 1950 at the
+# same stage, using the same series as the time-series animation and the interactive explorer
+# ---------------------------------------------------------------------------------------------
+REGIONS = {"Niño 4": ((-5, 5), (160, 210)), "Niño 3.4": ((-5, 5), (190, 240)), "Niño 3": ((-5, 5), (210, 270)),
+           "Niño 1+2": ((-10, 0), (270, 280))}
+
+
+def _same_stage(series, years, now):
+    """(month index of the latest current value, current value, {year: value at that stage})."""
+    from event_timeseries import aligned
+    cur = aligned(series, now)
+    k = int(np.flatnonzero(np.isfinite(cur))[-1])
+    past = {y: aligned(series, y)[k] for y in years}
+    return k, float(cur[k]), {y: float(v) for y, v in past.items() if np.isfinite(v)}
+
+
+def _lbl(y):
+    return f"{y}–{str(y + 1)[-2:]}"
+
+
+def differences():
+    """[(headline, explanation), ...] — only statements that the current data support."""
+    from enso_stats import load_gridded
+    from event_timeseries import NOW, box_series, godas_heat_series, onset_year
+    years = sorted({onset_year(e) for e in find_events(load_roni())} - {NOW})
+    sst = load_gridded("sst")
+    box = {r: box_series(sst, *v) for r, v in REGIONS.items()}
+    out = []
+    month = lambda k: pd.Timestamp(NOW + k // 12, k % 12 + 1, 1).strftime("%B")
+
+    k, v, past = _same_stage(box["Niño 3.4"], years, NOW)
+    best = max(past, key=past.get)
+    if v > past[best]:
+        out.append(("Warmest El Niño on record at this stage",
+                    f"In {month(k)}, the Niño 3.4 anomaly was {v:+.1f} °C, against a previous high of "
+                    f"{past[best]:+.1f} °C ({_lbl(best)}) among the {len(past)} El Niño events since 1950 at the same "
+                    "point in the year."))
+
+    from event_timeseries import aligned
+    rise = {y: aligned(box["Niño 3.4"], y)[k] - aligned(box["Niño 3.4"], y)[0] for y in years}
+    rise = {y: r for y, r in rise.items() if np.isfinite(r)}
+    r_now = aligned(box["Niño 3.4"], NOW)[k] - aligned(box["Niño 3.4"], NOW)[0]
+    fastest = max(rise, key=rise.get)
+    if r_now > rise[fastest]:
+        out.append(("Fastest development since 1950",
+                    f"Niño 3.4 has warmed by {r_now:.1f} °C since January, more than any previous El Niño over the "
+                    f"same months (previous largest: {rise[fastest]:.1f} °C in {_lbl(fastest)})."))
+
+    top = []
+    for r, s in box.items():
+        _, v_r, past_r = _same_stage(s, years, NOW)
+        b = max(past_r, key=past_r.get)
+        top.append((r, v_r, b, past_r[b], v_r > past_r[b]))
+    record = [t for t in top if t[4]]
+    if len(record) >= 3:
+        parts = [f"{r} {v_r:+.1f} °C ({pv:+.1f} °C)" for r, v_r, b, pv, _ in record]
+        out.append(("Record warmth across the whole equatorial Pacific",
+                    f"At their peaks, past very strong events were strongest either near South America (1982, 1997) "
+                    f"or farther west (2015). In {month(k)}, the current event is the warmest on record at this stage "
+                    f"in {'all four' if len(record) == 4 else f'{len(record)} of the four'} Niño regions (previous high in "
+                    "brackets): " + ", ".join(parts) + "."))
+
+    try:
+        k_u, v_u, past_u = _same_stage(godas_heat_series(), years, NOW)
+        b = max(past_u, key=past_u.get)
+        if v_u > past_u[b]:
+            out.append(("Far more heat below the surface",
+                        f"In {month(k_u)}, the upper 200 m of the equatorial Pacific (180°–80°W) was {v_u:+.1f} °C "
+                        f"above normal, against a previous high of {past_u[b]:+.1f} °C ({_lbl(b)}) among the "
+                        f"{len(past_u)} El Niño events since 1980. This reservoir of heat can sustain surface warming "
+                        "over the coming months."))
+    except Exception as exc:                      # GODAS depth files are local only
+        print(f"Subsurface difference skipped: {exc}")
+
+    out_fc = load_cpc_outlook()
+    rec = max(find_events(load_roni()), key=lambda e: e.max())
+    peak = out_fc[out_fc.index > load_roni().index[-1]]["p50"].max()
+    if peak > rec.max():
+        out.append(("Forecast to set a new record",
+                    f"NOAA's {out_fc.attrs['issued']} outlook places the median peak at {peak:+.1f} °C on the RONI "
+                    f"scale, above the record of {rec.max():+.1f} °C set in {event_label(rec)}."))
+    return out
+
+
 ITEMS = [current_state, versus_past, subsurface, forecast, southern_california]
 
 
@@ -125,3 +209,6 @@ def current_summary():
 if __name__ == "__main__":
     for label, text in current_summary():
         print(f"{label}: {text}\n")
+    print("Why this El Niño is different:")
+    for head, text in differences():
+        print(f"  {head}: {text}")

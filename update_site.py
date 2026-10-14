@@ -32,11 +32,15 @@ SITE = HERE / "site"
 
 
 def figures_of(page):
-    return [f for f in page["figures"] if f[0] != "section"]
+    return [f for f in page["figures"] if f[0] not in ("section", "differences")]
 
 
 def stem(i, script):
     return f"{i:02d}_{script.removesuffix('.py')}"
+
+
+def is_interactive(script):
+    return script.startswith("interactive")
 
 
 def build_figures(page, refresh):
@@ -47,7 +51,8 @@ def build_figures(page, refresh):
         old.unlink()
     failed = []
     for i, (script, downloads, _, _) in enumerate(figures_of(page), 1):
-        cmd = [sys.executable, str(HERE / script), "--theme", "dark", "--out", str(out / f"{stem(i, script)}.png")]
+        ext = ".json" if is_interactive(script) else ".png"       # interactive charts: data file + site/explorer.html
+        cmd = [sys.executable, str(HERE / script), "--theme", "dark", "--out", str(out / f"{stem(i, script)}{ext}")]
         if refresh and downloads:
             cmd.append("--refresh")
         print(f"\n>> [{page['key']}] {script}", flush=True)
@@ -67,6 +72,17 @@ def summary_html():
             f'({dt.date.today():%B %-d, %Y}).</p>\n</section>')
 
 
+def differences_html():
+    from summary import differences
+    try:
+        items = differences()
+    except Exception as exc:                       # never let the text block break the build
+        print(f"'Why this El Niño is different' skipped: {exc}")
+        return ""
+    rows = "\n".join(f"  <li><b>{html.escape(h)}</b> {html.escape(t)}</li>" for h, t in items)
+    return f'<ol class="diffs">\n{rows}\n</ol>' if items else ""
+
+
 def write_page(page):
     src = BUILD / page["key"]
     page_dir = DOCS / page["slug"] if page["slug"] else DOCS
@@ -81,9 +97,22 @@ def write_page(page):
         if entry[0] == "section":
             body.append(f'<h2 class="section">{html.escape(entry[1])}</h2>')
             continue
+        if entry[0] == "differences":
+            body.append(differences_html())
+            continue
         script, _, short, caption = entry
         n += 1
         s = stem(n, script)
+        toc.append(f'  <li><a href="#g{n}">{html.escape(short)}</a></li>')
+        if is_interactive(script):
+            if not (src / f"{s}.json").exists():
+                raise SystemExit(f"Missing {s}.json: run update_site.py without --site-only first.")
+            img_dir.mkdir(exist_ok=True)
+            shutil.copy2(src / f"{s}.json", img_dir / f"{s}.json")
+            body.append((SITE / "explorer.html").read_text().replace("{{ID}}", f"g{n}")
+                        .replace("{{DATA}}", f"img/{s}.json")
+                        .replace("{{CAPTION}}", f"<b>Figure {n}. {html.escape(short)}.</b> {html.escape(caption)}"))
+            continue
         if not (src / f"{s}.png").exists():
             raise SystemExit(f"Missing figure {s}.png: run update_site.py without --site-only first.")
         img_dir.mkdir(exist_ok=True)
@@ -96,7 +125,6 @@ def write_page(page):
         alt = alt_file.read_text().strip() if alt_file.exists() else caption
         with Image.open(img_dir / shown) as im:
             w, h = im.size
-        toc.append(f'  <li><a href="#g{n}">{html.escape(short)}</a></li>')
         body.append(
             f'<figure id="g{n}"><a href="img/{shown}" target="_blank" rel="noopener">'
             # width/height reserve the space before the image loads, so no figure is skipped

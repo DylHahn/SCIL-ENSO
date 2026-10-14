@@ -69,6 +69,54 @@
     .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
     .prose table { display: block; overflow-x: auto; }
   }
+  .diffs { counter-reset: d; list-style: none; padding: 0; margin: 0 0 48px; display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .diffs li { counter-increment: d; background: var(--surface); border-radius: 10px; padding: 16px 18px 16px 52px;
+              position: relative; color: var(--text-2); font-size: 15.5px; line-height: 1.55; }
+  .diffs li::before { content: counter(d); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px;
+                      border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700;
+                      font-size: 14px; display: grid; place-items: center; }
+  .diffs b { display: block; color: var(--text); font-size: 16.5px; margin-bottom: 4px; }
+  /* interactive event explorer */
+  .explorer { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .ex-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ex-controls button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                        border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .ex-controls button:hover { color: var(--text); border-color: var(--muted); }
+  .ex-controls button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .ex-desc { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .ex-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
+  .ex-chart { position: relative; outline: none; touch-action: pan-y; }
+  .ex-chart:focus-visible { box-shadow: 0 0 0 2px var(--muted); border-radius: 6px; }
+  .explorer svg { display: block; width: 100%; overflow: visible; }
+  .explorer .ex-gl { stroke: var(--line); stroke-width: 1; }
+  .explorer .ex-zero { stroke: var(--text-2); stroke-width: 1; }
+  .explorer .ex-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .explorer .ex-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer; }
+  .explorer .ex-tick { fill: var(--muted); font-size: 12px; }
+  .explorer .ex-sub { font-size: 11px; }
+  .explorer .ex-lab { fill: var(--text-2); font-size: 12.5px; font-weight: 600; }
+  .explorer .ex-now { fill: var(--text); font-weight: 700; }
+  .ex-tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line);
+            border-radius: 8px; padding: 8px 10px; font-size: 13px; min-width: 210px; z-index: 2;
+            box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+  .ex-tip p { margin: 0; line-height: 1.55; color: var(--text-2); white-space: nowrap; }
+  .ex-tip .ex-tip-h { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+  .ex-tip b { color: var(--text); margin-right: 2px; }
+  .ex-tip .ex-now span:last-child { color: var(--text); font-weight: 600; }
+  .ex-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle;
+            margin-right: 7px; }
+  .ex-rank-title { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+  .ex-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 12px 0 4px;
+               font-size: 14px; color: var(--text-2); }
+  .ex-legend select { font: inherit; font-size: 13px; color: var(--text-2); background: var(--bg);
+                      border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+  .ex-table summary { cursor: pointer; color: var(--text-2); font-size: 14px; margin: 8px 0; }
+  .ex-table-wrap { overflow-x: auto; }
+  .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+  .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
+  .ex-table th { color: var(--text); font-weight: 600; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>

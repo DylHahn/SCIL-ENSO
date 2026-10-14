@@ -22,16 +22,29 @@ PAGES = [
              "and official forecasts.",
         summary=True,
         figures=[
-            ("section", "Current state"),
-            ("anim_sst.py", True, "Animation: sea surface temperature",
+            ("section", "Why this El Niño is different"),
+            ("differences",),
+            ("anim_timeseries.py", True, "Animation: development compared with every El Niño since 1950",
+             "Monthly Niño 3.4, Niño 1+2 and upper-ocean anomalies for every El Niño since 1950, aligned by onset "
+             "year and drawn month by month; the box in each panel ranks the current event against all past events "
+             "at the same stage."),
+            ("interactive_data.py", True, "Interactive: explore every El Niño since 1950",
+             "Choose a measure, then move across the chart to compare all events month by month; the bars rank every "
+             "event at the selected month. Select any gray line, or use the menu, to highlight another event."),
+            ("anim_sst.py", True, "Animation: sea surface temperature, 2026 and past very strong events",
              "Animated month-by-month sea surface temperature across the tropical Pacific (NOAA OISST, 0.25°), "
-             "January to the latest month, for 2026, 1997 and the 1991–2020 normal."),
+             "January to the latest month, for 2026, 1982, 1997, 2015 and the 1991–2020 normal, with the Niño 3.4 "
+             "average for each."),
+            ("anim_upper_ocean.py", False, "Animation: upper-ocean temperature, 2026 and past very strong events",
+             "Animated equatorial upper-ocean temperature sections for 2026, 1982, 1997, 2015 and the 1991–2020 "
+             "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
+            ("section", "Current state and forecast"),
             ("roni_vs_past_events.py", True, "Event development vs. past very strong events",
              "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four strongest "
              "El Niño events since 1950, with NOAA's official forecast."),
-            ("event_timeseries.py", True, "Anomaly time series across events",
-             "Monthly anomaly time series for every El Niño since 1950, aligned by onset year: Niño 3.4 and Niño "
-             "1+2 sea surface temperature and equatorial upper-ocean temperature."),
+            ("forecast_verification.py", True, "Verification of NOAA's 2026 forecasts",
+             "Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and how "
+             "confidence in a very strong peak has evolved."),
             ("section", "Compared with past very strong events"),
             ("surface_comparison.py", True, "Sea surface temperature by event",
              "Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with "
@@ -39,9 +52,6 @@ PAGES = [
             ("subsurface_comparison.py", True, "Upper-ocean temperature by event",
              "Equatorial upper-ocean temperature at the same stage of each event; the current event holds "
              "substantially more subsurface heat."),
-            ("anim_upper_ocean.py", False, "Animation: upper-ocean temperature",
-             "Animated equatorial upper-ocean temperature sections for 2026, 1997 and the 1991–2020 normal; during "
-             "El Niño the warm layer deepens in the east and the 20 °C line flattens."),
             ("hovmoller_sst.py", True, "Equatorial SST evolution (Hovmöller)",
              "Sea surface temperature along the equator, month by month (rows, top to bottom) and from the western "
              "Pacific to South America (left to right), for four very strong events."),
@@ -54,10 +64,7 @@ PAGES = [
             ("event_ranking.py", True, "Ranking of El Niño events since 1950",
              "El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the "
              "current event completed by NOAA's median forecast."),
-            ("section", "Forecasts and global context"),
-            ("forecast_verification.py", True, "Verification of NOAA's 2026 forecasts",
-             "Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and how "
-             "confidence in a very strong peak has evolved."),
+            ("section", "Global context"),
             ("global_temperature.py", True, "Global temperature and El Niño",
              "Annual global mean surface temperature anomalies; recent record years have coincided with El Niño "
              "events."),
