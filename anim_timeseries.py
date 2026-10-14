@@ -24,7 +24,7 @@ from enso_stats import load_gridded
 from event_timeseries import N_MONTHS, NOW, aligned, box_series, godas_heat_series, onset_year
 
 # the very strong El Niños before 2026, in the site's fixed colour order (1972 predates GODAS)
-HIGHLIGHT = {1972: "#9085e9", 1982: "#3987e5", 1997: "#199e70", 2015: "#c98500"}
+HIGHLIGHT = {2015: "#c98500", 1997: "#199e70", 1982: "#3987e5", 1972: "#9085e9"}
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 

@@ -1,6 +1,6 @@
 """
 Animation 1 — Tropical Pacific sea surface temperature, month by month: 2026, the past very
-strong El Niños (1982, 1997, 2015) and normal
+strong El Niños (2015, 1997, 1982) and normal
 
 Monthly mean sea surface temperature from NOAA OISST v2.1 (0.25°) from January to
 the latest available month of the current year, for the current year (top), the
@@ -29,7 +29,7 @@ from enso_marine import PACIFIC, pacific_monthly, pacific_normals
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--year", type=int, default=2026)
-    ap.add_argument("--compare", type=int, nargs="+", default=[1982, 1997, 2015],
+    ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982],
                     help="past onset years to show (OISST begins in September 1981)")
     ap.add_argument("--steps", type=int, default=4, help="interpolated frames per month")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")

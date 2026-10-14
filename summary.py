@@ -16,7 +16,7 @@ from enso_common import (GODAS_DIR, event_label, find_events, godas_equatorial_s
                          load_cpc_outlook, load_cpc_strengths, load_nino_regions, load_roni, season_label,
                          season_words)
 
-PAST = [1982, 1997, 2015]
+PAST = [2015, 1997, 1982]
 STRENGTH = [(2.0, "very strong"), (1.5, "strong"), (1.0, "moderate"), (0.5, "weak")]
 
 

@@ -21,7 +21,7 @@ from enso_common import FIG_DIR, event_label, find_events, load_cpc_outlook, loa
 from enso_stats import load_gridded
 from event_timeseries import N_MONTHS, NOW, aligned, box_series, godas_heat_series, onset_year
 
-HIGHLIGHT = [1972, 1982, 1997, 2015]
+HIGHLIGHT = [2015, 1997, 1982, 1972]
 
 
 def clean(values):

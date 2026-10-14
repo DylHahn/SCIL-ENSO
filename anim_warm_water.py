@@ -1,6 +1,6 @@
 """
 Animation 4 — Warm water moving across the tropical Pacific: thickness of the warm upper layer,
-month by month, for 2026, the past very strong El Niños (1982, 1997, 2015) and normal
+month by month, for 2026, the past very strong El Niños (2015, 1997, 1982) and normal
 
 Maps of the depth of the 20 °C isotherm (D20) from NCEP GODAS over 20°S–20°N, 120°E–80°W.
 D20 is the thickness of the warm upper layer: where it is deep, a large volume of warm water
@@ -108,7 +108,7 @@ def wwv(field, lat, lon):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--year", type=int, default=2026)
-    ap.add_argument("--compare", type=int, nargs="+", default=[1982, 1997, 2015],
+    ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982],
                     help="past onset years to show (GODAS begins in 1980)")
     ap.add_argument("--steps", type=int, default=4, help="interpolated frames per month")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
