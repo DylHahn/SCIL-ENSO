@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCIL ENSO · The 2026–27 El Niño below the surface</title>
+<meta name="description" content="Most of an El Niño&#x27;s heat is stored below the sea surface. These figures follow the warm water in the upper few hundred metres of the equatorial Pacific: in 3D, by temperature layer and as Kelvin waves, using NOAA&#x27;s ocean reanalysis and daily satellite sea level.">
+<style>
+  :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
+          --accent: #e8574a; --line: #2b2b2a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  a { color: var(--text-2); }
+  a:hover { color: var(--text); }
+  .site { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
+          padding: 8px 0 16px; }
+  .site .brand { font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }
+  .site .brand span { color: var(--accent); }
+  .site .author { color: var(--text-2); font-size: 15px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
+  .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
+            margin-bottom: -1px; font-weight: 500; }
+  .tabs a:hover { color: var(--text); }
+  .tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+  header p.kicker { color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+                    font-size: 14px; margin: 0 0 8px; }
+  h1 { font-size: clamp(28px, 4.5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+  h2 { font-size: 22px; margin: 32px 0 8px; }
+  .lede { color: var(--text-2); font-size: 19px; max-width: 760px; margin: 0 0 12px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .summary { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0;
+             padding: 20px 28px 22px; margin: 0 0 40px; }
+  .summary h2 { margin: 0 0 12px; font-size: 20px; }
+  .summary dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; }
+  .summary dt { color: var(--text); font-weight: 600; }
+  .summary dd { margin: 0; color: var(--text-2); }
+  .summary .asof { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+  @media (max-width: 640px) { .summary dl { grid-template-columns: 1fr; gap: 2px 0; }
+                              .summary dd { margin-bottom: 10px; } }
+  .toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 28px;
+         padding: 20px 24px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
+  .toc-group p { margin: 0 0 6px; color: var(--text); font-weight: 600; font-size: 15px; }
+  .toc ol { margin: 0; padding-left: 26px; font-size: 15px; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { color: var(--text-2); text-decoration: none; }
+  .toc a:hover { color: var(--text); text-decoration: underline; }
+  p.intro { color: var(--text-2); font-size: 18px; max-width: 820px; margin: -12px 0 32px; }
+  h2.section { font-size: 26px; margin: 8px 0 24px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  figure { margin: 0 0 64px; scroll-margin-top: 24px; }
+  figure a { display: block; }
+  img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
+  figcaption { margin-top: 14px; color: var(--text-2); max-width: 820px; }
+  figcaption a { display: inline; }
+  figcaption b { color: var(--text); }
+  .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
+          color: var(--text-2); }
+  .note h2 { color: var(--text); }
+  .prose { color: var(--text-2); max-width: 900px; margin: 0 0 56px; }
+  .prose h2 { color: var(--text); }
+  .prose dt { color: var(--text); font-weight: 600; margin-top: 12px; }
+  .prose dd { margin: 2px 0 0 0; }
+  .prose li { margin-bottom: 8px; }
+  .prose b { color: var(--text); }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 8px 0 12px; }
+  .prose th, .prose td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .prose th { color: var(--text); font-weight: 600; }
+  .prose code { background: var(--surface); padding: 1px 6px; border-radius: 4px; }
+  @media (max-width: 640px) {
+    .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            margin-bottom: 28px; }
+    .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
+    .prose table { display: block; overflow-x: auto; }
+  }
+  .diffs { counter-reset: d; list-style: none; padding: 0; margin: 0 0 48px; display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .diffs li { counter-increment: d; background: var(--surface); border-radius: 10px; padding: 16px 18px 16px 52px;
+              position: relative; color: var(--text-2); font-size: 15.5px; line-height: 1.55; }
+  .diffs li::before { content: counter(d); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px;
+                      border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700;
+                      font-size: 14px; display: grid; place-items: center; }
+  .diffs b { display: block; color: var(--text); font-size: 16.5px; margin-bottom: 4px; }
+  /* interactive event explorer */
+  .explorer { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .ex-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ex-controls button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                        border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .ex-controls button:hover { color: var(--text); border-color: var(--muted); }
+  .ex-controls button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .ex-desc { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .ex-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
+  .ex-chart { position: relative; outline: none; touch-action: pan-y; }
+  .ex-chart:focus-visible { box-shadow: 0 0 0 2px var(--muted); border-radius: 6px; }
+  .explorer svg { display: block; width: 100%; overflow: visible; }
+  .explorer .ex-gl { stroke: var(--line); stroke-width: 1; }
+  .explorer .ex-zero { stroke: var(--text-2); stroke-width: 1; }
+  .explorer .ex-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .explorer .ex-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer; }
+  .explorer .ex-tick { fill: var(--muted); font-size: 12px; }
+  .explorer .ex-sub { font-size: 11px; }
+  .explorer .ex-lab { fill: var(--text-2); font-size: 12.5px; font-weight: 600; }
+  .explorer .ex-now { fill: var(--text); font-weight: 700; }
+  .ex-tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line);
+            border-radius: 8px; padding: 8px 10px; font-size: 13px; min-width: 210px; z-index: 2;
+            box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+  .ex-tip p { margin: 0; line-height: 1.55; color: var(--text-2); white-space: nowrap; }
+  .ex-tip .ex-tip-h { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+  .ex-tip b { color: var(--text); margin-right: 2px; }
+  .ex-tip .ex-now span:last-child { color: var(--text); font-weight: 600; }
+  .ex-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle;
+            margin-right: 7px; }
+  .ex-rank-title { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+  .ex-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 12px 0 4px;
+               font-size: 14px; color: var(--text-2); }
+  .ex-legend select { font: inherit; font-size: 13px; color: var(--text-2); background: var(--bg);
+                      border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+  .ex-table summary { cursor: pointer; color: var(--text-2); font-size: 14px; margin: 8px 0; }
+  .ex-table-wrap { overflow-x: auto; }
+  .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+  .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
+  .ex-table th { color: var(--text); font-weight: 600; }
+  /* "Start here" explainer */
+  .explainer { background: var(--surface); border-radius: 10px; padding: 20px 24px 18px; margin: 0 0 40px; }
+  .explainer h2 { margin: 0 0 14px; font-size: 22px; }
+  .ex-diagrams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  @media (max-width: 760px) { .ex-diagrams { grid-template-columns: 1fr; } }
+  .ex-diagrams svg { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px;
+                     color: var(--text-2); font-family: inherit; }
+  .dg-title { fill: var(--text); font-size: 17px; font-weight: 700; }
+  .dg-accent { fill: var(--accent); }
+  .dg-label { fill: var(--text); font-size: 13px; font-weight: 600; }
+  .dg-small { fill: var(--text-2); font-size: 12px; }
+  .dg-dark { fill: #fff; }
+  .dg-light { fill: #cde2fb; }
+  .dg-land { fill: #3a3936; }
+  .dg-thermo { fill: none; stroke: #fff; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .8; }
+  .dg-cloud { fill: #77766f; }
+  .dg-rain line { stroke: #86b6ef; stroke-width: 2; stroke-linecap: round; }
+  .dg-wind line, .dg-flow line, .dg-up line { stroke: currentColor; stroke-width: 2.5; }
+  .dg-wind { color: var(--text); }
+  .dg-flow { color: #fff; }
+  .dg-up { color: #cde2fb; }
+  .ex-text { color: var(--text-2); max-width: 900px; }
+  .ex-text p { margin: 10px 0; }
+  .ex-text b { color: var(--text); }
+  .ex-more { font-size: 15px; }
+  /* reading aids */
+  .takeaway { color: var(--text); font-size: 18px; font-weight: 600; line-height: 1.45; margin: 0 0 12px;
+              max-width: 900px; padding-left: 12px; border-left: 3px solid var(--accent); }
+  .how { margin-top: 10px; }
+  .how summary { cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600; width: fit-content; }
+  .how p { margin: 6px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 15.5px; }
+  .term { border-bottom: 1px dotted var(--muted); cursor: help; }
+  .term:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; border-radius: 2px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .gloss-tip { position: absolute; z-index: 10; max-width: min(320px, calc(100vw - 32px)); background: var(--bg);
+               color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
+               font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
+  .gloss-tip b { color: var(--text); display: block; }
+  .player { position: relative; }
+  .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
+          font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
+          border-radius: 999px; padding: 12px 22px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5);
+          white-space: nowrap; }
+  .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
+  .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
+  /* interactive 3D view */
+  .ocean3d { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .o3-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; }
+  .o3-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .o3-group button, .o3-time button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                     border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .o3-group button:hover, .o3-time button:hover { color: var(--text); border-color: var(--muted); }
+  .o3-group button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .o3-group button:disabled { opacity: .35; cursor: default; }
+  .o3-stage { position: relative; height: min(600px, 70vh); min-height: 380px; background: var(--bg);
+              border-radius: 8px; }
+  .o3-plot { position: absolute; inset: 0; }
+  .o3-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+              gap: 14px; text-align: center; color: var(--text-2); padding: 16px; }
+  .o3-cover p { margin: 0; }
+  .o3-cover .play { position: static; transform: none; }
+  .o3-time { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .o3-time input { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .o3-month { color: var(--text); font-weight: 600; min-width: 80px; }
+  .o3-time [hidden] { display: none; }
+  .o3-zoom { min-width: 34px; }
+  .o3-opacity { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 8px; font-size: 14px; color: var(--text-2); }
+  .o3-opacity[hidden] { display: none; }
+  .o3-opacity label { display: flex; align-items: center; gap: 7px; }
+  .o3-opacity input { width: 110px; accent-color: var(--accent); }
+  .o3-lead { color: var(--muted); }
+  .o3-swatch { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+  .o3-readout { position: absolute; left: 12px; top: 10px; margin: 0; padding: 6px 10px; font-size: 14px;
+                color: var(--text); background: rgba(13,13,14,.78); border-radius: 6px; max-width: calc(100% - 24px); }
+  .o3-readout[hidden] { display: none; }
+  .o3-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 900px; }
+  footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
+  footer ul, .note ul { padding-left: 20px; }
+</style>
+</head>
+<body>
+<main>
+<div class="site">
+  <a class="brand" href="../">SCIL <span>ENSO</span></a>
+  <span class="author">Dylan Hahn</span>
+</div>
+<nav class="tabs" aria-label="Pages">
+  <a href="../">El Niño 2026</a>
+  <a href="../ocean/" aria-current="page">Below the surface</a>
+  <a href="../compare/">Detailed comparisons</a>
+  <a href="../socal/">Southern California Heat</a>
+  <a href="../socal-precip/">Southern California Precipitation</a>
+  <a href="../methods/">Methods &amp; data</a>
+</nav>
+<header>
+  <p class="kicker">El Niño 2026–27 · Below the surface</p>
+  <h1>Below the surface: the warm water behind the 2026–27 El Niño</h1>
+  <p class="lede">Most of an <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span>&#x27;s heat is stored below the sea surface. These figures follow the warm water in the upper few hundred metres of the equatorial Pacific: in 3D, by temperature layer and as <span class="term" tabindex="0" data-def="Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.">Kelvin waves<span class="vh"> (Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.)</span></span>, using NOAA&#x27;s ocean <span class="term" tabindex="0" data-def="A best estimate of past ocean or weather conditions, made by combining observations with a numerical model.">reanalysis<span class="vh"> (A best estimate of past ocean or weather conditions, made by combining observations with a numerical model.)</span></span> and daily satellite sea level.</p>
+  <p class="meta">Updated October 16, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+</header>
+
+
+<nav class="toc" aria-label="Figures on this page">
+<div class="toc-group"><p>The warm layer in 3D</p><ol><li value="1"><a href="#g1">Animation: the tropical Pacific in 3D</a></li><li value="2"><a href="#g2">Interactive 3D: warm layer, temperature layers and hottest water</a></li></ol></div>
+<div class="toc-group"><p>Warm water building up</p><ol><li value="3"><a href="#g3">Animation: warm water moving across the Pacific</a></li><li value="4"><a href="#g4">Animation: layers of warm water</a></li></ol></div>
+<div class="toc-group"><p>Kelvin waves</p><ol><li value="5"><a href="#g5">Animation: Kelvin waves</a></li><li value="6"><a href="#g6">Animation: sea level in 3D</a></li></ol></div>
+<div class="toc-group"><p>Along the equator</p><ol><li value="7"><a href="#g7">Animation: upper-ocean temperature, 2026 and past very strong events</a></li><li value="8"><a href="#g8">Upper-ocean temperature by event</a></li><li value="9"><a href="#g9">Upper-ocean heat content (Hovmöller)</a></li></ol></div>
+</nav>
+<h2 class="section">The warm layer in 3D</h2><p class="intro">Rotatable and animated 3D views of the upper ocean, built from NOAA&#x27;s ocean reanalysis.</p>
+<figure id="g1"><p class="takeaway">In a normal year the warm layer is thin near South America; in 2026 it has thickened there, so the cold water that normally cools the eastern Pacific stays far below the surface.</p><div class="player"><img src="img/01_anim_3d.png" data-anim="img/01_anim_3d.webp" alt="Rotating 3D animation of the tropical Pacific comparing a normal year with 2026 from July 2025 to August 2026. In August, the base of the warm layer on the equator east of 130°W lay at about 125 m in 2026, against 50 m normally." width="2600" height="1520" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(3 MB)</span></button></div><figcaption><b>Figure 1. Animation: the tropical Pacific in 3D.</b> Rotating 3D view of the tropical Pacific in a normal year and in 2026: the top surface is the temperature at 5 m and the lower surface the base of the warm layer (the <span class="term" tabindex="0" data-def="The depth at which the ocean is 20 °C, used to mark the base of the warm upper layer.">20 °C isotherm<span class="vh"> (The depth at which the ocean is 20 °C, used to mark the base of the warm upper layer.)</span></span>), from July of the year before onset to the latest month. <a href="img/01_anim_3d.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/01_anim_3d.png" target="_blank" rel="noopener">still image of the final frame</a>.<details class="how"><summary>How to read this figure</summary><p>Each block is the tropical Pacific seen from the south-east, with Asia at the far left and South America at the right. The coloured lower surface is the base of the warm layer: red where it lies deep, blue where it is close to the surface. The thin top sheet is the sea surface temperature.</p></details></figcaption></figure>
+<figure id="g2" class="ocean3d" data-src="img/02_interactive_3d_data.json">
+  <p class="takeaway">Switch to Hottest water and compare 2026 with Normal: the body of water above 28 °C is far larger in 2026 and reaches much farther east.</p>
+  <div class="o3-bar">
+    <div class="o3-group o3-views" role="group" aria-label="View">
+      <button type="button" data-view="warm" aria-pressed="true">Warm layer</button>
+      <button type="button" data-view="layers" aria-pressed="false">Temperature layers</button>
+      <button type="button" data-view="hot" aria-pressed="false">Hottest water</button>
+    </div>
+    <div class="o3-group o3-cases" role="group" aria-label="Year"></div>
+  </div>
+  <div class="o3-stage">
+    <div class="o3-plot" aria-label="Interactive 3D view of the tropical Pacific Ocean. Drag to rotate."></div>
+    <div class="o3-cover">
+      <p>Rotatable 3D model of the tropical Pacific built from NOAA ocean data.</p>
+      <button type="button" class="play o3-load"><span aria-hidden="true">▶</span> Load the 3D view <span class="size">(about 4 MB)</span></button>
+    </div>
+    <p class="o3-readout" hidden></p>
+  </div>
+  <div class="o3-time" hidden>
+    <button type="button" class="o3-play" aria-label="Play months">▶</button>
+    <input type="range" min="0" value="0" aria-label="Month">
+    <span class="o3-month"></span>
+    <button type="button" class="o3-zoom" data-k="0.8" aria-label="Zoom in">+</button>
+    <button type="button" class="o3-zoom" data-k="1.25" aria-label="Zoom out">−</button>
+    <button type="button" class="o3-reset">Reset view</button>
+  </div>
+  <div class="o3-opacity" hidden></div>
+  <p class="o3-note"></p>
+  <figcaption><b>Figure 2. Interactive 3D: warm layer, temperature layers and hottest water.</b> Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal, month by month. Warm layer: the sea surface above the base of the warm layer (20 °C). Temperature layers: the depths of the 20, 24, 26 and 28 °C isotherms. Hottest water: the volume of water above 28 and 29 °C.<details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the months play. Choose a view and a year above the model, and use the slider or play button to move through the months. The opacity sliders below fade or hide each layer, so you can look inside.</p></details></figcaption>
+  <noscript><p>The 3D view needs JavaScript.</p></noscript>
+</figure>
+<script>
+(() => {
+  const root = document.getElementById("g2");
+  const LIB = "https://cdn.jsdelivr.net/npm/plotly.js-gl3d-dist-min@2.35.2/plotly-gl3d.min.js";
+  // matplotlib "turbo", the rainbow scale used in every temperature map on this site
+  const TURBO = [[0, "#30123b"], [0.0625, "#4040a2"], [0.125, "#466be3"], [0.1875, "#4294ff"], [0.25, "#28bceb"],
+    [0.3125, "#18ddc2"], [0.375, "#32f298"], [0.4375, "#6dfe62"], [0.5, "#a4fc3c"], [0.5625, "#cdec34"],
+    [0.625, "#eecf3a"], [0.6875, "#fdac34"], [0.75, "#fb7e21"], [0.8125, "#eb500e"], [0.875, "#d02f05"],
+    [0.9375, "#a91601"], [1, "#7a0403"]];
+  // each isotherm in the colour the turbo scale gives that temperature (12–31 °C), as in the other figures
+  const ISO_COLOR = {20: "#59fb73", 24: "#efcd3a", 26: "#fd8a26", 28: "#e14109", 29: "#c52603"};
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const HOME = {warm: {eye: {x: 0.3, y: -2.05, z: 1.15}}, layers: {eye: {x: 0.3, y: -2.05, z: 1.15}},
+                hot: {eye: {x: 0.9, y: -1.7, z: 1.6}}};
+  // depth range shown and vertical stretch for each view (the hottest water lies in the top ~150 m)
+  const ZBOX = {warm: [-240, 0.7], layers: [-240, 0.7], hot: [-160, 0.8]};
+  const DEPTHS = Array.from({length: 25}, (_, k) => -k * 10);            // 0 to −240 m, for the 3D volumes
+  const HOT_LAT = 12;                                                     // the volumes are drawn within 12°S–12°N
+  // the layers of each view: key, label, starting opacity (0 hides a layer)
+  const VIEWS = {
+    warm: [["d20", "Base of warm layer (20 °C)", 1], ["sst", "Sea surface", 0.55]],
+    layers: [["d20", "20 °C", 0.85], ["d24", "24 °C", 0.85], ["d26", "26 °C", 0.85], ["d28", "28 °C", 0.9],
+             ["sst", "Sea surface", 0.15]],
+    hot: [["v28", "Water above 28 °C", 0.3], ["v29", "Water above 29 °C", 1], ["sst", "Sea surface", 0]],
+  };
+  const NOTES = {
+    warm: "Top: temperature at 5 m (semi-transparent). Bottom: depth of the 20 °C isotherm, the base of the warm layer; red is deep (thick warm layer), blue shallow.",
+    layers: "Each sheet is the depth at which the ocean reaches that temperature: 28 °C (red) on top, then 26, 24 and 20 °C. Where a sheet is missing, the water there never gets that warm; where sheets are far apart, there is a thick layer of water in that temperature range.",
+    hot: "The solid shapes are all the water warmer than 28 °C (orange, see-through) and 29 °C (dark red) between 12°S and 12°N, the water warm enough to sustain heavy tropical rainfall. Compare its size and how far east it reaches with the Normal view.",
+  };
+  const plot = root.querySelector(".o3-plot"), slider = root.querySelector(".o3-time input");
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let D, view = "warm", ci = 0, mi = 0, timer = null, grid = null;
+  let camera = HOME.warm;                           // the reader's current viewing angle, kept between redraws
+  const opacity = Object.fromEntries(Object.entries(VIEWS).map(([v, ls]) => [v, ls.map(l => l[2])]));
+
+  const lonText = v => v <= 180 ? `${v}°E` : `${360 - v}°W`;
+  const latText = v => `${Math.abs(v)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
+  const unpack = (a, k) => a.map(r => Array.isArray(r) ? unpack(r, k) : (r === D.missing ? null : r / k));
+  const caseYear = () => D.cases[ci].name === "Normal" ? null : +D.cases[ci].name;
+  const monthLabel = (i, year) => { const [dy, mo] = D.months[i]; return `${MON[mo - 1]}${year ? " " + (year + dy) : ""}`; };
+  const field = key => unpack(D.cases[ci][key][mi], key === "sst" ? D.scale.sst : D.scale.depth);
+  const hoverText = (vals, f) => vals.map((r, i) => r.map((v, j) => v == null ? "" :
+    `${lonText(D.lon[j])}, ${latText(D.lat[i])}<br>${f(v)}`));
+  const flat = color => [[0, color], [1, color]];
+
+  function axis(title, extra = {}) {
+    return Object.assign({title: {text: title, font: {size: 12}}, color: css("--text-2"), gridcolor: css("--line"),
+                          zerolinecolor: css("--line"), backgroundcolor: "rgba(0,0,0,0)", showspikes: false}, extra);
+  }
+  function layout() {
+    const lonTicks = [140, 160, 180, 200, 220, 240, 260, 280];
+    return {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep", showlegend: false,
+            font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12},
+            scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
+                    yaxis: axis("Latitude", {tickvals: [-20, -10, 0, 10, 20], ticktext: ["20°S", "10°S", "0°", "10°N", "20°N"]}),
+                    zaxis: axis("Depth (m)", {range: [ZBOX[view][0], 5], tickvals: [0, -50, -100, -150, -200],
+                                              ticktext: ["0", "50", "100", "150", "200"]}),
+                    aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: ZBOX[view][1]}, camera}};
+  }
+
+  function seaSurface(op, coloured) {
+    const sst = field("sst");
+    return {type: "surface", x: D.lon, y: D.lat, z: sst.map(r => r.map(v => v == null ? null : 0)),
+            surfacecolor: sst, colorscale: coloured ? TURBO : flat("#8a8984"), cmin: 18, cmax: 32,
+            showscale: coloured, opacity: op, visible: op > 0,
+            customdata: hoverText(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`),
+            hovertemplate: "%{customdata}<extra></extra>", lighting: {ambient: 1, diffuse: 0, specular: 0},
+            colorbar: {title: {text: "Surface (°C)", side: "right"}, x: 1.0, len: 0.38, thickness: 12, y: 0.8,
+                       tickfont: {color: css("--text-2")}}};
+  }
+
+  function isothermSheet(key, op, coloured) {
+    const t = +key.slice(1), d = field(key);
+    // drop the sheet where the isotherm does not exist (surface cooler than it), so it does not lie on the surface
+    const z = d.map(r => r.map(v => v == null || v <= 12 ? null : -v));
+    return {type: "surface", x: D.lon, y: D.lat, z, surfacecolor: coloured ? d : d.map(r => r.map(() => 1)),
+            colorscale: coloured ? TURBO : flat(ISO_COLOR[t]), cmin: 0, cmax: 220, showscale: coloured,
+            opacity: op, visible: op > 0, lighting: {ambient: 0.8, diffuse: 0.45, specular: 0.05},
+            customdata: hoverText(d, v => `${t} °C reached at <b>${v.toFixed(0)} m</b>`),
+            hovertemplate: "%{customdata}<extra></extra>",
+            colorbar: {title: {text: "Depth of 20 °C (m)", side: "right"}, x: 1.0, len: 0.55, thickness: 12, y: 0.32,
+                       tickfont: {color: css("--text-2")}}};
+  }
+
+  function hotVolume(key, op) {
+    // water above t °C fills each column from the surface down to the t °C isotherm; Plotly draws the outline
+    const t = +key.slice(1), d = field(`d${t}`);
+    const rows = D.lat.map((la, i) => i).filter(i => Math.abs(D.lat[i]) <= HOT_LAT);
+    if (!grid) {
+      grid = {x: [], y: [], z: []};
+      DEPTHS.forEach(z => rows.forEach(i => D.lon.forEach(lo => { grid.x.push(lo); grid.y.push(D.lat[i]); grid.z.push(z); })));
+    }
+    const value = [];
+    // columns where the isotherm does not occur (depth 0: the surface is cooler) are outside the volume
+    DEPTHS.forEach(z => rows.forEach(i => d[i].forEach(v => value.push(v == null || v < 2 ? -999 : v + z))));
+    return {type: "isosurface", x: grid.x, y: grid.y, z: grid.z, value, isomin: 0, isomax: 999,
+            surface: {count: 1}, caps: {x: {show: true}, y: {show: true}, z: {show: true}},
+            colorscale: flat(t === 28 ? "#fdac34" : "#a91601"), showscale: false, opacity: op, visible: op > 0,
+            lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.1},
+            hovertemplate: `Water above ${t} °C<extra></extra>`};
+  }
+
+  function traces() {
+    const op = opacity[view];
+    return VIEWS[view].map(([key], i) => {
+      if (key === "sst") return seaSurface(op[i], view === "warm");
+      if (key.startsWith("d")) return isothermSheet(key, op[i], view === "warm");
+      return hotVolume(key, op[i]);
+    });
+  }
+
+  function exaggeration() {
+    // displayed depth per metre ÷ displayed distance per metre along the equator
+    const width = (D.lon.at(-1) - D.lon[0]) * 111e3, ar = [3, ZBOX[view][1], 5 - ZBOX[view][0]];
+    return Math.round((ar[1] / ar[2]) / (ar[0] / width) / 1000) * 1000;
+  }
+
+  function controls() {
+    const box = root.querySelector(".o3-opacity");
+    box.replaceChildren();
+    const lead = document.createElement("span"); lead.className = "o3-lead"; lead.textContent = "Opacity:";
+    box.appendChild(lead);
+    VIEWS[view].forEach(([key, label], i) => {
+      const lab = document.createElement("label"), sw = document.createElement("span"), inp = document.createElement("input");
+      const t = +key.slice(1);
+      sw.className = "o3-swatch";
+      sw.style.background = key === "sst" ? "#8a8984" : view === "warm" ? "linear-gradient(90deg,#466be3,#a4fc3c,#d02f05)"
+        : key === "v28" ? "#fdac34" : key === "v29" ? "#a91601" : ISO_COLOR[t];
+      Object.assign(inp, {type: "range", min: 0, max: 1, step: 0.05, value: opacity[view][i]});
+      inp.setAttribute("aria-label", `Opacity of ${label}`);
+      inp.addEventListener("input", () => {
+        opacity[view][i] = +inp.value;
+        Plotly.restyle(plot, {opacity: +inp.value, visible: +inp.value > 0}, [i]);
+      });
+      lab.append(sw, document.createTextNode(label), inp);
+      box.appendChild(lab);
+    });
+  }
+
+  function draw() {
+    const year = caseYear(), c = D.cases[ci];
+    root.querySelector(".o3-month").textContent = monthLabel(mi, year);
+    root.querySelectorAll(".o3-cases button").forEach((b, i) => b.setAttribute("aria-pressed", i === ci));
+    root.querySelectorAll(".o3-views button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
+    root.querySelector(".o3-note").textContent = NOTES[view] +
+      ` Depth is exaggerated about ${exaggeration().toLocaleString()} times. Drag to rotate; use + and − to zoom.`;
+    const ro = root.querySelector(".o3-readout");
+    ro.hidden = view !== "hot";
+    if (view === "hot") {
+      const n = D.cases.at(-1);
+      ro.textContent = `Between 5°S and 5°N, ${monthLabel(mi, year)}: water above 28 °C ${c.v28[mi].toFixed(1)} × 10¹⁴ m³`
+        + (c === n ? "" : ` (normal ${n.v28[mi].toFixed(1)})`) + ` · above 29 °C ${c.v29[mi].toFixed(1)}`
+        + (c === n ? "" : ` (normal ${n.v29[mi].toFixed(1)})`);
+    }
+    Plotly.react(plot, traces(), layout(), {displayModeBar: false, responsive: true, scrollZoom: false});
+  }
+
+  function start() {
+    const btn = root.querySelector(".o3-load");
+    btn.disabled = true; btn.textContent = "Loading…";
+    const lib = window.Plotly ? Promise.resolve() : new Promise((ok, fail) => {
+      const s = document.createElement("script"); s.src = LIB; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+    });
+    Promise.all([lib, fetch(root.dataset.src).then(r => r.json())]).then(([, d]) => {
+      D = d; mi = D.months.length - 1;
+      slider.max = D.months.length - 1; slider.value = mi;
+      const box = root.querySelector(".o3-cases");
+      D.cases.forEach((c, i) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = c.name;
+        b.addEventListener("click", () => { ci = i; draw(); }); box.appendChild(b);
+      });
+      root.querySelector(".o3-cover").remove();
+      root.querySelector(".o3-time").hidden = false;
+      root.querySelector(".o3-opacity").hidden = false;
+      controls();
+      draw();
+      plot.on("plotly_relayout", e => {             // remember the angle after every drag or zoom
+        const cam = plot._fullLayout && plot._fullLayout.scene && plot._fullLayout.scene.camera;
+        if (e["scene.camera"] || e["scene.camera.eye"]) camera = JSON.parse(JSON.stringify(cam || camera));
+      });
+    }).catch(() => { btn.textContent = "The 3D view could not be loaded."; });
+  }
+
+  root.querySelector(".o3-load").addEventListener("click", start);
+  root.querySelectorAll(".o3-views button").forEach(b => b.addEventListener("click", () => {
+    view = b.dataset.view;
+    root.querySelectorAll(".o3-views button").forEach(o => o.setAttribute("aria-pressed", o === b));
+    camera = HOME[view];                             // each view starts from the angle that suits it
+    if (D) { controls(); draw(); Plotly.relayout(plot, {"scene.camera": camera}); }
+  }));
+  slider.addEventListener("input", () => { mi = +slider.value; draw(); });
+  root.querySelector(".o3-play").addEventListener("click", e => {
+    if (timer) { clearInterval(timer); timer = null; e.target.textContent = "▶"; return; }
+    if (mi === D.months.length - 1) mi = -1;
+    e.target.textContent = "❚❚";
+    timer = setInterval(() => {
+      mi += 1; slider.value = mi; draw();
+      if (mi >= D.months.length - 1) { clearInterval(timer); timer = null; e.target.textContent = "▶"; }
+    }, 900);
+  });
+  root.querySelectorAll(".o3-zoom").forEach(b => b.addEventListener("click", () => {
+    if (!D) return;
+    const eye = camera.eye, k = +b.dataset.k;
+    Plotly.relayout(plot, {"scene.camera.eye": {x: eye.x * k, y: eye.y * k, z: eye.z * k}});
+  }));
+  root.querySelector(".o3-reset").addEventListener("click", () => {
+    if (D) { camera = HOME[view]; Plotly.relayout(plot, {"scene.camera": camera}); }
+  });
+})();
+</script>
+
+<h2 class="section">Warm water building up</h2><p class="intro">How much warm water is stored in the equatorial Pacific, and how much of it is the hottest water, above 28 °C.</p>
+<figure id="g3"><p class="takeaway">More warm water is stored along the equator in 2026 than at the same stage of 2015, 1997 or 1982.</p><div class="player"><img src="img/03_anim_warm_water.png" data-anim="img/03_anim_warm_water.webp" alt="Animated maps of the depth of the 20 °C isotherm across the tropical Pacific from July 2025 to August 2026 for 2026, 2015, 1997 and 1982 and the 1991–2020 normal. In August, the equatorial warm water volume departed from normal by +3.2 × 10¹⁴ m³ in 2026, +1.0 × 10¹⁴ m³ in 2015, +1.4 × 10¹⁴ m³ in 1997 and +2.2 × 10¹⁴ m³ in 1982." width="2600" height="3687" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(10 MB)</span></button></div><figcaption><b>Figure 3. Animation: warm water moving across the Pacific.</b> Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial <span class="term" tabindex="0" data-def="The volume of water warmer than 20 °C near the equator (5°S–5°N, 120°E–80°W). It builds up before an El Niño and is drained by it.">warm water volume<span class="vh"> (The volume of water warmer than 20 °C near the equator (5°S–5°N, 120°E–80°W). It builds up before an El Niño and is drained by it.)</span></span> (5°S–5°N) and its departure from normal. <a href="img/03_anim_warm_water.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/03_anim_warm_water.png" target="_blank" rel="noopener">still image of the final frame</a>.<details class="how"><summary>How to read this figure</summary><p>Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C isotherm). Dark red means warm water extends deep; blue means the warm layer is thin. Watch the band between the dashed lines: during El Niño the red area spreads east along the equator.</p></details></figcaption></figure>
+<figure id="g4"><p class="takeaway">The hottest water has grown the most: the volume warmer than 28 °C is far above normal and above 2015, 1997 and 1982 at the same stage.</p><div class="player"><img src="img/04_anim_warm_layers.png" data-anim="img/04_anim_warm_layers.webp" alt="Animated equatorial Pacific sections coloured by temperature layer from July 2025 to August 2026 for 2026, 2015, 1997, 1982 and Normal (1991–2020), with bars of warm water volume by layer. In August, water above 28 °C between 5°S and 5°N totalled 13.2 × 10¹⁴ m³ in 2026, 9.9 × 10¹⁴ m³ in 2015, 10.2 × 10¹⁴ m³ in 1997, 8.9 × 10¹⁴ m³ in 1982 and 7.5 × 10¹⁴ m³ in Normal (1991–2020); water above 20 °C totalled 26.5, 24.3, 24.7, 25.5 and 23.3 × 10¹⁴ m³ respectively." width="2600" height="3189" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b>Figure 4. Animation: layers of warm water.</b> Equatorial sections coloured by temperature layer (20–24, 24–26, 26–28, 28–29 and above 29 °C) for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the volume of water in each layer between 5°S and 5°N, from July of the year before onset to the latest month. <a href="img/04_anim_warm_layers.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/04_anim_warm_layers.png" target="_blank" rel="noopener">still image of the final frame</a>.<details class="how"><summary>How to read this figure</summary><p>Each slice runs along the equator from Asia (left) to South America (right) and from 5 m down to 200 m. Colours mark temperature layers, from below 20 °C (dark blue) to above 29 °C (dark red). The dashed lines show where 20 °C and 28 °C normally lie; red reaching below or east of them means more warm water than usual. The bar beside each slice adds up the volume in each layer, warmest on the left.</p></details></figcaption></figure>
+<h2 class="section">Kelvin waves</h2><p class="intro">Pulses of warm water that cross the Pacific beneath the surface, followed in daily satellite sea level.</p>
+<figure id="g5"><p class="takeaway">A series of Kelvin waves has carried warm water from the western Pacific to South America since late 2025, each one adding to the warm layer in the east.</p><div class="player"><img src="img/05_anim_kelvin.png" data-anim="img/05_anim_kelvin.webp" alt="Animated infographic of Kelvin waves along the equatorial Pacific from July 2025 to 14 October 2026, from daily satellite sea level. 6 Kelvin waves crossed the Pacific: wave 1 left 150°E on 7 December and reached 95°W on 28 January 2026 at 2.8 m/s; wave 2 left 150°E on 24 January and reached 95°W on 14 March 2026 at 3.0 m/s; wave 3 left 150°E on 20 March and reached 95°W on 7 May 2026 at 3.0 m/s; wave 4 left 150°E on 12 April and reached 95°W on 27 May 2026 at 3.2 m/s; wave 5 left 150°E on 13 July and reached 95°W on 29 August 2026 at 3.1 m/s; wave 6 left 150°E on 1 September and reached 95°W on 13 October 2026 at 3.4 m/s. Sea level east of 130°W rose from -1 cm to +46 cm over the period." width="2598" height="2209" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b>Figure 5. Animation: Kelvin waves.</b> Every Kelvin wave since July 2025 traced in daily satellite sea level along the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific. <a href="img/05_anim_kelvin.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/05_anim_kelvin.png" target="_blank" rel="noopener">still image of the final frame</a>.<details class="how"><summary>How to read this figure</summary><p>Top: total sea level along the equator on the day shown, rising in the east as warm water piles up. Bottom: the Kelvin-wave signal day by day, with time running down the page, so each wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has crossed the Pacific.</p></details></figcaption></figure>
+<figure id="g6"><p class="takeaway">Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm water piled up, with Kelvin-wave ridges arriving one after another.</p><div class="player"><img src="img/06_anim_sealevel_3d.png" data-anim="img/06_anim_sealevel_3d.webp" alt="Animated 3D landscape of sea level across the tropical Pacific from July 2025 to 14 October 2026. Ridges travel east along the equator as Kelvin waves, and sea level on the equator east of 130°W rises from -1 cm to +42 cm." width="2598" height="1638" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b>Figure 6. Animation: sea level in 3D.</b> Daily satellite sea level across the tropical Pacific drawn as a 3D landscape, July 2025 to the latest day: Kelvin waves travel east along the equator as the eastern Pacific rises. <a href="img/06_anim_sealevel_3d.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/06_anim_sealevel_3d.png" target="_blank" rel="noopener">still image of the final frame</a>.<details class="how"><summary>How to read this figure</summary><p>The landscape is the tropical Pacific seen from the south, with Asia to the left and South America to the right; its height and colour are the sea level <span class="term" tabindex="0" data-def="The difference from normal (the 1991–2020 average) for the same time of year; +2 °C means 2 °C warmer than usual.">anomaly<span class="vh"> (The difference from normal (the 1991–2020 average) for the same time of year; +2 °C means 2 °C warmer than usual.)</span></span>. Watch the red ridge along the equator: bumps that move from left to right are Kelvin waves, and the ridge grows as warm water accumulates in the east.</p></details></figcaption></figure>
+<h2 class="section">Along the equator</h2><p class="intro">Vertical slices through the ocean along the equator, from Asia to South America.</p>
+<figure id="g7"><p class="takeaway">In 2026 the 20 °C line is nearly flat across the Pacific: the cold water that normally lies close to the surface in the east has been pushed down.</p><div class="player"><img src="img/07_anim_upper_ocean.png" data-anim="img/07_anim_upper_ocean.webp" alt="Animated depth–longitude sections of equatorial Pacific ocean temperature from January to August for 2026, 2015, 1997 and 1982 and the 1991–2020 normal. In August, the upper 200 m east of 180° departed from normal by +4.2 °C in 2026, +2.3 °C in 2015, +2.6 °C in 1997 and +2.0 °C in 1982." width="2598" height="3168" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b>Figure 7. Animation: upper-ocean temperature, 2026 and past very strong events.</b> Animated equatorial upper-ocean temperature sections for 2026, 2015, 1997, 1982 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens. <a href="img/07_anim_upper_ocean.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/07_anim_upper_ocean.png" target="_blank" rel="noopener">still image of the final frame</a>.<details class="how"><summary>How to read this figure</summary><p>Each panel is a vertical slice through the ocean along the equator, from Asia (left) to South America (right) and from the surface (top) to 200 m depth (bottom). Warm colours above the black line are the warm upper layer. Normally the line rises toward the east; during El Niño it flattens.</p></details></figcaption></figure>
+<figure id="g8"><p class="takeaway">The upper ocean holds far more extra heat in 2026 than in any past very strong event at the same stage.</p><a href="img/08_subsurface_comparison.png" target="_blank" rel="noopener"><img src="img/08_subsurface_comparison.png" alt="Depth-by-longitude slices of the equatorial Pacific in August of 1982, 1997, 2015, 2026. Average extra warmth in the top 200 m from 180° to 80°W: 1982: +2.0 °C; 1997: +2.6 °C; 2015: +2.3 °C; 2026: +4.2 °C." width="2600" height="2440" decoding="async"></a><figcaption><b>Figure 8. Upper-ocean temperature by event.</b> Equatorial upper-ocean temperature at the same stage of each event; the current event holds substantially more subsurface heat.<details class="how"><summary>How to read this figure</summary><p>Each panel is a vertical slice along the equator, from Asia (left) to South America (right), down to 200 m. Colours show how much warmer (red) or cooler (blue) than normal the water is.</p></details></figcaption></figure>
+<figure id="g9"><p class="takeaway">Warm water spreading east beneath the surface has built a larger heat reservoir in 2026 than in past very strong events.</p><a href="img/09_hovmoller_upper_ocean.png" target="_blank" rel="noopener"><img src="img/09_hovmoller_upper_ocean.png" alt="Longitude–time diagrams of upper-200 m temperature anomalies along the equatorial Pacific for 1982–83, 1997–98, 2015–16 and 2026–27. Central–eastern Pacific mean in August: 2026 +4.2 °C; 1982 +2.0 °C; 1997 +2.6 °C; 2015 +2.3 °C." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 9. Upper-ocean heat content (Hovmöller).</b> The same layout for the average temperature of the upper 200 m; warm water spreading east beneath the surface marks Kelvin waves.<details class="how"><summary>How to read this figure</summary><p>Time runs down the page, one row per month; position runs left to right from the western Pacific to South America. Colours show the average temperature anomaly of the top 200 m. Diagonal streaks running down and to the right are Kelvin waves: pulses of warm water that cross the Pacific beneath the surface in about two months.</p></details></figcaption></figure>
+
+<footer>
+  <p><b>Data</b> (all public, from NOAA):</p>
+  <ul>
+    <li>NCEP GODAS ocean reanalysis: NOAA NCEP, via NOAA PSL</li>
+    <li>Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP</li>
+    <li>Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center</li>
+  </ul>
+  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and methods:
+  <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
+</footer>
+</main>
+<script>
+// Glossary: show a term's definition on hover, keyboard focus or tap
+(() => {
+  const tip = document.createElement("div");
+  tip.className = "gloss-tip"; tip.hidden = true; document.body.appendChild(tip);
+  const show = t => {
+    tip.replaceChildren();
+    const b = document.createElement("b"); b.textContent = t.firstChild.textContent;
+    tip.append(b, document.createTextNode(t.dataset.def)); tip.hidden = false;
+    const r = t.getBoundingClientRect(), w = tip.offsetWidth;
+    tip.style.left = Math.max(16, Math.min(r.left + scrollX, scrollX + innerWidth - w - 16)) + "px";
+    tip.style.top = (r.bottom + scrollY + 6) + "px";
+  };
+  const hide = () => { tip.hidden = true; };
+  document.querySelectorAll(".term").forEach(t => {
+    t.addEventListener("mouseenter", () => show(t)); t.addEventListener("mouseleave", hide);
+    t.addEventListener("focus", () => show(t)); t.addEventListener("blur", hide);
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+})();
+// Animations load only when played
+document.querySelectorAll(".player .play").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const img = btn.parentElement.querySelector("img");
+    btn.disabled = true; btn.textContent = "Loading animation…";
+    img.addEventListener("load", () => btn.remove(), {once: true});
+    img.src = img.dataset.anim;
+  });
+});
+</script>
+</body>
+</html>

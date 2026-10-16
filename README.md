@@ -7,7 +7,9 @@ built entirely from public NOAA data. By Dylan Hahn.
 
 | Tab | Contents |
 |---|---|
-| El Niño 2026 | "What's happening now" summary, "Why this El Niño is different", animations and an interactive explorer comparing 2026 with every El Niño since 1950, Hovmöller diagrams, Niño regions, event ranking, forecast verification, global temperature |
+| El Niño 2026 | Start here, "What's happening now", "Why this El Niño stands out", sea surface animation, development compared with every El Niño since 1950 (animation and interactive explorer), ranking, NOAA forecast, global temperature |
+| Below the surface | 3D animation and interactive 3D model, warm water and warm-water layers, Kelvin waves, sea level in 3D, equatorial sections |
+| Detailed comparisons | Surface maps by event, Niño regions, equatorial SST Hovmöller, forecast verification |
 | Southern California Heat | Warming since 1895, marine heatwaves in the Southern California Bight, summer 2026 anomaly maps, station warm nights and hot days |
 | Southern California Precipitation | NOAA seasonal outlook, precipitation in strong El Niño winters, station rainfall by ENSO phase |
 | Methods & data | Data sources, definitions, methods by figure, limitations, citation |
@@ -32,7 +34,7 @@ GitHub Pages republishes the site a minute or two after the push. Other options:
 
 ```bash
 python update_site.py                       # rebuild from cached data
-python update_site.py --pages socal-heat    # rebuild one tab's figures (el-nino, socal-heat, socal-precip)
+python update_site.py --pages socal-heat    # rebuild one tab's figures (el-nino, ocean, compare, socal-heat, socal-precip)
 python update_site.py --site-only           # rewrite the pages only (e.g. after editing text)
 python update_site.py --pages el-nino --figures anim_3d.py   # rebuild only some figures
 python summary.py                           # print the "What's happening now" summary
@@ -51,7 +53,7 @@ site/page.html          page layout, styles, glossary tooltips and click-to-play
 site/methods.html       Methods & data text;  site/explainer.html  "Start here" diagram and text
 docs/                   the published website (GitHub Pages)
 
-Figures, El Niño tab              Figures, Southern California tabs
+Figures, El Niño tabs             Figures, Southern California tabs
   anim_timeseries.py                socal_warming_since_1895.py
   interactive_data.py               socal_marine_heat.py
   anim_sst.py                       socal_summer_anomalies.py

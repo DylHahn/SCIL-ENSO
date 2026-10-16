@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCIL ENSO · The 2026–27 El Niño: detailed comparisons</title>
+<meta name="description" content="Further comparisons of the 2026–27 El Niño with the very strong events of 2015, 1997 and 1982, and a record of how NOAA&#x27;s forecasts for this event have performed.">
+<style>
+  :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
+          --accent: #e8574a; --line: #2b2b2a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  a { color: var(--text-2); }
+  a:hover { color: var(--text); }
+  .site { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
+          padding: 8px 0 16px; }
+  .site .brand { font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }
+  .site .brand span { color: var(--accent); }
+  .site .author { color: var(--text-2); font-size: 15px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
+  .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
+            margin-bottom: -1px; font-weight: 500; }
+  .tabs a:hover { color: var(--text); }
+  .tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+  header p.kicker { color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+                    font-size: 14px; margin: 0 0 8px; }
+  h1 { font-size: clamp(28px, 4.5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+  h2 { font-size: 22px; margin: 32px 0 8px; }
+  .lede { color: var(--text-2); font-size: 19px; max-width: 760px; margin: 0 0 12px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .summary { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0;
+             padding: 20px 28px 22px; margin: 0 0 40px; }
+  .summary h2 { margin: 0 0 12px; font-size: 20px; }
+  .summary dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; }
+  .summary dt { color: var(--text); font-weight: 600; }
+  .summary dd { margin: 0; color: var(--text-2); }
+  .summary .asof { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+  @media (max-width: 640px) { .summary dl { grid-template-columns: 1fr; gap: 2px 0; }
+                              .summary dd { margin-bottom: 10px; } }
+  .toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 28px;
+         padding: 20px 24px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
+  .toc-group p { margin: 0 0 6px; color: var(--text); font-weight: 600; font-size: 15px; }
+  .toc ol { margin: 0; padding-left: 26px; font-size: 15px; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { color: var(--text-2); text-decoration: none; }
+  .toc a:hover { color: var(--text); text-decoration: underline; }
+  p.intro { color: var(--text-2); font-size: 18px; max-width: 820px; margin: -12px 0 32px; }
+  h2.section { font-size: 26px; margin: 8px 0 24px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  figure { margin: 0 0 64px; scroll-margin-top: 24px; }
+  figure a { display: block; }
+  img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
+  figcaption { margin-top: 14px; color: var(--text-2); max-width: 820px; }
+  figcaption a { display: inline; }
+  figcaption b { color: var(--text); }
+  .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
+          color: var(--text-2); }
+  .note h2 { color: var(--text); }
+  .prose { color: var(--text-2); max-width: 900px; margin: 0 0 56px; }
+  .prose h2 { color: var(--text); }
+  .prose dt { color: var(--text); font-weight: 600; margin-top: 12px; }
+  .prose dd { margin: 2px 0 0 0; }
+  .prose li { margin-bottom: 8px; }
+  .prose b { color: var(--text); }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 8px 0 12px; }
+  .prose th, .prose td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .prose th { color: var(--text); font-weight: 600; }
+  .prose code { background: var(--surface); padding: 1px 6px; border-radius: 4px; }
+  @media (max-width: 640px) {
+    .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            margin-bottom: 28px; }
+    .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
+    .prose table { display: block; overflow-x: auto; }
+  }
+  .diffs { counter-reset: d; list-style: none; padding: 0; margin: 0 0 48px; display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .diffs li { counter-increment: d; background: var(--surface); border-radius: 10px; padding: 16px 18px 16px 52px;
+              position: relative; color: var(--text-2); font-size: 15.5px; line-height: 1.55; }
+  .diffs li::before { content: counter(d); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px;
+                      border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700;
+                      font-size: 14px; display: grid; place-items: center; }
+  .diffs b { display: block; color: var(--text); font-size: 16.5px; margin-bottom: 4px; }
+  /* interactive event explorer */
+  .explorer { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .ex-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ex-controls button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                        border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .ex-controls button:hover { color: var(--text); border-color: var(--muted); }
+  .ex-controls button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .ex-desc { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .ex-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
+  .ex-chart { position: relative; outline: none; touch-action: pan-y; }
+  .ex-chart:focus-visible { box-shadow: 0 0 0 2px var(--muted); border-radius: 6px; }
+  .explorer svg { display: block; width: 100%; overflow: visible; }
+  .explorer .ex-gl { stroke: var(--line); stroke-width: 1; }
+  .explorer .ex-zero { stroke: var(--text-2); stroke-width: 1; }
+  .explorer .ex-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .explorer .ex-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer; }
+  .explorer .ex-tick { fill: var(--muted); font-size: 12px; }
+  .explorer .ex-sub { font-size: 11px; }
+  .explorer .ex-lab { fill: var(--text-2); font-size: 12.5px; font-weight: 600; }
+  .explorer .ex-now { fill: var(--text); font-weight: 700; }
+  .ex-tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line);
+            border-radius: 8px; padding: 8px 10px; font-size: 13px; min-width: 210px; z-index: 2;
+            box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+  .ex-tip p { margin: 0; line-height: 1.55; color: var(--text-2); white-space: nowrap; }
+  .ex-tip .ex-tip-h { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+  .ex-tip b { color: var(--text); margin-right: 2px; }
+  .ex-tip .ex-now span:last-child { color: var(--text); font-weight: 600; }
+  .ex-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle;
+            margin-right: 7px; }
+  .ex-rank-title { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+  .ex-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 12px 0 4px;
+               font-size: 14px; color: var(--text-2); }
+  .ex-legend select { font: inherit; font-size: 13px; color: var(--text-2); background: var(--bg);
+                      border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+  .ex-table summary { cursor: pointer; color: var(--text-2); font-size: 14px; margin: 8px 0; }
+  .ex-table-wrap { overflow-x: auto; }
+  .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+  .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
+  .ex-table th { color: var(--text); font-weight: 600; }
+  /* "Start here" explainer */
+  .explainer { background: var(--surface); border-radius: 10px; padding: 20px 24px 18px; margin: 0 0 40px; }
+  .explainer h2 { margin: 0 0 14px; font-size: 22px; }
+  .ex-diagrams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  @media (max-width: 760px) { .ex-diagrams { grid-template-columns: 1fr; } }
+  .ex-diagrams svg { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px;
+                     color: var(--text-2); font-family: inherit; }
+  .dg-title { fill: var(--text); font-size: 17px; font-weight: 700; }
+  .dg-accent { fill: var(--accent); }
+  .dg-label { fill: var(--text); font-size: 13px; font-weight: 600; }
+  .dg-small { fill: var(--text-2); font-size: 12px; }
+  .dg-dark { fill: #fff; }
+  .dg-light { fill: #cde2fb; }
+  .dg-land { fill: #3a3936; }
+  .dg-thermo { fill: none; stroke: #fff; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .8; }
+  .dg-cloud { fill: #77766f; }
+  .dg-rain line { stroke: #86b6ef; stroke-width: 2; stroke-linecap: round; }
+  .dg-wind line, .dg-flow line, .dg-up line { stroke: currentColor; stroke-width: 2.5; }
+  .dg-wind { color: var(--text); }
+  .dg-flow { color: #fff; }
+  .dg-up { color: #cde2fb; }
+  .ex-text { color: var(--text-2); max-width: 900px; }
+  .ex-text p { margin: 10px 0; }
+  .ex-text b { color: var(--text); }
+  .ex-more { font-size: 15px; }
+  /* reading aids */
+  .takeaway { color: var(--text); font-size: 18px; font-weight: 600; line-height: 1.45; margin: 0 0 12px;
+              max-width: 900px; padding-left: 12px; border-left: 3px solid var(--accent); }
+  .how { margin-top: 10px; }
+  .how summary { cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600; width: fit-content; }
+  .how p { margin: 6px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 15.5px; }
+  .term { border-bottom: 1px dotted var(--muted); cursor: help; }
+  .term:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; border-radius: 2px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .gloss-tip { position: absolute; z-index: 10; max-width: min(320px, calc(100vw - 32px)); background: var(--bg);
+               color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
+               font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
+  .gloss-tip b { color: var(--text); display: block; }
+  .player { position: relative; }
+  .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
+          font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
+          border-radius: 999px; padding: 12px 22px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5);
+          white-space: nowrap; }
+  .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
+  .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
+  /* interactive 3D view */
+  .ocean3d { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .o3-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; }
+  .o3-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .o3-group button, .o3-time button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                     border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .o3-group button:hover, .o3-time button:hover { color: var(--text); border-color: var(--muted); }
+  .o3-group button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .o3-group button:disabled { opacity: .35; cursor: default; }
+  .o3-stage { position: relative; height: min(600px, 70vh); min-height: 380px; background: var(--bg);
+              border-radius: 8px; }
+  .o3-plot { position: absolute; inset: 0; }
+  .o3-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+              gap: 14px; text-align: center; color: var(--text-2); padding: 16px; }
+  .o3-cover p { margin: 0; }
+  .o3-cover .play { position: static; transform: none; }
+  .o3-time { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .o3-time input { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .o3-month { color: var(--text); font-weight: 600; min-width: 80px; }
+  .o3-time [hidden] { display: none; }
+  .o3-zoom { min-width: 34px; }
+  .o3-opacity { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 8px; font-size: 14px; color: var(--text-2); }
+  .o3-opacity[hidden] { display: none; }
+  .o3-opacity label { display: flex; align-items: center; gap: 7px; }
+  .o3-opacity input { width: 110px; accent-color: var(--accent); }
+  .o3-lead { color: var(--muted); }
+  .o3-swatch { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+  .o3-readout { position: absolute; left: 12px; top: 10px; margin: 0; padding: 6px 10px; font-size: 14px;
+                color: var(--text); background: rgba(13,13,14,.78); border-radius: 6px; max-width: calc(100% - 24px); }
+  .o3-readout[hidden] { display: none; }
+  .o3-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 900px; }
+  footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
+  footer ul, .note ul { padding-left: 20px; }
+</style>
+</head>
+<body>
+<main>
+<div class="site">
+  <a class="brand" href="../">SCIL <span>ENSO</span></a>
+  <span class="author">Dylan Hahn</span>
+</div>
+<nav class="tabs" aria-label="Pages">
+  <a href="../">El Niño 2026</a>
+  <a href="../ocean/">Below the surface</a>
+  <a href="../compare/" aria-current="page">Detailed comparisons</a>
+  <a href="../socal/">Southern California Heat</a>
+  <a href="../socal-precip/">Southern California Precipitation</a>
+  <a href="../methods/">Methods &amp; data</a>
+</nav>
+<header>
+  <p class="kicker">El Niño 2026–27 · Detailed comparisons</p>
+  <h1>Detailed comparisons with past very strong El Niños</h1>
+  <p class="lede">Further comparisons of the 2026–27 <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span> with the very strong events of 2015, 1997 and 1982, and a record of how NOAA&#x27;s forecasts for this event have performed.</p>
+  <p class="meta">Updated October 16, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+</header>
+
+
+<nav class="toc" aria-label="Figures on this page">
+<div class="toc-group"><p>At the same point in the year</p><ol><li value="1"><a href="#g1">Sea surface temperature by event</a></li><li value="2"><a href="#g2">Warming across the Niño regions</a></li><li value="3"><a href="#g3">Equatorial SST evolution (Hovmöller)</a></li></ol></div>
+<div class="toc-group"><p>How well were the forecasts doing?</p><ol><li value="4"><a href="#g4">Verification of NOAA&#x27;s 2026 forecasts</a></li></ol></div>
+</nav>
+<h2 class="section">At the same point in the year</h2><p class="intro">The surface of the tropical Pacific in 2026 and in the very strong El Niños of 2015, 1997 and 1982.</p>
+<figure id="g1"><p class="takeaway">In the same month, 2026 is warmer than past very strong events both in the <span class="term" tabindex="0" data-def="A region of the central equatorial Pacific (5°S–5°N, 170°W–120°W) whose temperature is the main measure of El Niño.">Niño 3.4<span class="vh"> (A region of the central equatorial Pacific (5°S–5°N, 170°W–120°W) whose temperature is the main measure of El Niño.)</span></span> region and across the tropical Pacific as a whole.</p><a href="img/01_surface_comparison.png" target="_blank" rel="noopener"><img src="img/01_surface_comparison.png" alt="Four maps of tropical Pacific surface temperature in August of 1982, 1997, 2015, 2026. 1982: Niño 3.4 +0.5 °C, whole tropics -0.3 °C; 1997: Niño 3.4 +1.7 °C, whole tropics +0.1 °C; 2015: Niño 3.4 +1.7 °C, whole tropics +0.4 °C; 2026: Niño 3.4 +2.1 °C, whole tropics +0.8 °C." width="2600" height="1600" decoding="async"></a><figcaption><b>Figure 1. Sea surface temperature by event.</b> Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with Niño 3.4 and tropical-mean <span class="term" tabindex="0" data-def="Differences from normal (the 1991–2020 average) for the same time of year.">anomalies<span class="vh"> (Differences from normal (the 1991–2020 average) for the same time of year.)</span></span>.</figcaption></figure>
+<figure id="g2"><p class="takeaway">Warming is strongest near South America and weakest in the western Pacific, a pattern closest to 1997–98.</p><a href="img/02_nino_regions.png" target="_blank" rel="noopener"><img src="img/02_nino_regions.png" alt="Line charts of monthly SST anomalies in the Niño 4, 3.4, 3 and 1+2 regions for 1982–83, 1997–98, 2015–16 and 2026–27. In September 2026: Niño 4 +0.9 °C; Niño 3.4 +2.8 °C; Niño 3 +3.6 °C; Niño 1+2 +4.7 °C. Closest past event at the same stage: 1997–98." width="2600" height="1840" decoding="async"></a><figcaption><b>Figure 2. Warming across the Niño regions.</b> Location of the four Niño regions and their monthly anomalies, showing where along the equator the warming is concentrated.<details class="how"><summary>How to read this figure</summary><p>The map shows the four standard boxes along the equator, from <span class="term" tabindex="0" data-def="The western-central equatorial Pacific, 5°S–5°N, 160°E–150°W.">Niño 4<span class="vh"> (The western-central equatorial Pacific, 5°S–5°N, 160°E–150°W.)</span></span> in the west to <span class="term" tabindex="0" data-def="The region off the coasts of Peru and Ecuador (10°S–0°, 90°W–80°W).">Niño 1+2<span class="vh"> (The region off the coasts of Peru and Ecuador (10°S–0°, 90°W–80°W).)</span></span> off South America. Each chart plots how much warmer than normal one box has been, month by month.</p></details></figcaption></figure>
+<figure id="g3"><p class="takeaway">Surface warming in the eastern Pacific is stronger in 2026 than at the same time in any past very strong event.</p><a href="img/03_hovmoller_sst.png" target="_blank" rel="noopener"><img src="img/03_hovmoller_sst.png" alt="Longitude–time diagrams of sea surface temperature anomalies along the equatorial Pacific for 1982–83, 1997–98, 2015–16, 2026–27. Maximum eastern Pacific anomaly in September: 2026 +4.7 °C; 1982 +2.5 °C; 1997 +3.7 °C; 2015 +3.0 °C." width="2600" height="2080" decoding="async"></a><figcaption><b>Figure 3. Equatorial SST evolution (Hovmöller).</b> Sea surface temperature along the equator, month by month (rows, top to bottom) and from the western Pacific to South America (left to right), for four very strong events.<details class="how"><summary>How to read this figure</summary><p>Time runs down the page, one row per month; position runs left to right from the western Pacific to South America. Red marks warmer-than-normal water. Warmth that slants down and to the right is moving east over time.</p></details></figcaption></figure>
+<h2 class="section">How well were the forecasts doing?</h2>
+<figure id="g4"><p class="takeaway">NOAA&#x27;s confidence in a very strong peak has risen with every forecast issued since April 2026.</p><a href="img/04_forecast_verification.png" target="_blank" rel="noopener"><img src="img/04_forecast_verification.png" alt="Verification of NOAA&#x27;s 2026 El Niño strength forecasts. For Jul–Sep 2026 (observed +1.69 °C, strong), forecasts by issue month gave the observed category: April 11%; May 17%; June 36%; July 57%; August 76%. Probability of a very strong peak in Nov 2026–Jan 2027 by issue: April 25%; May 37%; June 63%; July 75%; August 90%; September 93%; October 96%." width="2600" height="1840" decoding="async"></a><figcaption><b>Figure 4. Verification of NOAA&#x27;s 2026 forecasts.</b> Each monthly NOAA strength forecast issued since April 2026 compared with the observed <span class="term" tabindex="0" data-def="Relative Oceanic Niño Index, NOAA&#x27;s official El Niño index: the Niño 3.4 anomaly measured relative to the average of the whole tropical ocean. Three-month averages.">RONI<span class="vh"> (Relative Oceanic Niño Index, NOAA&#x27;s official El Niño index: the Niño 3.4 anomaly measured relative to the average of the whole tropical ocean. Three-month averages.)</span></span>, and how confidence in a very strong peak has evolved.</figcaption></figure>
+
+<footer>
+  <p><b>Data</b> (all public, from NOAA):</p>
+  <ul>
+    <li>OISST v2.1 and ERSST v5 sea surface temperature: NOAA NCEI, via NOAA PSL</li>
+    <li>Monthly Niño region indices (OISST v2.1): NOAA Climate Prediction Center</li>
+    <li>Relative Oceanic Niño Index (RONI), outlook and strength probabilities: NOAA Climate Prediction Center</li>
+  </ul>
+  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and methods:
+  <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
+</footer>
+</main>
+<script>
+// Glossary: show a term's definition on hover, keyboard focus or tap
+(() => {
+  const tip = document.createElement("div");
+  tip.className = "gloss-tip"; tip.hidden = true; document.body.appendChild(tip);
+  const show = t => {
+    tip.replaceChildren();
+    const b = document.createElement("b"); b.textContent = t.firstChild.textContent;
+    tip.append(b, document.createTextNode(t.dataset.def)); tip.hidden = false;
+    const r = t.getBoundingClientRect(), w = tip.offsetWidth;
+    tip.style.left = Math.max(16, Math.min(r.left + scrollX, scrollX + innerWidth - w - 16)) + "px";
+    tip.style.top = (r.bottom + scrollY + 6) + "px";
+  };
+  const hide = () => { tip.hidden = true; };
+  document.querySelectorAll(".term").forEach(t => {
+    t.addEventListener("mouseenter", () => show(t)); t.addEventListener("mouseleave", hide);
+    t.addEventListener("focus", () => show(t)); t.addEventListener("blur", hide);
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+})();
+// Animations load only when played
+document.querySelectorAll(".player .play").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const img = btn.parentElement.querySelector("img");
+    btn.disabled = true; btn.textContent = "Loading animation…";
+    img.addEventListener("load", () => btn.remove(), {once: true});
+    img.src = img.dataset.anim;
+  });
+});
+</script>
+</body>
+</html>

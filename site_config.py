@@ -18,65 +18,27 @@ PAGES = [
         key="el-nino", slug="", tab="El Niño 2026",
         title="The 2026–27 El Niño in historical context", kicker="El Niño 2026–27",
         h1="The 2026–27 El Niño in historical context",
-        lede="A strong El Niño is developing in the equatorial Pacific. These figures compare its surface and "
-             "subsurface evolution with the strongest events since 1950, using NOAA observations, reanalysis "
-             "and official forecasts.",
+        lede="A strong El Niño is developing in the equatorial Pacific. This page summarises how it compares with "
+             "the strongest events since 1950; the next two tabs look below the surface and at further "
+             "comparisons. All figures use NOAA observations, reanalysis and official forecasts.",
         summary=True, explainer=True,
         figures=[
-            ('section', 'Why this El Niño stands out', 'The key findings, recomputed from the latest NOAA data at every update. The sections below show the evidence, starting at the ocean surface.'),
+            ("section", 'Why this El Niño stands out',
+             "The key findings, recomputed from the latest NOAA data at every update."),
             ("differences",),
-            ('section', '1. At the surface: where the warm water is', 'El Niño begins with warm water spreading east along the equator. These figures show the sea surface across the tropical Pacific in 2026, in past very strong events and in a normal year.'),
+            ("section", 'At the surface',
+             "El Niño begins with warm water spreading east along the equator."),
             ('anim_sst.py', True, 'Animation: sea surface temperature, 2026 and past very strong events',
              "Animated month-by-month sea surface temperature across the tropical Pacific (NOAA OISST, 0.25°), "
-             "January to the latest month, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the Niño 3.4 "
-             "average for each."),
-            ('surface_comparison.py', True, 'Sea surface temperature by event',
-             "Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with "
-             "Niño 3.4 and tropical-mean anomalies."),
-            ('nino_regions.py', True, 'Warming across the Niño regions',
-             "Location of the four Niño regions and their monthly anomalies, showing where along the equator the "
-             "warming is concentrated."),
-            ('hovmoller_sst.py', True, 'Equatorial SST evolution (Hovmöller)',
-             "Sea surface temperature along the equator, month by month (rows, top to bottom) and from the western "
-             "Pacific to South America (left to right), for four very strong events."),
-            ('section', '2. Below the surface: the heat that fuels it', 'The surface is only part of the picture. Warm water stored in the upper 200 metres of the ocean supplies heat to the surface and can sustain an El Niño for months.'),
-            ('anim_3d.py', False, 'Animation: the tropical Pacific in 3D',
-             "Rotating 3D view of the tropical Pacific in a normal year and in 2026: the top surface is the "
-             "temperature at 5 m and the lower surface the base of the warm layer (the 20 °C isotherm), from July "
-             "of the year before onset to the latest month."),
-            ('interactive_3d_data.py', False, 'Interactive 3D: warm layer, temperature layers and hottest water',
-             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal, "
-             "month by month. Warm layer: the sea surface above the base of the warm layer (20 °C). Temperature layers: "
-             "the depths of the 20, 24, 26 and 28 °C isotherms. Hottest water: the volume of water above 28 and "
-             "29 °C."),
-            ('anim_warm_water.py', False, 'Animation: warm water moving across the Pacific',
-             "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July "
-             "of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial "
-             "warm water volume (5°S–5°N) and its departure from normal."),
-            ('anim_warm_layers.py', False, 'Animation: layers of warm water',
-             "Equatorial sections coloured by temperature layer (20–24, 24–26, 26–28, 28–29 and above 29 °C) for "
-             "2026, 2015, 1997, 1982 and the 1991–2020 normal, with the volume of water in each layer between 5°S "
-             "and 5°N, from July of the year before onset to the latest month."),
-            ('anim_kelvin.py', True, 'Animation: Kelvin waves',
-             "Every Kelvin wave since July 2025 traced in daily satellite sea level along the equator: each pulse "
-             "raises sea level by a few centimetres as it crosses the Pacific."),
-            ('anim_sealevel_3d.py', True, 'Animation: sea level in 3D',
-             "Daily satellite sea level across the tropical Pacific drawn as a 3D landscape, July 2025 to the latest "
-             "day: Kelvin waves travel east along the equator as the eastern Pacific rises."),
-            ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026 and past very strong events',
-             "Animated equatorial upper-ocean temperature sections for 2026, 2015, 1997, 1982 and the 1991–2020 "
-             "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
-            ('subsurface_comparison.py', True, 'Upper-ocean temperature by event',
-             "Equatorial upper-ocean temperature at the same stage of each event; the current event holds "
-             "substantially more subsurface heat."),
-            ('hovmoller_upper_ocean.py', False, 'Upper-ocean heat content (Hovmöller)',
-             "The same layout for the average temperature of the upper 200 m; warm water spreading east beneath "
-             "the surface marks Kelvin waves."),
-            ('section', '3. Compared with every El Niño since 1950', 'How this event has developed compared with all 22 El Niño events since 1950, measured at the same point in the year.'),
+             "January to the latest month, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the Niño "
+             "3.4 average for each."),
+            ("section", 'Compared with every El Niño since 1950',
+             "How this event has developed compared with all 22 El Niño events since 1950, measured at the "
+             "same point in the year."),
             ('anim_timeseries.py', True, 'Animation: development compared with every El Niño since 1950',
-             "Monthly Niño 3.4, Niño 1+2 and upper-ocean anomalies for every El Niño since 1950, aligned by onset "
-             "year and drawn month by month; the box in each panel ranks the current event against all past events "
-             "at the same stage."),
+             "Monthly Niño 3.4, Niño 1+2 and upper-ocean anomalies for every El Niño since 1950, aligned by "
+             "onset year and drawn month by month; the box in each panel ranks the current event against all "
+             "past events at the same stage."),
             ('interactive_data.py', True, 'Interactive: explore every El Niño since 1950',
              "Choose a measure, then move across the chart to compare all events month by month; the bars rank "
              "every event at the selected month. Select any gray line, or use the menu, to highlight another "
@@ -84,18 +46,20 @@ PAGES = [
             ('event_ranking.py', True, 'Ranking of El Niño events since 1950',
              "El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the "
              "current event completed by NOAA's median forecast."),
-            ('section', '4. What comes next', "NOAA's official forecast for the coming months, how its earlier forecasts have performed, and El Niño's influence on global temperature."),
+            ("section", 'What comes next',
+             "NOAA's official forecast for the coming months and El Niño's influence on global temperature."),
             ('roni_vs_past_events.py', True, 'Event development vs. past very strong events',
-             "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four strongest "
-             "El Niño events since 1950, with NOAA's official forecast."),
-            ('forecast_verification.py', True, "Verification of NOAA's 2026 forecasts",
-             "Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and how "
-             "confidence in a very strong peak has evolved."),
+             "Development of the 2026–27 event in NOAA's Relative Oceanic Niño Index alongside the four "
+             "strongest El Niño events since 1950, with NOAA's official forecast."),
             ('global_temperature.py', True, 'Global temperature and El Niño',
              "Annual global mean surface temperature anomalies; recent record years have coincided with El Niño "
              "events."),
         ],
         extra="""<section class="note next">
+  <h2>More on this El Niño</h2>
+  <p><a href="ocean/">Below the surface</a>: the warm water stored in the upper ocean, in 3D, by temperature layer and
+  as Kelvin waves. <a href="compare/">Detailed comparisons</a>: surface maps of each very strong El Niño, the Niño
+  regions, and how NOAA's forecasts have performed.</p>
   <h2>What this means for Southern California</h2>
   <p>El Niño's effects reach California mainly through winter storms and coastal ocean temperatures. See
   <a href="socal/">Southern California Heat</a> for this year's summer and marine heat, and
@@ -108,6 +72,91 @@ PAGES = [
               "NOAAGlobalTemp v6 and global temperature series: NOAA NCEI",
               "Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP",
               "Monthly Niño region indices (OISST v2.1): NOAA Climate Prediction Center"],
+    ),
+    dict(
+        key="ocean", slug="ocean", tab="Below the surface",
+        title="The 2026–27 El Niño below the surface", kicker="El Niño 2026–27 · Below the surface",
+        h1="Below the surface: the warm water behind the 2026–27 El Niño",
+        lede="Most of an El Niño's heat is stored below the sea surface. These figures follow the warm water in the "
+             "upper few hundred metres of the equatorial Pacific: in 3D, by temperature layer and as Kelvin waves, "
+             "using NOAA's ocean reanalysis and daily satellite sea level.",
+        figures=[
+            ("section", 'The warm layer in 3D',
+             "Rotatable and animated 3D views of the upper ocean, built from NOAA's ocean reanalysis."),
+            ('anim_3d.py', False, 'Animation: the tropical Pacific in 3D',
+             "Rotating 3D view of the tropical Pacific in a normal year and in 2026: the top surface is the "
+             "temperature at 5 m and the lower surface the base of the warm layer (the 20 °C isotherm), from "
+             "July of the year before onset to the latest month."),
+            ('interactive_3d_data.py', False, 'Interactive 3D: warm layer, temperature layers and hottest water',
+             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 "
+             "normal, month by month. Warm layer: the sea surface above the base of the warm layer (20 °C). "
+             "Temperature layers: the depths of the 20, 24, 26 and 28 °C isotherms. Hottest water: the volume of "
+             "water above 28 and 29 °C."),
+            ("section", 'Warm water building up',
+             "How much warm water is stored in the equatorial Pacific, and how much of it is the hottest "
+             "water, above 28 °C."),
+            ('anim_warm_water.py', False, 'Animation: warm water moving across the Pacific',
+             "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July "
+             "of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial "
+             "warm water volume (5°S–5°N) and its departure from normal."),
+            ('anim_warm_layers.py', False, 'Animation: layers of warm water',
+             "Equatorial sections coloured by temperature layer (20–24, 24–26, 26–28, 28–29 and above 29 °C) for "
+             "2026, 2015, 1997, 1982 and the 1991–2020 normal, with the volume of water in each layer between "
+             "5°S and 5°N, from July of the year before onset to the latest month."),
+            ("section", 'Kelvin waves',
+             "Pulses of warm water that cross the Pacific beneath the surface, followed in daily satellite sea "
+             "level."),
+            ('anim_kelvin.py', True, 'Animation: Kelvin waves',
+             "Every Kelvin wave since July 2025 traced in daily satellite sea level along the equator: each "
+             "pulse raises sea level by a few centimetres as it crosses the Pacific."),
+            ('anim_sealevel_3d.py', True, 'Animation: sea level in 3D',
+             "Daily satellite sea level across the tropical Pacific drawn as a 3D landscape, July 2025 to the "
+             "latest day: Kelvin waves travel east along the equator as the eastern Pacific rises."),
+            ("section", 'Along the equator',
+             "Vertical slices through the ocean along the equator, from Asia to South America."),
+            ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026 and past very strong events',
+             "Animated equatorial upper-ocean temperature sections for 2026, 2015, 1997, 1982 and the 1991–2020 "
+             "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
+            ('subsurface_comparison.py', True, 'Upper-ocean temperature by event',
+             "Equatorial upper-ocean temperature at the same stage of each event; the current event holds "
+             "substantially more subsurface heat."),
+            ('hovmoller_upper_ocean.py', False, 'Upper-ocean heat content (Hovmöller)',
+             "The same layout for the average temperature of the upper 200 m; warm water spreading east beneath "
+             "the surface marks Kelvin waves."),
+        ],
+        extra="",
+        data=["NCEP GODAS ocean reanalysis: NOAA NCEP, via NOAA PSL",
+              "Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP",
+              "Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center"],
+    ),
+    dict(
+        key="compare", slug="compare", tab="Detailed comparisons",
+        title="The 2026–27 El Niño: detailed comparisons", kicker="El Niño 2026–27 · Detailed comparisons",
+        h1="Detailed comparisons with past very strong El Niños",
+        lede="Further comparisons of the 2026–27 El Niño with the very strong events of 2015, 1997 and 1982, and a "
+             "record of how NOAA's forecasts for this event have performed.",
+        figures=[
+            ("section", 'At the same point in the year',
+             "The surface of the tropical Pacific in 2026 and in the very strong El Niños of 2015, 1997 and "
+             "1982."),
+            ('surface_comparison.py', True, 'Sea surface temperature by event',
+             "Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with "
+             "Niño 3.4 and tropical-mean anomalies."),
+            ('nino_regions.py', True, 'Warming across the Niño regions',
+             "Location of the four Niño regions and their monthly anomalies, showing where along the equator the "
+             "warming is concentrated."),
+            ('hovmoller_sst.py', True, 'Equatorial SST evolution (Hovmöller)',
+             "Sea surface temperature along the equator, month by month (rows, top to bottom) and from the "
+             "western Pacific to South America (left to right), for four very strong events."),
+            ("section", 'How well were the forecasts doing?'),
+            ('forecast_verification.py', True, "Verification of NOAA's 2026 forecasts",
+             "Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and "
+             "how confidence in a very strong peak has evolved."),
+        ],
+        extra="",
+        data=["OISST v2.1 and ERSST v5 sea surface temperature: NOAA NCEI, via NOAA PSL",
+              "Monthly Niño region indices (OISST v2.1): NOAA Climate Prediction Center",
+              "Relative Oceanic Niño Index (RONI), outlook and strength probabilities: NOAA Climate Prediction Center"],
     ),
     dict(
         key="socal-heat", slug="socal", tab="Southern California Heat",
