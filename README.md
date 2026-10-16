@@ -61,7 +61,8 @@ Figures, El Niño tabs             Figures, Southern California tabs
   anim_warm_water.py
   anim_warm_layers.py
   anim_kelvin.py        (uses enso_sealevel.py)
-  anim_sealevel_3d.py   (uses enso_sealevel.py)
+  interactive_sealevel_data.py  (3D sea level view: site/sealevel3d.html)
+  anim_sealevel_3d.py   animated version (not on the site; for iCHARM or slides)
   anim_3d.py
   interactive_3d_data.py   (3D view: site/ocean3d.html)
   roni_vs_past_events.py            socal_precip_outlook.py   (uses socal_outlook.py)

@@ -42,7 +42,8 @@ def stem(i, script):
 
 
 # interactive figures: the script writes a JSON data file; the template draws it in the browser
-INTERACTIVE_TEMPLATES = {"interactive_data.py": "explorer.html", "interactive_3d_data.py": "ocean3d.html"}
+INTERACTIVE_TEMPLATES = {"interactive_data.py": "explorer.html", "interactive_3d_data.py": "ocean3d.html",
+                         "interactive_sealevel_data.py": "sealevel3d.html"}
 
 
 def is_interactive(script):

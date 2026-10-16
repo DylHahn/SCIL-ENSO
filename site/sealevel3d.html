@@ -1,0 +1,131 @@
+<figure id="{{ID}}" class="ocean3d" data-src="{{DATA}}">
+  {{TAKEAWAY}}
+  <div class="o3-bar">
+    <div class="o3-group o3-views" role="group" aria-label="View">
+      <button type="button" data-view="total" aria-pressed="true">Total sea level</button>
+      <button type="button" data-view="wave" aria-pressed="false">Kelvin-wave signal</button>
+    </div>
+  </div>
+  <div class="o3-stage">
+    <div class="o3-plot" aria-label="Interactive 3D view of sea level across the tropical Pacific. Drag to rotate."></div>
+    <div class="o3-cover">
+      <p>Rotatable 3D landscape of daily satellite sea level across the tropical Pacific.</p>
+      <button type="button" class="play o3-load"><span aria-hidden="true">▶</span> Load the 3D view <span class="size">(about 2 MB)</span></button>
+    </div>
+  </div>
+  <div class="o3-time" hidden>
+    <button type="button" class="o3-play" aria-label="Play days">▶</button>
+    <input type="range" min="0" value="0" aria-label="Day">
+    <span class="o3-month"></span>
+    <button type="button" class="o3-zoom" data-k="0.8" aria-label="Zoom in">+</button>
+    <button type="button" class="o3-zoom" data-k="1.25" aria-label="Zoom out">−</button>
+    <button type="button" class="o3-reset">Reset view</button>
+  </div>
+  <p class="o3-note"></p>
+  <figcaption>{{CAPTION}}</figcaption>
+  <noscript><p>The 3D view needs JavaScript.</p></noscript>
+</figure>
+<script>
+(() => {
+  const root = document.getElementById("{{ID}}");
+  const LIB = "https://cdn.jsdelivr.net/npm/plotly.js-gl3d-dist-min@2.35.2/plotly-gl3d.min.js";
+  // matplotlib "RdBu_r": blue below normal, white near normal, red above (as in the Kelvin wave figure)
+  const RDBU = [[0, "#053061"], [0.1, "#2065ab"], [0.2, "#4393c3"], [0.3, "#90c4dd"], [0.4, "#d1e5f0"],
+    [0.5, "#f7f6f6"], [0.6, "#fddbc7"], [0.7, "#f3a481"], [0.8, "#d6604d"], [0.9, "#b1182b"], [1, "#67001f"]];
+  // colour range and vertical range (cm) for each view
+  const VIEW = {
+    total: {c: 30, z: [-25, 60], label: "Sea level anomaly (cm)",
+            note: "Height and colour show sea level compared with normal for the time of year. Warm water takes up more space, so the sea surface rises where warm water piles up: watch the ridge along the equator grow toward South America (right)."},
+    wave: {c: 10, z: [-15, 20], label: "Kelvin-wave signal (cm)",
+           note: "The slow build-up has been removed (each point minus its 91-day average), leaving the fast changes. Red ridges that travel from left to right along the equator are Kelvin waves; each takes about two months to cross the Pacific."},
+  };
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const HOME = {eye: {x: 0.35, y: -1.9, z: 1.25}};
+  const plot = root.querySelector(".o3-plot"), slider = root.querySelector(".o3-time input");
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let D, view = "total", di = 0, timer = null, camera = HOME;
+
+  const lonText = v => v <= 180 ? `${Math.round(v)}°E` : `${Math.round(360 - v)}°W`;
+  const latText = v => `${Math.abs(Math.round(v))}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
+  const dayLabel = i => { const [y, m, d] = D.dates[i].split("-").map(Number); return `${d} ${MON[m - 1]} ${y}`; };
+  const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
+
+  function axis(title, extra = {}) {
+    return Object.assign({title: {text: title, font: {size: 12}}, color: css("--text-2"), gridcolor: css("--line"),
+                          zerolinecolor: css("--line"), backgroundcolor: "rgba(0,0,0,0)", showspikes: false}, extra);
+  }
+  function layout() {
+    const lonTicks = [160, 180, 200, 220, 240, 260];
+    const v = VIEW[view];
+    return {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep",
+            font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12},
+            scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
+                    yaxis: axis("Latitude", {tickvals: [-10, 0, 10], ticktext: ["10°S", "0°", "10°N"]}),
+                    zaxis: axis("cm", {range: v.z}),
+                    aspectmode: "manual", aspectratio: {x: 3, y: 0.8, z: 0.75}, camera}};
+  }
+  function trace() {
+    const z = field(), v = VIEW[view];
+    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: RDBU, cmin: -v.c, cmax: v.c,
+             customdata: z.map((r, i) => r.map((val, j) => val == null ? "" :
+               `${lonText(D.lon[j])}, ${latText(D.lat[i])}<br><b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`)),
+             hovertemplate: "%{customdata}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
+             colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
+                        tickfont: {color: css("--text-2")}}}];
+  }
+  function exaggeration() {
+    const width = (D.lon.at(-1) - D.lon[0]) * 111.32e3, v = VIEW[view];
+    return (0.75 / ((v.z[1] - v.z[0]) / 100)) / (3 / width);
+  }
+  function draw() {
+    root.querySelector(".o3-month").textContent = dayLabel(di);
+    root.querySelectorAll(".o3-views button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
+    const ex = exaggeration();
+    root.querySelector(".o3-note").textContent = VIEW[view].note +
+      ` Height is exaggerated about ${(ex / 1e6).toFixed(0)} million times. Drag to rotate; use + and − to zoom.`;
+    Plotly.react(plot, trace(), layout(), {displayModeBar: false, responsive: true, scrollZoom: false});
+  }
+  function start() {
+    const btn = root.querySelector(".o3-load");
+    btn.disabled = true; btn.textContent = "Loading…";
+    const lib = window.Plotly ? Promise.resolve() : new Promise((ok, fail) => {
+      const s = document.createElement("script"); s.src = LIB; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+    });
+    Promise.all([lib, fetch(root.dataset.src).then(r => r.json())]).then(([, d]) => {
+      D = d; di = D.dates.length - 1;
+      slider.max = D.dates.length - 1; slider.value = di;
+      root.querySelector(".o3-cover").remove();
+      root.querySelector(".o3-time").hidden = false;
+      draw();
+      plot.on("plotly_relayout", e => {             // remember the angle after every drag or zoom
+        const cam = plot._fullLayout && plot._fullLayout.scene && plot._fullLayout.scene.camera;
+        if (e["scene.camera"] || e["scene.camera.eye"]) camera = JSON.parse(JSON.stringify(cam || camera));
+      });
+    }).catch(() => { btn.textContent = "The 3D view could not be loaded."; });
+  }
+
+  root.querySelector(".o3-load").addEventListener("click", start);
+  root.querySelectorAll(".o3-views button").forEach(b => b.addEventListener("click", () => {
+    view = b.dataset.view;
+    if (D) draw();
+  }));
+  slider.addEventListener("input", () => { di = +slider.value; draw(); });
+  root.querySelector(".o3-play").addEventListener("click", e => {
+    if (timer) { clearInterval(timer); timer = null; e.target.textContent = "▶"; return; }
+    if (di === D.dates.length - 1) di = -1;
+    e.target.textContent = "❚❚";
+    timer = setInterval(() => {
+      di += 1; slider.value = di; draw();
+      if (di >= D.dates.length - 1) { clearInterval(timer); timer = null; e.target.textContent = "▶"; }
+    }, 110);
+  });
+  root.querySelectorAll(".o3-zoom").forEach(b => b.addEventListener("click", () => {
+    if (!D) return;
+    const eye = camera.eye, k = +b.dataset.k;
+    Plotly.relayout(plot, {"scene.camera.eye": {x: eye.x * k, y: eye.y * k, z: eye.z * k}});
+  }));
+  root.querySelector(".o3-reset").addEventListener("click", () => {
+    if (D) { camera = HOME; Plotly.relayout(plot, {"scene.camera": camera}); }
+  });
+})();
+</script>

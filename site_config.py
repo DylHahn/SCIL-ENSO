@@ -109,9 +109,9 @@ PAGES = [
             ('anim_kelvin.py', True, 'Animation: Kelvin waves',
              "Every Kelvin wave since July 2025 traced in daily satellite sea level along the equator: each "
              "pulse raises sea level by a few centimetres as it crosses the Pacific."),
-            ('anim_sealevel_3d.py', True, 'Animation: sea level in 3D',
-             "Daily satellite sea level across the tropical Pacific drawn as a 3D landscape, July 2025 to the "
-             "latest day: Kelvin waves travel east along the equator as the eastern Pacific rises."),
+            ('interactive_sealevel_data.py', True, 'Interactive 3D: sea level and Kelvin waves',
+             "Daily satellite sea level across the tropical Pacific as a 3D landscape you can rotate, from July 2025 "
+             "to the latest day: the total rise as warm water piles up, or the Kelvin-wave signal alone."),
             ("section", 'Along the equator',
              "Vertical slices through the ocean along the equator, from Asia to South America."),
             ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026 and past very strong events',
@@ -284,6 +284,12 @@ FIGURE_NOTES = {
             "Bottom: the Kelvin-wave signal day by day, with time running down the page, so each "
             "wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has "
             "crossed the Pacific."),
+    "interactive_sealevel_data.py": dict(
+        takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm "
+                 "water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.",
+        how="Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days "
+            "play. Total sea level shows the full rise; Kelvin-wave signal removes the slow build-up so that the "
+            "waves stand out as red ridges travelling from left to right along the equator."),
     "anim_sealevel_3d.py": dict(
         takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm "
                  "water piled up, with Kelvin-wave ridges arriving one after another.",
@@ -494,6 +500,12 @@ FIGURE_INFO = {
         "warming.",
         "NOAA blended satellite altimetry, daily sea surface height anomaly (0.25°), averaged over 1°S–1°N, via NOAA "
         "CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle."),
+    "interactive_sealevel_data.py": (
+        "Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a "
+        "daily, ocean-wide picture of where El Niño's heat is accumulating and of the Kelvin waves that carry it "
+        "east; higher sea level along the coasts of the Americas is itself one of El Niño's effects.",
+        "NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N at 1°, via NOAA CoastWatch "
+        "ERDDAP; anomalies from the 2017–2024 seasonal cycle; wave signal = anomaly minus its 91-day running mean."),
     "anim_sealevel_3d.py": (
         "Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a "
         "daily, ocean-wide picture of where El Niño's heat is accumulating; higher sea level along the coasts of the "
