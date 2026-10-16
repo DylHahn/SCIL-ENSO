@@ -6,7 +6,7 @@
     <tr><td>Relative Oceanic Niño Index (RONI); official RONI outlook and strength probabilities</td><td>NOAA Climate Prediction Center (CPC)</td><td>3-month means</td><td>Event strength, event definitions, forecasts, forecast verification, ENSO phase of each winter</td></tr>
     <tr><td>Monthly Niño region indices</td><td>NOAA CPC (OISST v2.1)</td><td>Monthly</td><td>Niño 4, 3.4, 3 and 1+2 anomalies</td></tr>
     <tr><td>NCEP Global Ocean Data Assimilation System (GODAS)</td><td>NOAA NCEP, via NOAA PSL</td><td>1° × ⅓°, 10 m levels (5–205 m used), monthly</td><td>Upper-ocean temperature sections, Hovmöller and animation</td></tr>
-    <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present</td><td>Kelvin wave animation</td></tr>
+    <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present</td><td>Kelvin wave animation; sea level in 3D</td></tr>
     <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
     <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series and interactive explorer, tropical Pacific maps</td></tr>
     <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
@@ -75,11 +75,17 @@
   volumes are the differences between consecutive isotherms. Sections show the 2°S–2°N mean from 130°E. Water
   above about 28 °C is commonly taken as the threshold for deep atmospheric convection over the tropical
   oceans.</li>
+  <li><b>Sea level in 3D.</b> The same altimetry over 12°S–12°N at 1°, with the 2017–2024 seasonal cycle removed at each
+  point (from every fifth day) and a 5-day running mean, lightly smoothed in space (Gaussian, about one grid cell)
+  for display; the height is exaggerated by several million times.</li>
   <li><b>3D views.</b> GODAS temperature at 5 m and the depth of the 20 °C isotherm (computed as for the warm water
   animation) are shown at 1° latitude × 2° longitude from 130°E in the interactive view and ⅔° × 2° over 15°S–15°N
   in the animation. Cells within two grid points of land are omitted and the fields are lightly smoothed (Gaussian,
-  one grid cell) for display only. Depth is exaggerated by roughly 15,000–20,000 times; the factor is stated on each
-  view.</li>
+  one grid cell) for display only. In the interactive view, the temperature layers are the
+  depths of the 20, 24, 26 and 28 °C isotherms, and the hottest-water volumes are drawn by filling each column from
+  the surface down to the 28 °C or 29 °C isotherm (assuming temperature decreases with depth), with volumes over
+  5°S–5°N, 120°E–80°W computed as for the layers animation. Depth is exaggerated by roughly 15,000–20,000 times; the
+  factor is stated on each view.</li>
   <li><b>Kelvin waves.</b> Daily sea surface height anomalies from NOAA's blended near-real-time altimetry
   (CoastWatch ERDDAP, noaacwBLENDEDsshDaily; 0.25°, available from 2017) are averaged over 1°S–1°N every 1° of
   longitude. The 2017–2024 mean seasonal cycle (monthly means interpolated to days) is removed, which also removes

@@ -26,6 +26,7 @@ COMPARE = [2015, 1997, 1982]
 LAT_STEP, LON_STEP = 3, 2          # GODAS is 1/3° in latitude and 1° in longitude
 EQ = (-2, 2)
 LON_MIN = 130
+ISOTHERMS = [20, 24, 26, 28, 29]
 
 
 def for_display(stack, coast=2, sigma=1.0):
@@ -76,11 +77,17 @@ def main():
     out = dict(updated=f"{dt.date.today():%B %-d, %Y}", now=NOW,
                months=[[dy, mo] for dy, mo in offsets],          # [year offset from onset year, calendar month]
                lat=np.round(lat[li], 2).tolist(), lon=np.round(lon[lo], 1).tolist(),
-               cases=[], scale=dict(sst=10, d20=1), missing=-9999)
+               cases=[], scale=dict(sst=10, depth=1), isotherms=ISOTHERMS, missing=-9999)
+    from anim_warm_layers import volumes
     for name, temps in data:
         sst = for_display(temps[:, 0])[:, li, lo]                        # 5 m temperature, °C
-        z20 = for_display(d20(temps, depths))[:, li, lo]
-        out["cases"].append(dict(name=name, sst=to_int(sst, 10), d20=to_int(z20, 1)))
+        case = dict(name=name, sst=to_int(sst, 10))
+        for th in ISOTHERMS:                                             # depth of each isotherm, m
+            case[f"d{th}"] = to_int(for_display(d20(temps, depths, th))[:, li, lo], 1)
+        v = volumes(temps, lat, lon, depths)                             # (time, layer) over 5°S–5°N
+        case["v28"] = np.round(v[:, 3:].sum(axis=1), 1).tolist()
+        case["v29"] = np.round(v[:, 4], 1).tolist()
+        out["cases"].append(case)
 
     path = Path(args.out)
     path.parent.mkdir(parents=True, exist_ok=True)

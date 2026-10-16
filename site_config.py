@@ -44,9 +44,11 @@ PAGES = [
              "Rotating 3D view of the tropical Pacific in a normal year and in 2026: the top surface is the "
              "temperature at 5 m and the lower surface the base of the warm layer (the 20 °C isotherm), from July "
              "of the year before onset to the latest month."),
-            ('interactive_3d_data.py', False, 'Interactive 3D: the warm layer',
-             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal: "
-             "the temperature at 5 m above the base of the warm layer (the 20 °C isotherm), month by month."),
+            ('interactive_3d_data.py', False, 'Interactive 3D: warm layer, temperature layers and hottest water',
+             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal, "
+             "month by month. Warm layer: the sea surface above the base of the warm layer (20 °C). Temperature layers: "
+             "the depths of the 20, 24, 26 and 28 °C isotherms. Hottest water: the volume of water above 28 and "
+             "29 °C."),
             ('anim_warm_water.py', False, 'Animation: warm water moving across the Pacific',
              "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July "
              "of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial "
@@ -58,6 +60,9 @@ PAGES = [
             ('anim_kelvin.py', True, 'Animation: Kelvin waves',
              "How a Kelvin wave works, and every Kelvin wave since July 2025 traced in daily satellite sea level along "
              "the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific."),
+            ('anim_sealevel_3d.py', True, 'Animation: sea level in 3D',
+             "Daily satellite sea level across the tropical Pacific drawn as a 3D landscape, July 2025 to the latest "
+             "day: Kelvin waves travel east along the equator as the eastern Pacific rises."),
             ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026 and past very strong events',
              "Animated equatorial upper-ocean temperature sections for 2026, 2015, 1997, 1982 and the 1991–2020 "
              "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
@@ -229,6 +234,13 @@ FIGURE_NOTES = {
             "moving east are Kelvin waves. Bottom: the same, day by day, with time running down the page, so each "
             "wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has "
             "crossed the Pacific."),
+    "anim_sealevel_3d.py": dict(
+        takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm "
+                 "water piled up, with Kelvin-wave ridges arriving one after another.",
+        how="The landscape is the tropical Pacific seen from the south, with Asia to the left and South America to "
+            "the right; its height and colour are the sea level anomaly. Watch the red ridge along the equator: "
+            "bumps that move from left to right are Kelvin waves, and the ridge grows as warm water accumulates in "
+            "the east."),
     "anim_upper_ocean.py": dict(
         takeaway="In 2026 the 20 °C line is nearly flat across the Pacific: the cold water that normally lies close "
                  "to the surface in the east has been pushed down.",
@@ -242,12 +254,11 @@ FIGURE_NOTES = {
             "America at the right. The coloured lower surface is the base of the warm layer: red where it lies deep, "
             "blue where it is close to the surface. The thin top sheet is the sea surface temperature."),
     "interactive_3d_data.py": dict(
-        takeaway="Rotate the model to see the base of the warm layer flatten across the Pacific in 2026, compared "
-                 "with the tilt of a normal year.",
-        how="Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year "
-            "and the slider or play button to move through the months; the angle you choose is kept while it plays. "
-            "The two opacity sliders fade either surface. The lower surface is coloured by depth: red where the warm "
-            "layer is thick, blue where it is thin."),
+        takeaway="Switch to Hottest water and compare 2026 with Normal: the body of water above 28 °C is far larger "
+                 "in 2026 and reaches much farther east.",
+        how="Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the "
+            "months play. Choose a view and a year above the model, and use the slider or play button to move "
+            "through the months. The opacity sliders below fade or hide each layer, so you can look inside."),
     "anim_warm_water.py": dict(
         takeaway="More warm water is stored along the equator in 2026 than at the same stage of 2015, 1997 or 1982.",
         how="Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C "

@@ -1,6 +1,11 @@
 <figure id="{{ID}}" class="ocean3d" data-src="{{DATA}}">
   {{TAKEAWAY}}
   <div class="o3-bar">
+    <div class="o3-group o3-views" role="group" aria-label="View">
+      <button type="button" data-view="warm" aria-pressed="true">Warm layer</button>
+      <button type="button" data-view="layers" aria-pressed="false">Temperature layers</button>
+      <button type="button" data-view="hot" aria-pressed="false">Hottest water</button>
+    </div>
     <div class="o3-group o3-cases" role="group" aria-label="Year"></div>
   </div>
   <div class="o3-stage">
@@ -9,6 +14,7 @@
       <p>Rotatable 3D model of the tropical Pacific built from NOAA ocean data.</p>
       <button type="button" class="play o3-load"><span aria-hidden="true">▶</span> Load the 3D view <span class="size">(about 4 MB)</span></button>
     </div>
+    <p class="o3-readout" hidden></p>
   </div>
   <div class="o3-time" hidden>
     <button type="button" class="o3-play" aria-label="Play months">▶</button>
@@ -18,10 +24,7 @@
     <button type="button" class="o3-zoom" data-k="1.25" aria-label="Zoom out">−</button>
     <button type="button" class="o3-reset">Reset view</button>
   </div>
-  <div class="o3-opacity" hidden>
-    <label>Sea surface <input type="range" min="0" max="1" step="0.05" value="0.55" data-trace="1"></label>
-    <label>Base of warm layer <input type="range" min="0" max="1" step="0.05" value="1" data-trace="0"></label>
-  </div>
+  <div class="o3-opacity" hidden></div>
   <p class="o3-note"></p>
   <figcaption>{{CAPTION}}</figcaption>
   <noscript><p>The 3D view needs JavaScript.</p></noscript>
@@ -35,70 +38,153 @@
     [0.3125, "#18ddc2"], [0.375, "#32f298"], [0.4375, "#6dfe62"], [0.5, "#a4fc3c"], [0.5625, "#cdec34"],
     [0.625, "#eecf3a"], [0.6875, "#fdac34"], [0.75, "#fb7e21"], [0.8125, "#eb500e"], [0.875, "#d02f05"],
     [0.9375, "#a91601"], [1, "#7a0403"]];
+  // each isotherm in the colour the turbo scale gives that temperature (12–31 °C), as in the other figures
+  const ISO_COLOR = {20: "#59fb73", 24: "#efcd3a", 26: "#fd8a26", 28: "#e14109", 29: "#c52603"};
   const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const CAMERA = {layer: {eye: {x: 0.3, y: -2.05, z: 1.15}}};
-  const plot = root.querySelector(".o3-plot"), slider = root.querySelector("input[type=range]");
+  const HOME = {warm: {eye: {x: 0.3, y: -2.05, z: 1.15}}, layers: {eye: {x: 0.3, y: -2.05, z: 1.15}},
+                hot: {eye: {x: 0.9, y: -1.7, z: 1.6}}};
+  // depth range shown and vertical stretch for each view (the hottest water lies in the top ~150 m)
+  const ZBOX = {warm: [-240, 0.7], layers: [-240, 0.7], hot: [-160, 0.8]};
+  const DEPTHS = Array.from({length: 25}, (_, k) => -k * 10);            // 0 to −240 m, for the 3D volumes
+  const HOT_LAT = 12;                                                     // the volumes are drawn within 12°S–12°N
+  // the layers of each view: key, label, starting opacity (0 hides a layer)
+  const VIEWS = {
+    warm: [["d20", "Base of warm layer (20 °C)", 1], ["sst", "Sea surface", 0.55]],
+    layers: [["d20", "20 °C", 0.85], ["d24", "24 °C", 0.85], ["d26", "26 °C", 0.85], ["d28", "28 °C", 0.9],
+             ["sst", "Sea surface", 0.15]],
+    hot: [["v28", "Water above 28 °C", 0.3], ["v29", "Water above 29 °C", 1], ["sst", "Sea surface", 0]],
+  };
+  const NOTES = {
+    warm: "Top: temperature at 5 m (semi-transparent). Bottom: depth of the 20 °C isotherm, the base of the warm layer; red is deep (thick warm layer), blue shallow.",
+    layers: "Each sheet is the depth at which the ocean reaches that temperature: 28 °C (red) on top, then 26, 24 and 20 °C. Where a sheet is missing, the water there never gets that warm; where sheets are far apart, there is a thick layer of water in that temperature range.",
+    hot: "The solid shapes are all the water warmer than 28 °C (orange, see-through) and 29 °C (dark red) between 12°S and 12°N, the water warm enough to sustain heavy tropical rainfall. Compare its size and how far east it reaches with the Normal view.",
+  };
+  const plot = root.querySelector(".o3-plot"), slider = root.querySelector(".o3-time input");
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  let D, view = "layer", ci = 0, mi = 0, timer = null;
-  let camera = CAMERA.layer;                       // the reader's current viewing angle, kept between redraws
-  const opacity = [1, 0.55];                       // [base of warm layer, sea surface]
+  let D, view = "warm", ci = 0, mi = 0, timer = null, grid = null;
+  let camera = HOME.warm;                           // the reader's current viewing angle, kept between redraws
+  const opacity = Object.fromEntries(Object.entries(VIEWS).map(([v, ls]) => [v, ls.map(l => l[2])]));
 
   const lonText = v => v <= 180 ? `${v}°E` : `${360 - v}°W`;
+  const latText = v => `${Math.abs(v)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const unpack = (a, k) => a.map(r => Array.isArray(r) ? unpack(r, k) : (r === D.missing ? null : r / k));
   const caseYear = () => D.cases[ci].name === "Normal" ? null : +D.cases[ci].name;
   const monthLabel = (i, year) => { const [dy, mo] = D.months[i]; return `${MON[mo - 1]}${year ? " " + (year + dy) : ""}`; };
+  const field = key => unpack(D.cases[ci][key][mi], key === "sst" ? D.scale.sst : D.scale.depth);
+  const hoverText = (vals, f) => vals.map((r, i) => r.map((v, j) => v == null ? "" :
+    `${lonText(D.lon[j])}, ${latText(D.lat[i])}<br>${f(v)}`));
+  const flat = color => [[0, color], [1, color]];
 
   function axis(title, extra = {}) {
     return Object.assign({title: {text: title, font: {size: 12}}, color: css("--text-2"), gridcolor: css("--line"),
                           zerolinecolor: css("--line"), backgroundcolor: "rgba(0,0,0,0)", showspikes: false}, extra);
   }
   function layout() {
-    const lonTicks = [120, 140, 160, 180, 200, 220, 240, 260, 280];
-    const common = {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep",
-                    font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12}};
-    return Object.assign(common, {scene: {
-      xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
-      yaxis: axis("Latitude", {tickvals: [-20, -10, 0, 10, 20], ticktext: ["20°S", "10°S", "0°", "10°N", "20°N"]}),
-      zaxis: axis("Depth (m)", {range: [-240, 5], tickvals: [0, -50, -100, -150, -200], ticktext: ["0", "50", "100", "150", "200"]}),
-      aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: 0.7}, camera}});
+    const lonTicks = [140, 160, 180, 200, 220, 240, 260, 280];
+    return {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep", showlegend: false,
+            font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12},
+            scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
+                    yaxis: axis("Latitude", {tickvals: [-20, -10, 0, 10, 20], ticktext: ["20°S", "10°S", "0°", "10°N", "20°N"]}),
+                    zaxis: axis("Depth (m)", {range: [ZBOX[view][0], 5], tickvals: [0, -50, -100, -150, -200],
+                                              ticktext: ["0", "50", "100", "150", "200"]}),
+                    aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: ZBOX[view][1]}, camera}};
   }
 
-  function layerTraces() {
-    const c = D.cases[ci], sst = unpack(c.sst[mi], D.scale.sst), z20 = unpack(c.d20[mi], D.scale.d20);
-    const flat = sst.map(r => r.map(v => v == null ? null : 0));
-    const deep = z20.map(r => r.map(v => v == null ? null : -v));
-    const hover = "%{customdata}<extra></extra>";
-    const cd = (vals, f) => vals.map((r, i) => r.map((v, j) =>
-      v == null ? "" : `${lonText(D.lon[j])}, ${Math.abs(D.lat[i])}°${D.lat[i] < 0 ? "S" : "N"}<br>${f(v)}`));
-    return [
-      {type: "surface", x: D.lon, y: D.lat, z: deep, surfacecolor: z20, colorscale: TURBO, cmin: 0, cmax: 220,
-       opacity: opacity[0], visible: opacity[0] > 0,
-       customdata: cd(z20, v => `20 °C depth: <b>${v.toFixed(0)} m</b>`), hovertemplate: hover,
-       colorbar: {title: {text: "Depth of 20 °C (m)", side: "right"}, x: 1.0, len: 0.55, thickness: 12, y: 0.32,
-                  tickfont: {color: css("--text-2")}}, lighting: {ambient: 0.85, diffuse: 0.4, specular: 0.05},
-       contours: {z: {show: false}}},
-      {type: "surface", x: D.lon, y: D.lat, z: flat, surfacecolor: sst, colorscale: TURBO, cmin: 18, cmax: 32,
-       opacity: opacity[1], visible: opacity[1] > 0, customdata: cd(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`), hovertemplate: hover,
-       colorbar: {title: {text: "Surface (°C)", side: "right"}, x: 1.0, len: 0.38, thickness: 12, y: 0.8,
-                  tickfont: {color: css("--text-2")}}, lighting: {ambient: 1, diffuse: 0, specular: 0}},
-    ];
+  function seaSurface(op, coloured) {
+    const sst = field("sst");
+    return {type: "surface", x: D.lon, y: D.lat, z: sst.map(r => r.map(v => v == null ? null : 0)),
+            surfacecolor: sst, colorscale: coloured ? TURBO : flat("#8a8984"), cmin: 18, cmax: 32,
+            showscale: coloured, opacity: op, visible: op > 0,
+            customdata: hoverText(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`),
+            hovertemplate: "%{customdata}<extra></extra>", lighting: {ambient: 1, diffuse: 0, specular: 0},
+            colorbar: {title: {text: "Surface (°C)", side: "right"}, x: 1.0, len: 0.38, thickness: 12, y: 0.8,
+                       tickfont: {color: css("--text-2")}}};
+  }
+
+  function isothermSheet(key, op, coloured) {
+    const t = +key.slice(1), d = field(key);
+    // drop the sheet where the isotherm does not exist (surface cooler than it), so it does not lie on the surface
+    const z = d.map(r => r.map(v => v == null || v <= 12 ? null : -v));
+    return {type: "surface", x: D.lon, y: D.lat, z, surfacecolor: coloured ? d : d.map(r => r.map(() => 1)),
+            colorscale: coloured ? TURBO : flat(ISO_COLOR[t]), cmin: 0, cmax: 220, showscale: coloured,
+            opacity: op, visible: op > 0, lighting: {ambient: 0.8, diffuse: 0.45, specular: 0.05},
+            customdata: hoverText(d, v => `${t} °C reached at <b>${v.toFixed(0)} m</b>`),
+            hovertemplate: "%{customdata}<extra></extra>",
+            colorbar: {title: {text: "Depth of 20 °C (m)", side: "right"}, x: 1.0, len: 0.55, thickness: 12, y: 0.32,
+                       tickfont: {color: css("--text-2")}}};
+  }
+
+  function hotVolume(key, op) {
+    // water above t °C fills each column from the surface down to the t °C isotherm; Plotly draws the outline
+    const t = +key.slice(1), d = field(`d${t}`);
+    const rows = D.lat.map((la, i) => i).filter(i => Math.abs(D.lat[i]) <= HOT_LAT);
+    if (!grid) {
+      grid = {x: [], y: [], z: []};
+      DEPTHS.forEach(z => rows.forEach(i => D.lon.forEach(lo => { grid.x.push(lo); grid.y.push(D.lat[i]); grid.z.push(z); })));
+    }
+    const value = [];
+    // columns where the isotherm does not occur (depth 0: the surface is cooler) are outside the volume
+    DEPTHS.forEach(z => rows.forEach(i => d[i].forEach(v => value.push(v == null || v < 2 ? -999 : v + z))));
+    return {type: "isosurface", x: grid.x, y: grid.y, z: grid.z, value, isomin: 0, isomax: 999,
+            surface: {count: 1}, caps: {x: {show: true}, y: {show: true}, z: {show: true}},
+            colorscale: flat(t === 28 ? "#fdac34" : "#a91601"), showscale: false, opacity: op, visible: op > 0,
+            lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.1},
+            hovertemplate: `Water above ${t} °C<extra></extra>`};
+  }
+
+  function traces() {
+    const op = opacity[view];
+    return VIEWS[view].map(([key], i) => {
+      if (key === "sst") return seaSurface(op[i], view === "warm");
+      if (key.startsWith("d")) return isothermSheet(key, op[i], view === "warm");
+      return hotVolume(key, op[i]);
+    });
   }
 
   function exaggeration() {
     // displayed depth per metre ÷ displayed distance per metre along the equator
-    const width = (D.lon.at(-1) - D.lon[0]) * 111e3, ar = [3, 0.7, 245];
+    const width = (D.lon.at(-1) - D.lon[0]) * 111e3, ar = [3, ZBOX[view][1], 5 - ZBOX[view][0]];
     return Math.round((ar[1] / ar[2]) / (ar[0] / width) / 1000) * 1000;
   }
 
+  function controls() {
+    const box = root.querySelector(".o3-opacity");
+    box.replaceChildren();
+    const lead = document.createElement("span"); lead.className = "o3-lead"; lead.textContent = "Opacity:";
+    box.appendChild(lead);
+    VIEWS[view].forEach(([key, label], i) => {
+      const lab = document.createElement("label"), sw = document.createElement("span"), inp = document.createElement("input");
+      const t = +key.slice(1);
+      sw.className = "o3-swatch";
+      sw.style.background = key === "sst" ? "#8a8984" : view === "warm" ? "linear-gradient(90deg,#466be3,#a4fc3c,#d02f05)"
+        : key === "v28" ? "#fdac34" : key === "v29" ? "#a91601" : ISO_COLOR[t];
+      Object.assign(inp, {type: "range", min: 0, max: 1, step: 0.05, value: opacity[view][i]});
+      inp.setAttribute("aria-label", `Opacity of ${label}`);
+      inp.addEventListener("input", () => {
+        opacity[view][i] = +inp.value;
+        Plotly.restyle(plot, {opacity: +inp.value, visible: +inp.value > 0}, [i]);
+      });
+      lab.append(sw, document.createTextNode(label), inp);
+      box.appendChild(lab);
+    });
+  }
+
   function draw() {
-    const year = caseYear();
+    const year = caseYear(), c = D.cases[ci];
     root.querySelector(".o3-month").textContent = monthLabel(mi, year);
-    root.querySelector(".o3-time").hidden = false;
     root.querySelectorAll(".o3-cases button").forEach((b, i) => b.setAttribute("aria-pressed", i === ci));
-    root.querySelector(".o3-note").textContent = "Top: temperature at 5 m (semi-transparent). Bottom: depth of the 20 °C isotherm, the base of the warm layer; red is deep (thick warm layer), blue shallow. "
-      + `Depth is exaggerated about ${exaggeration().toLocaleString()} times. Drag to rotate; use + and − to zoom.`;
-    Plotly.react(plot, layerTraces(), layout(),
-                 {displayModeBar: false, responsive: true, scrollZoom: false});
+    root.querySelectorAll(".o3-views button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
+    root.querySelector(".o3-note").textContent = NOTES[view] +
+      ` Depth is exaggerated about ${exaggeration().toLocaleString()} times. Drag to rotate; use + and − to zoom.`;
+    const ro = root.querySelector(".o3-readout");
+    ro.hidden = view !== "hot";
+    if (view === "hot") {
+      const n = D.cases.at(-1);
+      ro.textContent = `Between 5°S and 5°N, ${monthLabel(mi, year)}: water above 28 °C ${c.v28[mi].toFixed(1)} × 10¹⁴ m³`
+        + (c === n ? "" : ` (normal ${n.v28[mi].toFixed(1)})`) + ` · above 29 °C ${c.v29[mi].toFixed(1)}`
+        + (c === n ? "" : ` (normal ${n.v29[mi].toFixed(1)})`);
+    }
+    Plotly.react(plot, traces(), layout(), {displayModeBar: false, responsive: true, scrollZoom: false});
   }
 
   function start() {
@@ -116,7 +202,9 @@
         b.addEventListener("click", () => { ci = i; draw(); }); box.appendChild(b);
       });
       root.querySelector(".o3-cover").remove();
+      root.querySelector(".o3-time").hidden = false;
       root.querySelector(".o3-opacity").hidden = false;
+      controls();
       draw();
       plot.on("plotly_relayout", e => {             // remember the angle after every drag or zoom
         const cam = plot._fullLayout && plot._fullLayout.scene && plot._fullLayout.scene.camera;
@@ -126,6 +214,12 @@
   }
 
   root.querySelector(".o3-load").addEventListener("click", start);
+  root.querySelectorAll(".o3-views button").forEach(b => b.addEventListener("click", () => {
+    view = b.dataset.view;
+    root.querySelectorAll(".o3-views button").forEach(o => o.setAttribute("aria-pressed", o === b));
+    camera = HOME[view];                             // each view starts from the angle that suits it
+    if (D) { controls(); draw(); Plotly.relayout(plot, {"scene.camera": camera}); }
+  }));
   slider.addEventListener("input", () => { mi = +slider.value; draw(); });
   root.querySelector(".o3-play").addEventListener("click", e => {
     if (timer) { clearInterval(timer); timer = null; e.target.textContent = "▶"; return; }
@@ -134,7 +228,7 @@
     timer = setInterval(() => {
       mi += 1; slider.value = mi; draw();
       if (mi >= D.months.length - 1) { clearInterval(timer); timer = null; e.target.textContent = "▶"; }
-    }, 800);
+    }, 900);
   });
   root.querySelectorAll(".o3-zoom").forEach(b => b.addEventListener("click", () => {
     if (!D) return;
@@ -142,11 +236,7 @@
     Plotly.relayout(plot, {"scene.camera.eye": {x: eye.x * k, y: eye.y * k, z: eye.z * k}});
   }));
   root.querySelector(".o3-reset").addEventListener("click", () => {
-    if (D) { camera = CAMERA[view]; Plotly.relayout(plot, {"scene.camera": camera}); }
+    if (D) { camera = HOME[view]; Plotly.relayout(plot, {"scene.camera": camera}); }
   });
-  root.querySelectorAll(".o3-opacity input").forEach(inp => inp.addEventListener("input", () => {
-    opacity[+inp.dataset.trace] = +inp.value;
-    if (D) Plotly.restyle(plot, {opacity: +inp.value, visible: +inp.value > 0}, [+inp.dataset.trace]);
-  }));
 })();
 </script>
