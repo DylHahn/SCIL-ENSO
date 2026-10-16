@@ -166,6 +166,28 @@
           white-space: nowrap; }
   .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
   .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
+  /* interactive 3D view */
+  .ocean3d { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .o3-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; }
+  .o3-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .o3-group button, .o3-time button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                     border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .o3-group button:hover, .o3-time button:hover { color: var(--text); border-color: var(--muted); }
+  .o3-group button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .o3-group button:disabled { opacity: .35; cursor: default; }
+  .o3-stage { position: relative; height: min(600px, 70vh); min-height: 380px; background: var(--bg);
+              border-radius: 8px; }
+  .o3-plot { position: absolute; inset: 0; }
+  .o3-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+              gap: 14px; text-align: center; color: var(--text-2); padding: 16px; }
+  .o3-cover p { margin: 0; }
+  .o3-cover .play { position: static; transform: none; }
+  .o3-time { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .o3-time input { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .o3-month { color: var(--text); font-weight: 600; min-width: 80px; }
+  .o3-time [hidden] { display: none; }
+  .o3-zoom { min-width: 34px; }
+  .o3-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 900px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
@@ -186,7 +208,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated October 13, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated October 15, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -289,6 +311,12 @@
   interpolation between the 10 m levels (5–205 m); columns warmer than 20 °C throughout are assigned 205 m. Warm
   water volume is the volume above that depth over 5°S–5°N, 120°E–80°W (the NOAA PMEL definition), computed from
   GODAS. The normal panel uses the 20 °C depth of the 1991–2020 monthly mean temperature.</li>
+  <li><b>3D views.</b> GODAS temperature at 5 m and the depth of the 20 °C isotherm (computed as for the warm water
+  animation) are shown at 1° latitude × 2° longitude in the interactive view and ⅔° × 2° over 15°S–15°N in the
+  animation. Cells within two grid points of land are omitted and the fields are lightly smoothed (Gaussian,
+  one grid cell) for display only. The Kelvin-wave view shows the 2°S–2°N mean temperature anomaly relative to the
+  1991–2020 monthly mean, with surfaces at ±3, ±5 and ±7 °C. Depth is exaggerated by roughly 15,000–25,000 times;
+  the factor is stated on each view.</li>
   <li><b>Event development and ranking.</b> RONI for every event since 1950. The current event is completed with
   NOAA's median forecast and its 5–95% range. Accumulated intensity is the sum of monthly RONI values above
   +0.5 °C over the event.</li>

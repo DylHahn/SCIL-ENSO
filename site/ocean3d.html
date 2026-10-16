@@ -1,0 +1,171 @@
+<figure id="{{ID}}" class="ocean3d" data-src="{{DATA}}">
+  {{TAKEAWAY}}
+  <div class="o3-bar">
+    <div class="o3-group" role="group" aria-label="View">
+      <button type="button" data-view="layer" aria-pressed="true">Warm layer</button>
+      <button type="button" data-view="kelvin" aria-pressed="false">Kelvin waves</button>
+    </div>
+    <div class="o3-group o3-cases" role="group" aria-label="Year"></div>
+  </div>
+  <div class="o3-stage">
+    <div class="o3-plot" aria-label="Interactive 3D view of the tropical Pacific Ocean. Drag to rotate."></div>
+    <div class="o3-cover">
+      <p>Rotatable 3D model of the tropical Pacific built from NOAA ocean data.</p>
+      <button type="button" class="play o3-load"><span aria-hidden="true">▶</span> Load the 3D view <span class="size">(about 4 MB)</span></button>
+    </div>
+  </div>
+  <div class="o3-time" hidden>
+    <button type="button" class="o3-play" aria-label="Play months">▶</button>
+    <input type="range" min="0" value="0" aria-label="Month">
+    <span class="o3-month"></span>
+    <button type="button" class="o3-zoom" data-k="0.8" aria-label="Zoom in">+</button>
+    <button type="button" class="o3-zoom" data-k="1.25" aria-label="Zoom out">−</button>
+    <button type="button" class="o3-reset">Reset view</button>
+  </div>
+  <p class="o3-note"></p>
+  <figcaption>{{CAPTION}}</figcaption>
+  <noscript><p>The 3D view needs JavaScript.</p></noscript>
+</figure>
+<script>
+(() => {
+  const root = document.getElementById("{{ID}}");
+  const LIB = "https://cdn.jsdelivr.net/npm/plotly.js-gl3d-dist-min@2.35.2/plotly-gl3d.min.js";
+  // matplotlib "turbo", the rainbow scale used in every temperature map on this site
+  const TURBO = [[0, "#30123b"], [0.0625, "#4040a2"], [0.125, "#466be3"], [0.1875, "#4294ff"], [0.25, "#28bceb"],
+    [0.3125, "#18ddc2"], [0.375, "#32f298"], [0.4375, "#6dfe62"], [0.5, "#a4fc3c"], [0.5625, "#cdec34"],
+    [0.625, "#eecf3a"], [0.6875, "#fdac34"], [0.75, "#fb7e21"], [0.8125, "#eb500e"], [0.875, "#d02f05"],
+    [0.9375, "#a91601"], [1, "#7a0403"]];
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const CAMERA = {layer: {eye: {x: 0.3, y: -2.05, z: 1.15}}, kelvin: {eye: {x: 0.55, y: -2.0, z: 0.95}}};
+  const plot = root.querySelector(".o3-plot"), slider = root.querySelector("input[type=range]");
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let D, view = "layer", ci = 0, mi = 0, timer = null;
+
+  const lonText = v => v <= 180 ? `${v}°E` : `${360 - v}°W`;
+  const unpack = (a, k) => a.map(r => Array.isArray(r) ? unpack(r, k) : (r === D.missing ? null : r / k));
+  const caseYear = () => D.cases[ci].name === "Normal" ? null : +D.cases[ci].name;
+  const monthLabel = (i, year) => { const [dy, mo] = D.months[i]; return `${MON[mo - 1]}${year ? " " + (year + dy) : ""}`; };
+
+  function axis(title, extra = {}) {
+    return Object.assign({title: {text: title, font: {size: 12}}, color: css("--text-2"), gridcolor: css("--line"),
+                          zerolinecolor: css("--line"), backgroundcolor: "rgba(0,0,0,0)", showspikes: false}, extra);
+  }
+  function layout() {
+    const lonTicks = [120, 140, 160, 180, 200, 220, 240, 260, 280];
+    const common = {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: view,
+                    font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12}};
+    if (view === "layer") return Object.assign(common, {scene: {
+      xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
+      yaxis: axis("Latitude", {tickvals: [-20, -10, 0, 10, 20], ticktext: ["20°S", "10°S", "0°", "10°N", "20°N"]}),
+      zaxis: axis("Depth (m)", {range: [-240, 5], tickvals: [0, -50, -100, -150, -200], ticktext: ["0", "50", "100", "150", "200"]}),
+      aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: 0.7}, camera: CAMERA.layer}});
+    return Object.assign(common, {scene: {
+      xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
+      yaxis: axis("Month", {tickvals: D.months.map((_, i) => i).filter(i => i % 3 === 0),
+                            ticktext: D.months.map((_, i) => monthLabel(i, caseYear())).filter((_, i) => i % 3 === 0)}),
+      zaxis: axis("Depth (m)", {range: [-210, 0], tickvals: [0, -50, -100, -150, -200], ticktext: ["0", "50", "100", "150", "200"]}),
+      aspectmode: "manual", aspectratio: {x: 2.6, y: 1.2, z: 0.75}, camera: CAMERA.kelvin}});
+  }
+
+  function layerTraces() {
+    const c = D.cases[ci], sst = unpack(c.sst[mi], D.scale.sst), z20 = unpack(c.d20[mi], D.scale.d20);
+    const flat = sst.map(r => r.map(v => v == null ? null : 0));
+    const deep = z20.map(r => r.map(v => v == null ? null : -v));
+    const hover = "%{customdata}<extra></extra>";
+    const cd = (vals, f) => vals.map((r, i) => r.map((v, j) =>
+      v == null ? "" : `${lonText(D.lon[j])}, ${Math.abs(D.lat[i])}°${D.lat[i] < 0 ? "S" : "N"}<br>${f(v)}`));
+    return [
+      {type: "surface", x: D.lon, y: D.lat, z: deep, surfacecolor: z20, colorscale: TURBO, cmin: 0, cmax: 220,
+       customdata: cd(z20, v => `20 °C depth: <b>${v.toFixed(0)} m</b>`), hovertemplate: hover,
+       colorbar: {title: {text: "Depth of 20 °C (m)", side: "right"}, x: 1.0, len: 0.55, thickness: 12, y: 0.32,
+                  tickfont: {color: css("--text-2")}}, lighting: {ambient: 0.85, diffuse: 0.4, specular: 0.05},
+       contours: {z: {show: false}}},
+      {type: "surface", x: D.lon, y: D.lat, z: flat, surfacecolor: sst, colorscale: TURBO, cmin: 18, cmax: 32,
+       opacity: 0.55, customdata: cd(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`), hovertemplate: hover,
+       colorbar: {title: {text: "Surface (°C)", side: "right"}, x: 1.0, len: 0.38, thickness: 12, y: 0.8,
+                  tickfont: {color: css("--text-2")}}, lighting: {ambient: 1, diffuse: 0, specular: 0}},
+    ];
+  }
+
+  function kelvinTraces() {
+    const a = unpack(D.cases[ci].anom, D.scale.anom), x = [], y = [], z = [], v = [];
+    a.forEach((month, t) => month.forEach((row, k) => row.forEach((val, j) => {
+      x.push(D.klon[j]); y.push(t); z.push(-D.depth[k]); v.push(val == null ? 0 : val);
+    })));
+    const iso = (lo, hi, scale, name) => ({type: "isosurface", x, y, z, value: v, isomin: lo, isomax: hi, name,
+      surface: {count: 3}, caps: {x: {show: false}, y: {show: false}, z: {show: false}}, opacity: 0.4,
+      colorscale: scale, showscale: false, hovertemplate: `${name}: %{value:.1f} °C<extra></extra>`});
+    return [iso(3, 7, [[0, "#f2b14c"], [0.5, "#e8574a"], [1, "#a3161c"]], "Warmer than normal"),
+            iso(-7, -3, [[0, "#184f95"], [0.5, "#2a78d6"], [1, "#86b6ef"]], "Cooler than normal")];
+  }
+
+  function exaggeration() {
+    // displayed depth per metre ÷ displayed distance per metre along the equator
+    const width = (D.lon.at(-1) - D.lon[0]) * 111e3, ar = view === "layer" ? [3, 0.7, 245] : [2.6, 0.75, 210];
+    return Math.round((ar[1] / ar[2]) / (ar[0] / width) / 1000) * 1000;
+  }
+
+  function draw() {
+    const year = caseYear();
+    root.querySelector(".o3-month").textContent = monthLabel(mi, year);
+    root.querySelector(".o3-time").hidden = false;
+    root.querySelectorAll(".o3-play, .o3-time input, .o3-month").forEach(e => { e.hidden = view !== "layer"; });
+    root.querySelectorAll(".o3-cases button").forEach((b, i) => {
+      b.setAttribute("aria-pressed", i === ci);
+      b.disabled = view === "kelvin" && D.cases[i].name === "Normal";
+    });
+    root.querySelector(".o3-note").textContent = (view === "layer"
+      ? "Top: temperature at 5 m (semi-transparent). Bottom: depth of the 20 °C isotherm, the base of the warm layer; red is deep (thick warm layer), blue shallow. "
+      : "Water 3, 5 and 7 °C warmer (red) or cooler (blue) than normal along the equator (2°S–2°N), by longitude, depth and month. Warm blobs that shift east from month to month are Kelvin waves. ")
+      + `Depth is exaggerated about ${exaggeration().toLocaleString()} times. Drag to rotate; use + and − to zoom.`;
+    Plotly.react(plot, view === "layer" ? layerTraces() : kelvinTraces(), layout(),
+                 {displayModeBar: false, responsive: true, scrollZoom: false});
+  }
+
+  function start() {
+    const btn = root.querySelector(".o3-load");
+    btn.disabled = true; btn.textContent = "Loading…";
+    const lib = window.Plotly ? Promise.resolve() : new Promise((ok, fail) => {
+      const s = document.createElement("script"); s.src = LIB; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+    });
+    Promise.all([lib, fetch(root.dataset.src).then(r => r.json())]).then(([, d]) => {
+      D = d; mi = D.months.length - 1;
+      slider.max = D.months.length - 1; slider.value = mi;
+      const box = root.querySelector(".o3-cases");
+      D.cases.forEach((c, i) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = c.name;
+        b.addEventListener("click", () => { ci = i; draw(); }); box.appendChild(b);
+      });
+      root.querySelector(".o3-cover").remove();
+      draw();
+    }).catch(() => { btn.textContent = "The 3D view could not be loaded."; });
+  }
+
+  root.querySelector(".o3-load").addEventListener("click", start);
+  root.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => {
+    if (!D) return;
+    view = b.dataset.view;
+    root.querySelectorAll("[data-view]").forEach(o => o.setAttribute("aria-pressed", o === b));
+    if (view === "kelvin" && D.cases[ci].name === "Normal") ci = 0;
+    draw();
+  }));
+  slider.addEventListener("input", () => { mi = +slider.value; draw(); });
+  root.querySelector(".o3-play").addEventListener("click", e => {
+    if (timer) { clearInterval(timer); timer = null; e.target.textContent = "▶"; return; }
+    if (mi === D.months.length - 1) mi = -1;
+    e.target.textContent = "❚❚";
+    timer = setInterval(() => {
+      mi += 1; slider.value = mi; draw();
+      if (mi >= D.months.length - 1) { clearInterval(timer); timer = null; e.target.textContent = "▶"; }
+    }, 800);
+  });
+  root.querySelectorAll(".o3-zoom").forEach(b => b.addEventListener("click", () => {
+    if (!D) return;
+    const eye = (plot.layout.scene.camera || CAMERA[view]).eye, k = +b.dataset.k;
+    Plotly.relayout(plot, {"scene.camera.eye": {x: eye.x * k, y: eye.y * k, z: eye.z * k}});
+  }));
+  root.querySelector(".o3-reset").addEventListener("click", () => {
+    if (D) Plotly.relayout(plot, {"scene.camera": CAMERA[view]});
+  });
+})();
+</script>

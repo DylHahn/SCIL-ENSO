@@ -34,6 +34,7 @@ GitHub Pages republishes the site a minute or two after the push. Other options:
 python update_site.py                       # rebuild from cached data
 python update_site.py --pages socal-heat    # rebuild one tab's figures (el-nino, socal-heat, socal-precip)
 python update_site.py --site-only           # rewrite the pages only (e.g. after editing text)
+python update_site.py --pages el-nino --figures anim_3d.py   # rebuild only some figures
 python summary.py                           # print the "What's happening now" summary
 python hovmoller_sst.py                     # build any single figure into figures_public/
 ```
@@ -55,6 +56,9 @@ Figures, El Niño tab              Figures, Southern California tabs
   interactive_data.py               socal_marine_heat.py
   anim_sst.py                       socal_summer_anomalies.py
   anim_upper_ocean.py               socal_station_heat.py
+  anim_warm_water.py
+  anim_3d.py
+  interactive_3d_data.py   (3D view: site/ocean3d.html)
   roni_vs_past_events.py            socal_precip_outlook.py   (uses socal_outlook.py)
   forecast_verification.py          socal_precip_el_nino_winters.py
   surface_comparison.py             socal_station_precip.py

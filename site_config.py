@@ -40,6 +40,14 @@ PAGES = [
              "Sea surface temperature along the equator, month by month (rows, top to bottom) and from the western "
              "Pacific to South America (left to right), for four very strong events."),
             ('section', '2. Below the surface: the heat that fuels it', 'The surface is only part of the picture. Warm water stored in the upper 200 metres of the ocean supplies heat to the surface and can sustain an El Niño for months.'),
+            ('anim_3d.py', False, 'Animation: the tropical Pacific in 3D',
+             "Rotating 3D view of the tropical Pacific in a normal year and in 2026: the top surface is the "
+             "temperature at 5 m and the lower surface the base of the warm layer (the 20 °C isotherm), from July "
+             "of the year before onset to the latest month."),
+            ('interactive_3d_data.py', False, 'Interactive 3D: the warm layer and Kelvin waves',
+             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal. "
+             "Warm layer: surface temperature above the base of the warm layer, month by month. Kelvin waves: water "
+             "3 °C or more warmer or cooler than normal along the equator, by longitude, depth and month."),
             ('anim_warm_water.py', False, 'Animation: warm water moving across the Pacific',
              "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July "
              "of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial "
@@ -206,6 +214,19 @@ FIGURE_NOTES = {
         how="Each panel is a vertical slice through the ocean along the equator, from Asia (left) to South America "
             "(right) and from the surface (top) to 200 m depth (bottom). Warm colours above the black line are the "
             "warm upper layer. Normally the line rises toward the east; during El Niño it flattens."),
+    "anim_3d.py": dict(
+        takeaway="In a normal year the warm layer is thin near South America; in 2026 it has thickened there, so "
+                 "the cold water that normally cools the eastern Pacific stays far below the surface.",
+        how="Each block is the tropical Pacific seen from the south-east, with Asia at the far left and South "
+            "America at the right. The coloured lower surface is the base of the warm layer: red where it lies deep, "
+            "blue where it is close to the surface. The thin top sheet is the sea surface temperature."),
+    "interactive_3d_data.py": dict(
+        takeaway="Rotate the model to see the warm layer flatten across the Pacific in 2026, and switch to Kelvin "
+                 "waves to follow pulses of warm water travelling east beneath the surface.",
+        how="Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year and "
+            "the slider or play button to move through the months. In the Kelvin-wave view, longitude runs left to "
+            "right, months run front to back and depth runs downward; warm blobs that shift east from one month to "
+            "the next are Kelvin waves."),
     "anim_warm_water.py": dict(
         takeaway="More warm water is stored along the equator in 2026 than at the same stage of 2015, 1997 or 1982.",
         how="Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C "

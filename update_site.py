@@ -5,6 +5,7 @@ Rebuild the SCIL ENSO website in one command: every figure, then every page in d
     python update_site.py                      # rebuild from cached data
     python update_site.py --pages socal-heat   # rebuild one tab's figures (all pages are still written)
     python update_site.py --site-only          # rewrite the pages only, reusing existing figures
+    python update_site.py --figures anim_3d.py # rebuild only the listed figure scripts
 
 Then publish:
     git add docs && git commit -m "Update for <month>" && git push
@@ -40,19 +41,44 @@ def stem(i, script):
     return f"{i:02d}_{script.removesuffix('.py')}"
 
 
+# interactive figures: the script writes a JSON data file; the template draws it in the browser
+INTERACTIVE_TEMPLATES = {"interactive_data.py": "explorer.html", "interactive_3d_data.py": "ocean3d.html"}
+
+
 def is_interactive(script):
     return script.startswith("interactive")
 
 
-def build_figures(page, refresh):
-    """Run each figure script for one tab into figures_public/<key>/NN_name.png. Returns failed scripts."""
+def renumber(page):
+    """Rename existing outputs in figures_public/<key>/ to the current figure order (NN_ prefixes) and
+    remove outputs of figures no longer on the page, so reordering needs no rebuild."""
     out = BUILD / page["key"]
     out.mkdir(parents=True, exist_ok=True)
-    for old in out.glob("*"):                    # start clean so retired figures don't linger
-        old.unlink()
+    order = {f[0].removesuffix(".py"): i for i, f in enumerate(figures_of(page), 1)}
+    moves = []
+    for f in out.iterdir():
+        name, _, ext = f.name[3:].partition(".")
+        if f.is_file() and f.name[:2].isdigit() and name in order:
+            moves.append((f, out / f"{order[name]:02d}_{name}.{ext}"))
+        elif f.is_file():
+            f.unlink()
+    staged = [(src.rename(src.with_name("_tmp_" + src.name)), dst) for src, dst in moves]
+    for tmp, dst in staged:
+        tmp.rename(dst)
+
+
+def build_figures(page, refresh, only=None):
+    """Run each figure script for one tab (or only the scripts in `only`) into
+    figures_public/<key>/NN_name.png. Returns failed scripts."""
+    out = BUILD / page["key"]
+    renumber(page)
     failed = []
     for i, (script, downloads, _, _) in enumerate(figures_of(page), 1):
-        ext = ".json" if is_interactive(script) else ".png"       # interactive charts: data file + site/explorer.html
+        if only and script not in only:
+            continue
+        for old in out.glob(f"{stem(i, script)}.*"):
+            old.unlink()
+        ext = ".json" if is_interactive(script) else ".png"       # interactive charts: data file + template
         cmd = [sys.executable, str(HERE / script), "--theme", "dark", "--out", str(out / f"{stem(i, script)}{ext}")]
         if refresh and downloads:
             cmd.append("--refresh")
@@ -153,7 +179,7 @@ def write_page(page):
                 raise SystemExit(f"Missing {s}.json: run update_site.py without --site-only first.")
             img_dir.mkdir(exist_ok=True)
             shutil.copy2(src / f"{s}.json", img_dir / f"{s}.json")
-            body.append((SITE / "explorer.html").read_text().replace("{{ID}}", f"g{n}")
+            body.append((SITE / INTERACTIVE_TEMPLATES[script]).read_text().replace("{{ID}}", f"g{n}")
                         .replace("{{DATA}}", f"img/{s}.json")
                         .replace("{{TAKEAWAY}}", takeaway).replace("{{CAPTION}}", cap + how))
             continue
@@ -214,13 +240,17 @@ def main():
     ap.add_argument("--refresh", action="store_true", help="re-download NOAA data before rebuilding")
     ap.add_argument("--pages", nargs="+", choices=[p["key"] for p in PAGES], help="only rebuild these tabs' figures")
     ap.add_argument("--site-only", action="store_true", help="skip figures; just rewrite the pages")
+    ap.add_argument("--figures", nargs="+", metavar="SCRIPT", help="only rebuild these figure scripts")
     args = ap.parse_args()
 
     failed = []
-    if not args.site_only:
-        for page in PAGES:
-            if figures_of(page) and (not args.pages or page["key"] in args.pages):
-                failed += build_figures(page, args.refresh)
+    for page in PAGES:
+        if not figures_of(page):
+            continue
+        if args.site_only or (args.pages and page["key"] not in args.pages):
+            renumber(page)                         # keep outputs in step with any reordering
+        else:
+            failed += build_figures(page, args.refresh, args.figures)
     DOCS.mkdir(exist_ok=True)
     (DOCS / ".nojekyll").write_text("")              # serve files as-is (no Jekyll processing)
     for page in PAGES:

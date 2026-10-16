@@ -166,6 +166,28 @@
           white-space: nowrap; }
   .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
   .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
+  /* interactive 3D view */
+  .ocean3d { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .o3-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; }
+  .o3-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .o3-group button, .o3-time button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                     border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .o3-group button:hover, .o3-time button:hover { color: var(--text); border-color: var(--muted); }
+  .o3-group button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .o3-group button:disabled { opacity: .35; cursor: default; }
+  .o3-stage { position: relative; height: min(600px, 70vh); min-height: 380px; background: var(--bg);
+              border-radius: 8px; }
+  .o3-plot { position: absolute; inset: 0; }
+  .o3-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+              gap: 14px; text-align: center; color: var(--text-2); padding: 16px; }
+  .o3-cover p { margin: 0; }
+  .o3-cover .play { position: static; transform: none; }
+  .o3-time { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .o3-time input { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .o3-month { color: var(--text); font-weight: 600; min-width: 80px; }
+  .o3-time [hidden] { display: none; }
+  .o3-zoom { min-width: 34px; }
+  .o3-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 900px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>
@@ -186,7 +208,7 @@
   <p class="kicker">Southern California Precipitation</p>
   <h1>Southern California precipitation and El Niño</h1>
   <p class="lede">NOAA&#x27;s seasonal precipitation outlook for the coming winter, and the precipitation Southern California received during past strong <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span> winters, region-wide and at individual stations.</p>
-  <p class="meta">Updated October 13, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 15, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 
 
