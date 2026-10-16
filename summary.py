@@ -126,6 +126,30 @@ def _lbl(y):
     return f"{y}–{str(y + 1)[-2:]}"
 
 
+def _hottest_water(years, now):
+    """Volume of water above 28 °C (5°S–5°N, 120°E–80°W) at the latest GODAS month, against every El Niño
+    since 1980 at the same stage."""
+    import xarray as xr
+    from anim_warm_layers import volumes
+    from anim_warm_water import load_temps
+    from enso_common import download_godas_year
+    with xr.open_dataset(download_godas_year(now)) as ds:
+        last = pd.Timestamp(ds["time"].values[-1])
+    vols = {}
+    for y in [now] + [y for y in years if y >= 1980]:
+        t, got, lat, lon, depths = load_temps([pd.Timestamp(y, last.month, 1)])
+        if len(got):
+            vols[y] = float(volumes(t, lat, lon, depths)[0, 3:].sum())
+    v = vols.pop(now)
+    best = max(vols, key=vols.get)
+    if v <= vols[best]:
+        return None
+    return ("Most water above 28 °C on record for the time of year",
+            f"In {last:%B}, the equatorial Pacific (5°S–5°N) held {v:.1f} × 10¹⁴ m³ of water warmer than 28 °C, the "
+            f"temperature at which the ocean can sustain heavy tropical rainfall, against a previous high of "
+            f"{vols[best]:.1f} × 10¹⁴ m³ ({_lbl(best)}) among the {len(vols)} El Niño events since 1980.")
+
+
 def differences():
     """[(headline, explanation), ...] — only statements that the current data support."""
     from enso_stats import load_gridded
@@ -179,6 +203,13 @@ def differences():
                         "over the coming months."))
     except Exception as exc:                      # GODAS depth files are local only
         print(f"Subsurface difference skipped: {exc}")
+
+    try:
+        item = _hottest_water(years, NOW)
+        if item:
+            out.append(item)
+    except Exception as exc:                      # GODAS depth files are local only
+        print(f"Warm-layer difference skipped: {exc}")
 
     out_fc = load_cpc_outlook()
     rec = max(find_events(load_roni()), key=lambda e: e.max())

@@ -52,6 +52,10 @@ PAGES = [
              "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July "
              "of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial "
              "warm water volume (5°S–5°N) and its departure from normal."),
+            ('anim_warm_layers.py', False, 'Animation: layers of warm water',
+             "Equatorial sections coloured by temperature layer (20–24, 24–26, 26–28, 28–29 and above 29 °C) for "
+             "2026, 2015, 1997, 1982 and the 1991–2020 normal, with the volume of water in each layer between 5°S "
+             "and 5°N, from July of the year before onset to the latest month."),
             ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026 and past very strong events',
              "Animated equatorial upper-ocean temperature sections for 2026, 2015, 1997, 1982 and the 1991–2020 "
              "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
@@ -208,6 +212,13 @@ FIGURE_NOTES = {
         how="Each map shows the actual sea surface temperature for one month. Red and dark red are warmer than about "
             "28 °C (inside the black line), warm enough to fuel heavy tropical rainfall. Compare each year with the "
             "Normal panel at the bottom: during El Niño the warm area spreads east toward South America."),
+    "anim_warm_layers.py": dict(
+        takeaway="The hottest water has grown the most: the volume warmer than 28 °C is far above normal and above "
+                 "2015, 1997 and 1982 at the same stage.",
+        how="Each slice runs along the equator from Asia (left) to South America (right) and from 5 m down to 200 m. "
+            "Colours mark temperature layers, from below 20 °C (dark blue) to above 29 °C (dark red). The dashed "
+            "lines show where 20 °C and 28 °C normally lie; red reaching below or east of them means more warm water "
+            "than usual. The bar beside each slice adds up the volume in each layer, warmest on the left."),
     "anim_upper_ocean.py": dict(
         takeaway="In 2026 the 20 °C line is nearly flat across the Pacific: the cold water that normally lies close "
                  "to the surface in the east has been pushed down.",
