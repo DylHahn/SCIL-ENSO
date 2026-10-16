@@ -121,8 +121,9 @@ PAGES = [
              "Equatorial upper-ocean temperature at the same stage of each event; the current event holds "
              "substantially more subsurface heat."),
             ('hovmoller_upper_ocean.py', False, 'Upper-ocean heat content (Hovmöller)',
-             "The same layout for the average temperature of the upper 200 m; warm water spreading east beneath "
-             "the surface marks Kelvin waves."),
+             "Average temperature of the upper 200 m along the equator, month by month (rows, top to bottom) and "
+             "from the western Pacific to South America (left to right), for four very strong events; warm water "
+             "spreading east beneath the surface marks Kelvin waves."),
         ],
         extra="",
         data=["NCEP GODAS ocean reanalysis: NOAA NCEP, via NOAA PSL",
@@ -423,4 +424,151 @@ GLOSSARY = {
     "water year": "October to September, labelled by the year in which it ends.",
     "Santa Ana": "Dry, often strong offshore winds that blow from the interior toward the Southern California "
                  "coast, mainly in autumn and winter.",
+}
+
+
+# ---------------------------------------------------------------------------------------------
+# Shown under every figure: how it relates to El Niño, and the data it is made from. (The figure's
+# caption above serves as "What it shows".)
+# ---------------------------------------------------------------------------------------------
+FIGURE_INFO = {
+    # El Niño 2026
+    "anim_sst.py": (
+        "El Niño is defined by unusually warm water in the central and eastern equatorial Pacific. As the warm "
+        "water spreads east, the rising air and heavy rain that normally sit over the western Pacific move east "
+        "with it, which shifts weather patterns around the world.",
+        "NOAA OISST v2.1 monthly mean sea surface temperature (0.25°), via NOAA PSL; normal = OISST 1991–2020 "
+        "monthly mean."),
+    "anim_timeseries.py": (
+        "Comparing every event at the same time of year shows whether 2026 is an ordinary strong El Niño or is "
+        "developing faster and further than past events, which helps judge how strong its peak may become.",
+        "NOAA ERSST v5 (Niño 3.4 and Niño 1+2 sea surface temperature) and NCEP GODAS (upper-200 m temperature), "
+        "anomalies from 1991–2020; El Niño events from NOAA CPC's Relative Oceanic Niño Index (RONI)."),
+    "interactive_data.py": (
+        "Each measure captures a different part of El Niño: Niño 3.4 is the official yardstick, Niño 1+2 tracks "
+        "the coast of South America, Niño 4 the western-central Pacific, and the upper ocean the stored heat that "
+        "feeds the surface in the months ahead.",
+        "NOAA ERSST v5 (Niño region sea surface temperature), NCEP GODAS (upper-200 m temperature), and NOAA CPC "
+        "RONI with its official outlook; anomalies from 1991–2020."),
+    "event_ranking.py": (
+        "Peak strength, length and total warmth each relate to impacts: stronger and longer events tend to have "
+        "larger and more dependable effects on weather worldwide, including California's winter rainfall.",
+        "NOAA CPC Relative Oceanic Niño Index (RONI), 1950–present, completed for the current event with NOAA's "
+        "official median outlook."),
+    "roni_vs_past_events.py": (
+        "RONI is the index NOAA uses to declare an El Niño and its strength. The forecast shows how strong the event "
+        "is likely to be at its winter peak, when its effects on North American weather are greatest.",
+        "NOAA CPC Relative Oceanic Niño Index (RONI) and the official RONI outlook and strength probabilities."),
+    "global_temperature.py": (
+        "El Niño releases heat from the ocean into the atmosphere, temporarily raising global average temperature on "
+        "top of long-term warming; the year during or after a strong El Niño is often a new record.",
+        "NOAA NCEI global land and ocean surface temperature (NOAAGlobalTemp), relative to 1901–2000; El Niño "
+        "winters from NOAA CPC RONI (December–February)."),
+    # Below the surface
+    "anim_3d.py": (
+        "The trade winds normally hold the warm layer deep in the west and shallow in the east. When the winds weaken "
+        "during El Niño, the warm layer flattens, so cold water no longer reaches the surface near South America "
+        "and the eastern Pacific warms from below.",
+        "NCEP GODAS ocean reanalysis, monthly temperature in 10 m levels to 205 m, via NOAA PSL; normal = 1991–2020 "
+        "mean temperature."),
+    "interactive_3d_data.py": (
+        "El Niño is fuelled by heat stored in the upper ocean. Seeing the warm layer, its temperature layers and the "
+        "volume of the hottest water in three dimensions shows where that heat is, and how much more there is than "
+        "usual.",
+        "NCEP GODAS ocean reanalysis, monthly temperature to 205 m, via NOAA PSL; volumes over 5°S–5°N, 120°E–80°W; "
+        "normal = 1991–2020 mean temperature."),
+    "anim_warm_water.py": (
+        "Warm water volume is one of the earliest signs of El Niño: it builds up along the equator in the months "
+        "before an event and is drained away from the equator as the event peaks and fades.",
+        "NCEP GODAS ocean reanalysis, monthly temperature to 205 m, via NOAA PSL; warm water volume as defined by "
+        "NOAA PMEL (above 20 °C, 5°S–5°N, 120°E–80°W)."),
+    "anim_warm_layers.py": (
+        "Water above about 28 °C fuels the deep thunderstorms of the tropics. The more of it there is and the farther "
+        "east it reaches, the farther the tropical rainfall belt shifts, which drives El Niño's effects on weather "
+        "elsewhere.",
+        "NCEP GODAS ocean reanalysis, monthly temperature to 205 m, via NOAA PSL; sections 2°S–2°N, volumes 5°S–5°N, "
+        "120°E–80°W; normal = 1991–2020 mean temperature."),
+    "anim_kelvin.py": (
+        "Kelvin waves carry warm water from the western to the eastern Pacific. Each one deepens the warm layer in the "
+        "east and warms the surface there one to two months later, which helps forecasters anticipate further "
+        "warming.",
+        "NOAA blended satellite altimetry, daily sea surface height anomaly (0.25°), averaged over 1°S–1°N, via NOAA "
+        "CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle."),
+    "anim_sealevel_3d.py": (
+        "Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a "
+        "daily, ocean-wide picture of where El Niño's heat is accumulating; higher sea level along the coasts of the "
+        "Americas is itself one of El Niño's effects.",
+        "NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N, via NOAA CoastWatch "
+        "ERDDAP; anomalies from the 2017–2024 seasonal cycle."),
+    "anim_upper_ocean.py": (
+        "The tilt of the warm layer along the equator is the clearest sign of El Niño below the surface: when it "
+        "flattens, cold water no longer reaches the surface near South America, so the eastern Pacific warms.",
+        "NCEP GODAS ocean reanalysis, monthly temperature to 205 m averaged over 2°S–2°N, via NOAA PSL; normal = "
+        "1991–2020."),
+    "subsurface_comparison.py": (
+        "Heat stored below the surface tends to reach the surface over the following months, so more subsurface heat "
+        "than in past events at the same stage points to continued warming.",
+        "NCEP GODAS ocean reanalysis, monthly temperature to 205 m averaged over 2°S–2°N, via NOAA PSL; anomalies from "
+        "1991–2020."),
+    "hovmoller_upper_ocean.py": (
+        "Following the upper-ocean heat month by month shows the Kelvin waves that carried warm water east, and the "
+        "build-up below the surface that came before the surface warming.",
+        "NCEP GODAS ocean reanalysis, monthly mean temperature of the top 200 m over 2°S–2°N, via NOAA PSL; anomalies "
+        "from 1991–2020."),
+    # Detailed comparisons
+    "surface_comparison.py": (
+        "Comparing the same month of each very strong El Niño shows how far the warm water has spread in 2026, and "
+        "that the whole tropical ocean is warmer than in past events, which adds to El Niño's effect on global "
+        "temperature.",
+        "Maps: NOAA ERSST v5 monthly sea surface temperature (2°). Anomaly values: NOAAGlobalTemp v6, relative to "
+        "1991–2020."),
+    "nino_regions.py": (
+        "Where the warming is strongest matters: El Niños that peak near South America and those that peak in the "
+        "central Pacific affect weather in different ways.",
+        "NOAA CPC monthly Niño region indices (from OISST v2.1), anomalies from 1991–2020."),
+    "hovmoller_sst.py": (
+        "Following the surface temperature month by month shows how El Niño spread east across the Pacific and how "
+        "quickly the eastern Pacific warmed compared with past events.",
+        "NOAA ERSST v5 monthly sea surface temperature (2°) along 2°S–2°N; anomalies from 1991–2020."),
+    "forecast_verification.py": (
+        "Knowing how NOAA's forecasts for this event have performed shows how much confidence to place in the current "
+        "outlook for its peak.",
+        "NOAA CPC official ENSO strength probabilities (monthly archive since April 2026) and the observed Relative "
+        "Oceanic Niño Index (RONI)."),
+    # Southern California heat
+    "socal_summer_anomalies.py": (
+        "El Niño's main influence on Southern California comes in winter. This summer's heat coincided with the "
+        "developing event and record-warm coastal water, so these maps put summer 2026 in context.",
+        "NOAA NCEI nClimGrid monthly (~5 km) mean daily maximum and minimum temperature, June–September, land only; "
+        "anomalies from 1991–2020."),
+    "socal_station_heat.py": (
+        "Warm coastal water keeps nights warmer near the coast, and El Niño years can bring warm water to Southern "
+        "California; the station records show how this summer compares with past El Niño and other years.",
+        "NOAA NCEI GHCN-Daily station records (Los Angeles, San Diego, Inland Empire, Santa Barbara), June–September; "
+        "El Niño strength from NOAA CPC RONI."),
+    "socal_marine_heat.py": (
+        "El Niño can warm the waters off California, through ocean waves travelling up the coast and changes in the "
+        "winds. Marine heatwaves affect fisheries, kelp forests and coastal temperatures.",
+        "NOAA OISST v2.1 daily sea surface temperature (0.25°), via NOAA CoastWatch ERDDAP, averaged over the Southern "
+        "California Bight; marine heatwaves after Hobday et al. (2016)."),
+    "socal_warming_since_1895.py": (
+        "Long-term warming sets the baseline: any heat related to El Niño now comes on top of summers that are already "
+        "warmer than in the past.",
+        "NOAA NCEI nClimGrid monthly (~5 km) June–September mean daily maximum and minimum temperature since 1895; "
+        "El Niño winters from NOAA CPC RONI."),
+    # Southern California precipitation
+    "socal_precip_outlook.py": (
+        "During El Niño the Pacific jet stream tends to shift south in winter, steering more storms toward Southern "
+        "California; NOAA's seasonal outlook reflects this.",
+        "NOAA Climate Prediction Center official 3-month precipitation outlooks (GIS files)."),
+    "socal_precip_el_nino_winters.py": (
+        "This shows how often strong El Niño winters have actually brought more rain to Southern California, and that "
+        "some, such as 2015–16, did not.",
+        "NOAA NCEI nClimGrid monthly precipitation (~5 km), November–March totals; El Niño strength from NOAA CPC RONI "
+        "(December–February)."),
+    "socal_station_precip.py": (
+        "Long station records show how rainfall at individual places has varied with El Niño and La Niña, including "
+        "how dependable the El Niño signal is in each part of the region.",
+        "NOAA NCEI GHCN-Daily station records (water years October–September); El Niño strength from NOAA CPC RONI "
+        "(December–February)."),
 }

@@ -26,7 +26,7 @@ from string import Template
 from PIL import Image
 
 from enso_common import HERE
-from site_config import AUTHOR, FIGURE_NOTES, GLOSSARY, PAGES, REPO_URL, SITE_URL
+from site_config import AUTHOR, FIGURE_INFO, FIGURE_NOTES, GLOSSARY, PAGES, REPO_URL, SITE_URL
 
 DOCS = HERE / "docs"
 BUILD = HERE / "figures_public"
@@ -172,7 +172,11 @@ def write_page(page):
         takeaway = f'<p class="takeaway">{gloss(notes["takeaway"])}</p>' if notes.get("takeaway") else ""
         how = (f'<details class="how"><summary>How to read this figure</summary><p>{gloss(notes["how"])}</p>'
                f'</details>') if notes.get("how") else ""
-        cap = f"<b>Figure {n}. {html.escape(short)}.</b> {gloss(caption)}"
+        why, data_used = FIGURE_INFO[script]
+        cap = (f'<b class="figtitle">Figure {n}. {html.escape(short)}</b>'
+               f'<dl class="figinfo"><dt>What it shows</dt><dd>{gloss(caption)}</dd>'
+               f'<dt>How it relates to El Niño</dt><dd>{gloss(why)}</dd>'
+               f'<dt>Data</dt><dd>{html.escape(data_used)}</dd></dl>')
         toc[-1][1].append(f'<li value="{n}"><a href="#g{n}">{html.escape(short)}</a></li>')
         if is_interactive(script):
             if not (src / f"{s}.json").exists():
@@ -201,8 +205,9 @@ def write_page(page):
                      f'width="{w}" height="{h}" decoding="async">'
                      f'<button type="button" class="play"><span aria-hidden="true">▶</span> Play animation '
                      f'<span class="size">({mb:.0f} MB)</span></button></div>')
-            links = (f' <a href="img/{s}.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · '
-                     f'<a href="img/{s}.png" target="_blank" rel="noopener">still image of the final frame</a>.')
+            links = (f'<p class="figlinks"><a href="img/{s}.webp" target="_blank" rel="noopener">Open the animation in a '
+                     f'new tab</a> · <a href="img/{s}.png" target="_blank" rel="noopener">still image of the final '
+                     f'frame</a></p>')
         else:
             media = (f'<a href="img/{s}.png" target="_blank" rel="noopener"><img src="img/{s}.png" alt="{alt}" '
                      f'width="{w}" height="{h}" decoding="async"></a>')
