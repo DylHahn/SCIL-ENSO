@@ -208,7 +208,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated October 15, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated October 16, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -222,6 +222,7 @@
     <tr><td>Relative Oceanic Niño Index (RONI); official RONI outlook and strength probabilities</td><td>NOAA Climate Prediction Center (CPC)</td><td>3-month means</td><td>Event strength, event definitions, forecasts, forecast verification, ENSO phase of each winter</td></tr>
     <tr><td>Monthly Niño region indices</td><td>NOAA CPC (OISST v2.1)</td><td>Monthly</td><td>Niño 4, 3.4, 3 and 1+2 anomalies</td></tr>
     <tr><td>NCEP Global Ocean Data Assimilation System (GODAS)</td><td>NOAA NCEP, via NOAA PSL</td><td>1° × ⅓°, 10 m levels (5–205 m used), monthly</td><td>Upper-ocean temperature sections, Hovmöller and animation</td></tr>
+    <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present</td><td>Kelvin wave animation</td></tr>
     <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
     <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series and interactive explorer, tropical Pacific maps</td></tr>
     <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
@@ -275,7 +276,7 @@
   <dt>GHCN-Daily</dt><dd>NOAA&#x27;s Global Historical Climatology Network of daily weather-station records.</dd>
   <dt>GODAS</dt><dd>NOAA&#x27;s Global Ocean Data Assimilation System, an ocean reanalysis that estimates temperature below the surface.</dd>
   <dt>Hovmöller</dt><dd>A diagram with position on one axis and time on the other, used to follow features as they move.</dd>
-  <dt>Kelvin waves</dt><dd>Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in two to three months.</dd>
+  <dt>Kelvin waves</dt><dd>Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.</dd>
   <dt>La Niña</dt><dd>The cool counterpart of El Niño: below-normal ocean temperatures in the central and eastern equatorial Pacific.</dd>
   <dt>marine heatwave</dt><dd>A spell of at least five days when sea surface temperature is above the 90th percentile for the time of year (Hobday et al., 2016).</dd>
   <dt>nClimGrid</dt><dd>NOAA&#x27;s gridded (about 5 km) monthly temperature and precipitation for the United States since 1895.</dd>
@@ -317,11 +318,17 @@
   above about 28 °C is commonly taken as the threshold for deep atmospheric convection over the tropical
   oceans.</li>
   <li><b>3D views.</b> GODAS temperature at 5 m and the depth of the 20 °C isotherm (computed as for the warm water
-  animation) are shown at 1° latitude × 2° longitude in the interactive view and ⅔° × 2° over 15°S–15°N in the
-  animation. Cells within two grid points of land are omitted and the fields are lightly smoothed (Gaussian,
-  one grid cell) for display only. The Kelvin-wave view shows the 2°S–2°N mean temperature anomaly relative to the
-  1991–2020 monthly mean, with surfaces at ±3, ±5 and ±7 °C. Depth is exaggerated by roughly 15,000–25,000 times;
-  the factor is stated on each view.</li>
+  animation) are shown at 1° latitude × 2° longitude from 130°E in the interactive view and ⅔° × 2° over 15°S–15°N
+  in the animation. Cells within two grid points of land are omitted and the fields are lightly smoothed (Gaussian,
+  one grid cell) for display only. Depth is exaggerated by roughly 15,000–20,000 times; the factor is stated on each
+  view.</li>
+  <li><b>Kelvin waves.</b> Daily sea surface height anomalies from NOAA's blended near-real-time altimetry
+  (CoastWatch ERDDAP, noaacwBLENDEDsshDaily; 0.25°, available from 2017) are averaged over 1°S–1°N every 1° of
+  longitude. The 2017–2024 mean seasonal cycle (monthly means interpolated to days) is removed, which also removes
+  the long-term offset of the record, and a 5-day running mean is applied. Because only eight years are available,
+  this baseline differs from the 1991–2020 normals used elsewhere. Waves are traced automatically as straight
+  eastward paths from 150°E to 90°W, at speeds between 1.8 and 3.2 m/s, along which the mean anomaly is at least
+  +3 cm, at least 25 days apart; a wave is shown once it has crossed.</li>
   <li><b>Event development and ranking.</b> RONI for every event since 1950. The current event is completed with
   NOAA's median forecast and its 5–95% range. Accumulated intensity is the sum of monthly RONI values above
   +0.5 °C over the event.</li>

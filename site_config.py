@@ -44,10 +44,9 @@ PAGES = [
              "Rotating 3D view of the tropical Pacific in a normal year and in 2026: the top surface is the "
              "temperature at 5 m and the lower surface the base of the warm layer (the 20 °C isotherm), from July "
              "of the year before onset to the latest month."),
-            ('interactive_3d_data.py', False, 'Interactive 3D: the warm layer and Kelvin waves',
-             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal. "
-             "Warm layer: surface temperature above the base of the warm layer, month by month. Kelvin waves: water "
-             "3 °C or more warmer or cooler than normal along the equator, by longitude, depth and month."),
+            ('interactive_3d_data.py', False, 'Interactive 3D: the warm layer',
+             "Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal: "
+             "the temperature at 5 m above the base of the warm layer (the 20 °C isotherm), month by month."),
             ('anim_warm_water.py', False, 'Animation: warm water moving across the Pacific',
              "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from July "
              "of the year before onset, for 2026, 2015, 1997, 1982 and the 1991–2020 normal, with the equatorial "
@@ -56,6 +55,9 @@ PAGES = [
              "Equatorial sections coloured by temperature layer (20–24, 24–26, 26–28, 28–29 and above 29 °C) for "
              "2026, 2015, 1997, 1982 and the 1991–2020 normal, with the volume of water in each layer between 5°S "
              "and 5°N, from July of the year before onset to the latest month."),
+            ('anim_kelvin.py', True, 'Animation: Kelvin waves',
+             "How a Kelvin wave works, and every Kelvin wave since July 2025 traced in daily satellite sea level along "
+             "the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific."),
             ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026 and past very strong events',
              "Animated equatorial upper-ocean temperature sections for 2026, 2015, 1997, 1982 and the 1991–2020 "
              "normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens."),
@@ -99,6 +101,7 @@ PAGES = [
               "NCEP GODAS ocean reanalysis: NOAA NCEP, via NOAA PSL",
               "OISST v2.1 and ERSST v5 sea surface temperature: NOAA NCEI, via NOAA PSL",
               "NOAAGlobalTemp v6 and global temperature series: NOAA NCEI",
+              "Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP",
               "Monthly Niño region indices (OISST v2.1): NOAA Climate Prediction Center"],
     ),
     dict(
@@ -219,6 +222,13 @@ FIGURE_NOTES = {
             "Colours mark temperature layers, from below 20 °C (dark blue) to above 29 °C (dark red). The dashed "
             "lines show where 20 °C and 28 °C normally lie; red reaching below or east of them means more warm water "
             "than usual. The bar beside each slice adds up the volume in each layer, warmest on the left."),
+    "anim_kelvin.py": dict(
+        takeaway="A series of Kelvin waves has carried warm water from the western Pacific to South America since "
+                 "late 2025, each one adding to the warm layer in the east.",
+        how="Top: the three steps of a Kelvin wave. Middle: sea level along the equator on the day shown; red bumps "
+            "moving east are Kelvin waves. Bottom: the same, day by day, with time running down the page, so each "
+            "wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has "
+            "crossed the Pacific."),
     "anim_upper_ocean.py": dict(
         takeaway="In 2026 the 20 °C line is nearly flat across the Pacific: the cold water that normally lies close "
                  "to the surface in the east has been pushed down.",
@@ -232,12 +242,11 @@ FIGURE_NOTES = {
             "America at the right. The coloured lower surface is the base of the warm layer: red where it lies deep, "
             "blue where it is close to the surface. The thin top sheet is the sea surface temperature."),
     "interactive_3d_data.py": dict(
-        takeaway="Rotate the model to see the warm layer flatten across the Pacific in 2026, and switch to Kelvin "
-                 "waves to follow pulses of warm water travelling east beneath the surface.",
-        how="Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year and "
-            "the slider or play button to move through the months. In the Kelvin-wave view, longitude runs left to "
-            "right, months run front to back and depth runs downward; warm blobs that shift east from one month to "
-            "the next are Kelvin waves."),
+        takeaway="Rotate the model to see the base of the warm layer flatten across the Pacific in 2026, compared "
+                 "with the tilt of a normal year.",
+        how="Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year "
+            "and the slider or play button to move through the months. The lower surface is coloured by depth: red "
+            "where the warm layer is thick, blue where it is thin."),
     "anim_warm_water.py": dict(
         takeaway="More warm water is stored along the equator in 2026 than at the same stage of 2015, 1997 or 1982.",
         how="Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C "
@@ -267,7 +276,7 @@ FIGURE_NOTES = {
         how="Time runs down the page, one row per month; position runs left to right from the western Pacific to "
             "South America. Colours show the average temperature anomaly of the top 200 m. Diagonal streaks "
             "running down and to the right are Kelvin waves: pulses of warm water that cross the Pacific beneath "
-            "the surface in two to three months."),
+            "the surface in about two months."),
     "nino_regions.py": dict(
         takeaway="Warming is strongest near South America and weakest in the western Pacific, a pattern closest to "
                  "1997–98.",
@@ -336,7 +345,7 @@ GLOSSARY = {
                  "South America.",
     "trade winds": "Steady easterly winds over the tropical Pacific that push warm surface water toward the west.",
     "Kelvin waves": "Pulses of warm water that travel east along the equator beneath the surface, crossing the "
-                    "Pacific in two to three months.",
+                    "Pacific in about two months.",
     "Hovmöller": "A diagram with position on one axis and time on the other, used to follow features as they move.",
     "reanalysis": "A best estimate of past ocean or weather conditions, made by combining observations with a "
                   "numerical model.",

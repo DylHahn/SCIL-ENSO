@@ -1,0 +1,228 @@
+"""
+Animation 7 — Kelvin waves: the pulses of warm water that built the 2026 El Niño
+
+An infographic in three parts:
+  1. How a Kelvin wave works (schematic, three steps).
+  2. Total sea level along the equator on the day shown: the build-up of warm water in the east.
+  3. The Kelvin-wave signal along the equator (1°S–1°N) since July of the year before onset, day by
+     day, filled in as the animation runs, with each wave traced and listed once it has crossed.
+
+Data: NOAA blended satellite altimetry (daily, 0.25°). Anomalies are relative to the 2017–2024
+seasonal cycle with a 5-day running mean. The wave signal is the anomaly minus its 91-day running
+mean, which removes the slow El Niño build-up and leaves the eastward pulses. Waves are traced
+automatically as straight eastward paths from 150°E to 95°W at 2.0–3.5 m/s along which the wave
+signal averages at least +3 cm, at least 20 days apart at both ends, once they have finished crossing.
+
+    python anim_kelvin.py
+"""
+import argparse
+
+import numpy as np
+import pandas as pd
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+from matplotlib.colors import BoundaryNorm
+from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle
+from matplotlib.ticker import FuncFormatter
+
+from enso_anim import AnimationFrames
+from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, lon_label
+from enso_sealevel import anomalies, daily
+
+NOW = 2026
+LON_RANGE = (130.0, 267.0)               # stop west of the Galápagos, which disturb the altimetry
+X0, X1 = 150.0, 265.0                    # tracking window: 150°E to 95°W
+M_PER_DEG = 111.32e3
+SPEEDS = np.arange(2.0, 3.51, 0.05)      # m/s; first-mode Kelvin waves travel at roughly 2.5–3 m/s
+MIN_CM = 3.0
+GAP_DAYS = 20
+
+
+def wave_signal(anom, window=91):
+    """Anomaly minus its centred running mean: the fast, eastward pulses without the slow build-up."""
+    return anom - anom.rolling(window, center=True, min_periods=window // 3).mean()
+
+
+def track_waves(sig):
+    """[(start date, speed m/s, mean cm, arrival date)] for eastward ridges crossing X0→X1."""
+    lons = np.array(sig.columns, float)
+    sel = (lons >= X0) & (lons <= X1)
+    xs, A = lons[sel], sig.values[:, sel]
+    t = (sig.index - sig.index[0]).days.values.astype(float)
+    cand = []
+    for i0 in range(len(t)):
+        for c in SPEEDS:
+            ti = t[i0] + (xs - X0) * M_PER_DEG / c / 86400.0
+            if ti[-1] > t[-1]:                               # only waves that have finished crossing
+                continue
+            k = np.searchsorted(t, ti)
+            score = np.nanmean(A[k, np.arange(len(xs))])
+            if score >= MIN_CM:
+                cand.append((score, i0, c, t[i0] + (X1 - X0) * M_PER_DEG / c / 86400.0))
+    waves = []
+    for score, i0, c, te in sorted(cand, reverse=True):     # strongest first; keep well-separated paths
+        if all(abs(t[i0] - t[j]) >= GAP_DAYS and abs(te - e) >= GAP_DAYS for _, j, _, e in waves):
+            waves.append((score, i0, c, te))
+    waves.sort(key=lambda w: w[1])
+    d0 = sig.index[0]
+    return [(sig.index[i0], c, s, d0 + pd.Timedelta(days=te)) for s, i0, c, te in waves]
+
+
+def schematic(fig, rect):
+    """Three cartoon cross-sections of the equatorial Pacific, west (left) to east (right)."""
+    steps = [
+        ("1  A burst of westerly wind", "Winds reverse for a few days in the western\nPacific and push warm water east."),
+        ("2  A pulse travels east", "A bulge of warm water moves east beneath the\nsurface at 2.5–3 m/s (roughly 250 km a day)."),
+        ("3  It reaches South America", "One to two months later it deepens the warm\nlayer in the east and warms the surface."),
+    ]
+    x, y, w, h = rect
+    warm, cold, land = "#e8574a", "#1c5cab", "#3a3936"
+    for k, (title, text) in enumerate(steps):
+        ax = fig.add_axes([x + k * w / 3 + 0.008, y, w / 3 - 0.016, h])
+        ax.set_xlim(0, 10); ax.set_ylim(-4.0, 4.6); ax.axis("off")
+        bump = [2.0, 5.2, 8.2][k]
+        xs = np.linspace(0.4, 9.6, 200)
+        z = -1.6 + 0.11 * (xs - 0.4) - 0.9 * np.exp(-((xs - bump) / 0.9) ** 2)   # base of the warm layer
+        ax.add_patch(Rectangle((0.4, -3.2), 9.2, 3.2, color=cold, zorder=1))
+        ax.add_patch(Polygon(np.column_stack([np.r_[xs, xs[::-1]], np.r_[z, np.zeros_like(xs)]]), color=warm,
+                             zorder=2))
+        ax.plot(xs, z, color="white", lw=1, ls=(0, (3, 2)), zorder=3)
+        ax.add_patch(Rectangle((0, -3.2), 0.4, 3.6, color=land, zorder=4))
+        ax.add_patch(Polygon([[9.6, -3.2], [9.6, 0.6], [9.8, 1.4], [10, 1.0], [10, -3.2]], color=land, zorder=4))
+        if k == 0:
+            ax.add_patch(FancyArrowPatch((0.9, 1.0), (4.4, 1.0), arrowstyle="-|>", mutation_scale=14, lw=2.2,
+                                         color=COLORS["text"]))
+            ax.text(2.65, 1.25, "westerly winds", ha="center", fontsize=9, color=COLORS["text"])
+        else:
+            ax.add_patch(FancyArrowPatch((bump - 1.7, -1.1), (bump + 0.9, -1.1), arrowstyle="-|>",
+                                         mutation_scale=12, lw=1.8, color="white", zorder=5))
+            ax.plot(xs, 0.25 * np.exp(-((xs - bump) / 0.9) ** 2), color="#9ec5f4", lw=1.6, zorder=5)
+            ax.text(bump - 0.3, 0.45, "sea level rises", ha="center" if k == 1 else "right", fontsize=8.5,
+                    color="#9ec5f4")
+        if k == 2:
+            ax.add_patch(Rectangle((7.2, -0.2), 2.4, 0.2, color="#ffb000", zorder=6))
+            ax.text(7.0, -0.55, "surface warms", ha="right", fontsize=8.5, color="#ffd27a", zorder=6)
+        ax.text(0.0, 4.5, title, fontsize=12, fontweight="bold", color=COLORS["text"], va="top")
+        ax.text(0.0, 3.55, text, fontsize=9.5, color=COLORS["text_2"], va="top", linespacing=1.3)
+        ax.text(0.5, -3.65, "West (Asia)", fontsize=8, color=COLORS["muted"])
+        ax.text(9.5, -3.65, "East (S. America)", fontsize=8, color=COLORS["muted"], ha="right")
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--every", type=int, default=4, help="days per animation frame")
+    ap.add_argument("--theme", choices=["dark", "light"], default="dark")
+    ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--out", default=str(FIG_DIR / "anim" / "anim_kelvin.png"))
+    args = ap.parse_args()
+
+    apply_style(args.theme)
+    raw = daily(f"{NOW - 1}-07-01", refresh=args.refresh)
+    anom = anomalies(raw).dropna(how="all")
+    lons = np.array(anom.columns, float)
+    keep = (lons >= LON_RANGE[0]) & (lons <= LON_RANGE[1])
+    anom, lons = anom.loc[:, keep], lons[keep]
+    sig = wave_signal(anom)
+    waves = track_waves(sig)
+    dates = anom.index
+
+    H = 14.6
+    fig = plt.figure(figsize=(13, H))
+    schematic(fig, (0.03, 1 - 4.45 / H, 0.94, 2.75 / H))
+    W = 0.63
+    prof = fig.add_axes([0.08, 1 - 6.75 / H, W, 1.55 / H])
+    hov = fig.add_axes([0.08, 1.0 / H, W, 6.1 / H], sharex=prof)
+
+    # bottom: the wave signal, revealed day by day
+    levels = np.arange(-10, 10.1, 2)
+    cmap = plt.get_cmap("RdBu_r", len(levels) + 1)
+    norm = BoundaryNorm(levels, cmap.N, extend="both")
+    data = np.ma.masked_invalid(sig.values)
+    mesh = hov.pcolormesh(lons, dates, np.ma.array(data, mask=True), cmap=cmap, norm=norm, shading="nearest",
+                          rasterized=True)
+    hov.set_ylim(dates[-1] + pd.Timedelta(days=2), dates[0])
+    hov.set_xlim(*LON_RANGE)
+    hov.xaxis.set_major_formatter(FuncFormatter(lon_label))
+    hov.set_xticks([140, 160, 180, 200, 220, 240, 260])
+    hov.yaxis.set_major_locator(mdates.MonthLocator())
+    hov.yaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    hov.tick_params(axis="y", labelsize=9.5)
+    hov.set_title("The Kelvin-wave signal, day by day (time runs down): each red streak slanting right is one wave",
+                  fontsize=12, loc="left", pad=6, color=COLORS["text"])
+    now_line = hov.axhline(dates[0], color="white", lw=1.0, alpha=0.8)
+    cax = fig.add_axes([0.08 + W + 0.015, 1.0 / H, 0.011, 2.6 / H])
+    cb = fig.colorbar(mesh, cax=cax, ticks=levels[::1])
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=9, length=0)
+    cb.set_label("Wave signal (cm)", fontsize=10, color=COLORS["text_2"])
+
+    # middle: total sea level along the equator on the day shown
+    prof.axhline(0, color=COLORS["text_2"], lw=0.8)
+    top = float(np.nanmax(anom.values))
+    prof.set_ylim(-20, max(30, np.ceil(top / 10) * 10 + 5))
+    prof.yaxis.grid(True, color=COLORS["grid"], lw=0.6)
+    prof.set_ylabel("cm", fontsize=10)
+    plt.setp(prof.get_xticklabels(), visible=False)
+    prof_title = prof.set_title("", fontsize=12, loc="left", pad=6, color=COLORS["text"])
+    line, = prof.plot([], [], color=COLORS["text"], lw=1.5)
+    fills = []
+
+    # right: the list of waves, filled in as each one completes its crossing
+    lx = 0.08 + W + 0.062
+    fig.text(lx, 1 - 7.25 / H, "Kelvin waves traced", fontsize=13, fontweight="bold", color=COLORS["text"])
+    fig.text(lx, 1 - 7.6 / H, "left 150°E  →  reached 95°W   speed", fontsize=9.5, color=COLORS["muted"])
+    rows, tracks = [], []
+    for n, (t0, c, s, t1) in enumerate(waves, 1):
+        rows.append((t1, fig.text(lx, 1 - (8.05 + 0.42 * (n - 1)) / H,
+                                  f"{n:>2}  {t0:%-d %b}  →  {t1:%-d %b %Y}  {c:.1f} m/s", fontsize=9.5,
+                                  color=COLORS["text"], alpha=0, family="monospace")))
+        ln, = hov.plot([X0, X1], [t0, t1], color="black", lw=2.8, alpha=0)
+        ln2, = hov.plot([X0, X1], [t0, t1], color="#ffe08a", lw=1.5, ls=(0, (6, 3)), alpha=0)
+        num = hov.text(X0 - 1.5, t0, str(n), fontsize=11, fontweight="bold", color="#ffe08a", ha="right",
+                       va="center", alpha=0, bbox=dict(boxstyle="round,pad=0.2", fc="black", ec="none", alpha=0))
+        tracks.append((t1, ln, ln2, num))
+    note = fig.text(lx, 1 - (8.25 + 0.42 * len(waves)) / H,
+                    "A wave is listed once it has crossed\nthe Pacific; waves still travelling\nappear in later "
+                    "monthly updates.", fontsize=9.5, color=COLORS["muted"], va="top", linespacing=1.35)
+
+    add_title(fig, f"Kelvin waves: the pulses of warm water that built the {NOW} El Niño",
+              "Bursts of westerly wind in the western Pacific send pulses of warm water east along the equator. Each "
+              "raises sea level by a few\ncentimetres as it passes, so satellites can follow it across the Pacific.")
+    add_source(fig, "Data: NOAA blended satellite altimetry (daily, 0.25°, 1°S–1°N), anomalies from the 2017–2024 "
+               "seasonal cycle. Wave signal: anomaly minus its 91-day running mean.\nWaves traced automatically "
+               "(150°E–95°W, 2.0–3.5 m/s, wave signal ≥ +3 cm). Middle panel: total anomaly.")
+
+    frames = AnimationFrames(fig, dpi=105)
+    idx = list(range(0, len(dates), args.every))
+    if idx[-1] != len(dates) - 1:
+        idx.append(len(dates) - 1)
+    for i in idx:
+        d = dates[i]
+        mesh.set_array(np.ma.array(data, mask=np.ma.getmaskarray(data) | (np.arange(len(dates)) > i)[:, None]).ravel())
+        now_line.set_ydata([d, d])
+        v = anom.values[i]
+        line.set_data(lons, v)
+        for f in fills:
+            f.remove()
+        fills = [prof.fill_between(lons, 0, v, where=v > 0, color="#e8574a", alpha=0.7, lw=0, interpolate=True),
+                 prof.fill_between(lons, 0, v, where=v < 0, color="#3987e5", alpha=0.7, lw=0, interpolate=True)]
+        prof_title.set_text(f"Total sea level along the equator, {d:%-d %B %Y}: the warm water piling up in the east")
+        for t1, ln, ln2, num in tracks:
+            on = 1.0 if d >= t1 else 0.0
+            ln.set_alpha(0.55 * on); ln2.set_alpha(on); num.set_alpha(on); num.get_bbox_patch().set_alpha(0.7 * on)
+        for t1, txt in rows:
+            txt.set_alpha(1.0 if d >= t1 else 0.0)
+        frames.grab(70)
+    frames.durations[-1] = 4500
+    east = lons >= 230
+    frames.save(args.out, quality=85,
+                alt=f"Animated infographic of Kelvin waves along the equatorial Pacific from {dates[0]:%B %Y} to "
+                    f"{dates[-1]:%-d %B %Y}, from daily satellite sea level. {len(waves)} Kelvin waves crossed the "
+                    "Pacific: " + "; ".join(f"wave {n} left 150°E on {t0:%-d %B} and reached 95°W on {t1:%-d %B %Y} "
+                                            f"at {c:.1f} m/s" for n, (t0, c, s, t1) in enumerate(waves, 1))
+                    + f". Sea level east of 130°W rose from {np.nanmean(anom.values[0][east]):+.0f} cm to "
+                      f"{np.nanmean(anom.values[-1][east]):+.0f} cm over the period.")
+
+
+if __name__ == "__main__":
+    main()

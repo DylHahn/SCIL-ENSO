@@ -2,12 +2,10 @@
 Data for the interactive 3D view of the tropical Pacific on the website (site/ocean3d.html), and
 shared loading for the rotating 3D animation (anim_3d.py).
 
-Two views, for 2026, the past very strong El Niños (2015, 1997, 1982) and the 1991–2020 normal,
+For 2026, the past very strong El Niños (2015, 1997, 1982) and the 1991–2020 normal,
 monthly from July of the year before onset to the latest GODAS month:
-  * Warm layer: near-surface (5 m) temperature over 20°S–20°N, 120°E–80°W and the depth of the
-    20 °C isotherm beneath it (the base of the warm upper layer), at 1° latitude × 2° longitude.
-  * Kelvin waves: temperature anomaly along the equator (2°S–2°N) by longitude and depth (5–205 m),
-    relative to the 1991–2020 monthly mean, at 2° longitude.
+near-surface (5 m) temperature over 20°S–20°N, 130°E–80°W and the depth of the 20 °C isotherm
+beneath it (the base of the warm upper layer), at 1° latitude × 2° longitude.
 All values come from NCEP GODAS (public NOAA data).
 
     python interactive_3d_data.py --out figures_public/el-nino/ocean3d.json
@@ -78,15 +76,11 @@ def main():
     out = dict(updated=f"{dt.date.today():%B %-d, %Y}", now=NOW,
                months=[[dy, mo] for dy, mo in offsets],          # [year offset from onset year, calendar month]
                lat=np.round(lat[li], 2).tolist(), lon=np.round(lon[lo], 1).tolist(),
-               depth=depths.tolist(), klon=np.round(lon[lo], 1).tolist(),
-               cases=[], scale=dict(sst=10, d20=1, anom=10), missing=-9999)
+               cases=[], scale=dict(sst=10, d20=1), missing=-9999)
     for name, temps in data:
         sst = for_display(temps[:, 0])[:, li, lo]                        # 5 m temperature, °C
         z20 = for_display(d20(temps, depths))[:, li, lo]
-        band = np.nanmean(temps[:, :, eq, :], axis=2)                   # (time, depth, lon)
-        clim = np.nanmean(normal[:, :, eq, :], axis=2)
-        anom = (band - clim)[:, :, lo]
-        out["cases"].append(dict(name=name, sst=to_int(sst, 10), d20=to_int(z20, 1), anom=to_int(anom, 10)))
+        out["cases"].append(dict(name=name, sst=to_int(sst, 10), d20=to_int(z20, 1)))
 
     path = Path(args.out)
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -57,6 +57,8 @@ Figures, El Niño tab              Figures, Southern California tabs
   anim_sst.py                       socal_summer_anomalies.py
   anim_upper_ocean.py               socal_station_heat.py
   anim_warm_water.py
+  anim_warm_layers.py
+  anim_kelvin.py        (uses enso_sealevel.py)
   anim_3d.py
   interactive_3d_data.py   (3D view: site/ocean3d.html)
   roni_vs_past_events.py            socal_precip_outlook.py   (uses socal_outlook.py)
@@ -78,6 +80,7 @@ Shared modules
   enso_nclimgrid.py   nClimGrid for Southern California (read remotely, cached)
   enso_socal.py       GHCN-Daily stations, ENSO categories
   enso_anim.py        animated WebP output
+  enso_sealevel.py    daily satellite sea level along the equator (Kelvin waves)
 
 archive/                earlier figures no longer on the site (see archive/README.md)
 data/                   downloaded data, not in the repository (see below)
@@ -106,6 +109,7 @@ All sources are public NOAA products, downloaded on first use and cached in `dat
 | `data/godas_raw/` | NOAA PSL yearly GODAS files for the current year |
 | `data/godas/` | GODAS depth files `godasClimatologyData_{depth}m.nc` for 1980–2025 (local, not public) |
 | `data/oisst/`, `data/oisst_monthly/` | OISST daily (Southern California Bight) and monthly (tropical Pacific) |
+| `data/sealevel/` | NOAA blended altimetry, equatorial band (daily since July 2025; 2017–2024 baseline) |
 | `data/nclimgrid/`, `data/ghcn/` | nClimGrid Southern California window; GHCN-Daily stations |
 | `data/cpc_outlook/`, `data/fire_outlook/` | CPC seasonal outlook GIS files; NIFC fire outlook (archive only) |
 

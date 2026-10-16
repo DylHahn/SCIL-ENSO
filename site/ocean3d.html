@@ -1,10 +1,6 @@
 <figure id="{{ID}}" class="ocean3d" data-src="{{DATA}}">
   {{TAKEAWAY}}
   <div class="o3-bar">
-    <div class="o3-group" role="group" aria-label="View">
-      <button type="button" data-view="layer" aria-pressed="true">Warm layer</button>
-      <button type="button" data-view="kelvin" aria-pressed="false">Kelvin waves</button>
-    </div>
     <div class="o3-group o3-cases" role="group" aria-label="Year"></div>
   </div>
   <div class="o3-stage">
@@ -36,7 +32,7 @@
     [0.625, "#eecf3a"], [0.6875, "#fdac34"], [0.75, "#fb7e21"], [0.8125, "#eb500e"], [0.875, "#d02f05"],
     [0.9375, "#a91601"], [1, "#7a0403"]];
   const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const CAMERA = {layer: {eye: {x: 0.3, y: -2.05, z: 1.15}}, kelvin: {eye: {x: 0.55, y: -2.0, z: 0.95}}};
+  const CAMERA = {layer: {eye: {x: 0.3, y: -2.05, z: 1.15}}};
   const plot = root.querySelector(".o3-plot"), slider = root.querySelector("input[type=range]");
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   let D, view = "layer", ci = 0, mi = 0, timer = null;
@@ -54,17 +50,11 @@
     const lonTicks = [120, 140, 160, 180, 200, 220, 240, 260, 280];
     const common = {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: view,
                     font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12}};
-    if (view === "layer") return Object.assign(common, {scene: {
+    return Object.assign(common, {scene: {
       xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
       yaxis: axis("Latitude", {tickvals: [-20, -10, 0, 10, 20], ticktext: ["20°S", "10°S", "0°", "10°N", "20°N"]}),
       zaxis: axis("Depth (m)", {range: [-240, 5], tickvals: [0, -50, -100, -150, -200], ticktext: ["0", "50", "100", "150", "200"]}),
       aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: 0.7}, camera: CAMERA.layer}});
-    return Object.assign(common, {scene: {
-      xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
-      yaxis: axis("Month", {tickvals: D.months.map((_, i) => i).filter(i => i % 3 === 0),
-                            ticktext: D.months.map((_, i) => monthLabel(i, caseYear())).filter((_, i) => i % 3 === 0)}),
-      zaxis: axis("Depth (m)", {range: [-210, 0], tickvals: [0, -50, -100, -150, -200], ticktext: ["0", "50", "100", "150", "200"]}),
-      aspectmode: "manual", aspectratio: {x: 2.6, y: 1.2, z: 0.75}, camera: CAMERA.kelvin}});
   }
 
   function layerTraces() {
@@ -87,21 +77,9 @@
     ];
   }
 
-  function kelvinTraces() {
-    const a = unpack(D.cases[ci].anom, D.scale.anom), x = [], y = [], z = [], v = [];
-    a.forEach((month, t) => month.forEach((row, k) => row.forEach((val, j) => {
-      x.push(D.klon[j]); y.push(t); z.push(-D.depth[k]); v.push(val == null ? 0 : val);
-    })));
-    const iso = (lo, hi, scale, name) => ({type: "isosurface", x, y, z, value: v, isomin: lo, isomax: hi, name,
-      surface: {count: 3}, caps: {x: {show: false}, y: {show: false}, z: {show: false}}, opacity: 0.4,
-      colorscale: scale, showscale: false, hovertemplate: `${name}: %{value:.1f} °C<extra></extra>`});
-    return [iso(3, 7, [[0, "#f2b14c"], [0.5, "#e8574a"], [1, "#a3161c"]], "Warmer than normal"),
-            iso(-7, -3, [[0, "#184f95"], [0.5, "#2a78d6"], [1, "#86b6ef"]], "Cooler than normal")];
-  }
-
   function exaggeration() {
     // displayed depth per metre ÷ displayed distance per metre along the equator
-    const width = (D.lon.at(-1) - D.lon[0]) * 111e3, ar = view === "layer" ? [3, 0.7, 245] : [2.6, 0.75, 210];
+    const width = (D.lon.at(-1) - D.lon[0]) * 111e3, ar = [3, 0.7, 245];
     return Math.round((ar[1] / ar[2]) / (ar[0] / width) / 1000) * 1000;
   }
 
@@ -109,16 +87,10 @@
     const year = caseYear();
     root.querySelector(".o3-month").textContent = monthLabel(mi, year);
     root.querySelector(".o3-time").hidden = false;
-    root.querySelectorAll(".o3-play, .o3-time input, .o3-month").forEach(e => { e.hidden = view !== "layer"; });
-    root.querySelectorAll(".o3-cases button").forEach((b, i) => {
-      b.setAttribute("aria-pressed", i === ci);
-      b.disabled = view === "kelvin" && D.cases[i].name === "Normal";
-    });
-    root.querySelector(".o3-note").textContent = (view === "layer"
-      ? "Top: temperature at 5 m (semi-transparent). Bottom: depth of the 20 °C isotherm, the base of the warm layer; red is deep (thick warm layer), blue shallow. "
-      : "Water 3, 5 and 7 °C warmer (red) or cooler (blue) than normal along the equator (2°S–2°N), by longitude, depth and month. Warm blobs that shift east from month to month are Kelvin waves. ")
+    root.querySelectorAll(".o3-cases button").forEach((b, i) => b.setAttribute("aria-pressed", i === ci));
+    root.querySelector(".o3-note").textContent = "Top: temperature at 5 m (semi-transparent). Bottom: depth of the 20 °C isotherm, the base of the warm layer; red is deep (thick warm layer), blue shallow. "
       + `Depth is exaggerated about ${exaggeration().toLocaleString()} times. Drag to rotate; use + and − to zoom.`;
-    Plotly.react(plot, view === "layer" ? layerTraces() : kelvinTraces(), layout(),
+    Plotly.react(plot, layerTraces(), layout(),
                  {displayModeBar: false, responsive: true, scrollZoom: false});
   }
 
@@ -142,13 +114,6 @@
   }
 
   root.querySelector(".o3-load").addEventListener("click", start);
-  root.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => {
-    if (!D) return;
-    view = b.dataset.view;
-    root.querySelectorAll("[data-view]").forEach(o => o.setAttribute("aria-pressed", o === b));
-    if (view === "kelvin" && D.cases[ci].name === "Normal") ci = 0;
-    draw();
-  }));
   slider.addEventListener("input", () => { mi = +slider.value; draw(); });
   root.querySelector(".o3-play").addEventListener("click", e => {
     if (timer) { clearInterval(timer); timer = null; e.target.textContent = "▶"; return; }
