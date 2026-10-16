@@ -58,8 +58,8 @@ PAGES = [
              "2026, 2015, 1997, 1982 and the 1991–2020 normal, with the volume of water in each layer between 5°S "
              "and 5°N, from July of the year before onset to the latest month."),
             ('anim_kelvin.py', True, 'Animation: Kelvin waves',
-             "How a Kelvin wave works, and every Kelvin wave since July 2025 traced in daily satellite sea level along "
-             "the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific."),
+             "Every Kelvin wave since July 2025 traced in daily satellite sea level along the equator: each pulse "
+             "raises sea level by a few centimetres as it crosses the Pacific."),
             ('anim_sealevel_3d.py', True, 'Animation: sea level in 3D',
              "Daily satellite sea level across the tropical Pacific drawn as a 3D landscape, July 2025 to the latest "
              "day: Kelvin waves travel east along the equator as the eastern Pacific rises."),
@@ -230,8 +230,8 @@ FIGURE_NOTES = {
     "anim_kelvin.py": dict(
         takeaway="A series of Kelvin waves has carried warm water from the western Pacific to South America since "
                  "late 2025, each one adding to the warm layer in the east.",
-        how="Top: the three steps of a Kelvin wave. Middle: sea level along the equator on the day shown; red bumps "
-            "moving east are Kelvin waves. Bottom: the same, day by day, with time running down the page, so each "
+        how="Top: total sea level along the equator on the day shown, rising in the east as warm water piles up. "
+            "Bottom: the Kelvin-wave signal day by day, with time running down the page, so each "
             "wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has "
             "crossed the Pacific."),
     "anim_sealevel_3d.py": dict(
