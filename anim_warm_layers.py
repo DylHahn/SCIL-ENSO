@@ -5,7 +5,7 @@ Animation 6 — Layers of warm water in the equatorial Pacific: how much water i
 Left: depth–longitude sections along the equator (2°S–2°N, 5–205 m) from NCEP GODAS, coloured
 by temperature layer: 20–24, 24–26, 26–28, 28–29 and above 29 °C. Water above about 28 °C is
 warm enough to sustain deep atmospheric convection, so the upper layers show the hottest water
-pooling. Dashed white lines mark where the 20 °C and 28 °C isotherms lie in a normal year.
+pooling.
 Right: the volume of water in each layer over 5°S–5°N, 120°E–80°W (the warm water volume box
 used by NOAA PMEL), in 10¹⁴ m³; the full bar is the warm water volume above 20 °C.
 
@@ -22,7 +22,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, ListedColormap
 from matplotlib.patches import Patch
-from matplotlib.lines import Line2D
 from matplotlib.ticker import FuncFormatter
 
 from anim_warm_water import R_EARTH, WWV_BOX, d20, load_temps, monthly_normal
@@ -81,10 +80,6 @@ def main():
     west = lon >= LON_MIN                                                      # east of the Maritime Continent
     sections = [np.nanmean(t[:, :, eq, :], axis=2)[:, :, west] for _, t in rows]   # (time, depth, lon)
     vols = [volumes(t, lat, lon, depths) for _, t in rows]                     # (time, layer)
-    normal_sec = sections[-1]
-    # where the isotherm does not occur in a normal year (surface cooler than it), leave the line out
-    normal_iso = {th: np.where((z := d20(normal_sec[:, :, None, :], depths, th)[:, 0, :]) > depths.min(), z, np.nan)
-                  for th in (20, 28)}                                          # (time, lon)
     lon = lon[west]
 
     colors = layer_colors()
@@ -142,21 +137,18 @@ def main():
     sec_axes[0].text(1.0, 1.32, "East (South America) →", transform=sec_axes[0].transAxes, fontsize=10.5,
                      color=COLORS["text_2"], ha="right")
     handles = ([Patch(color=c, label=nm) for c, nm in zip(colors[1:], LAYER_NAMES)][::-1]
-               + [Patch(color=colors[0], label="below 20 °C"),
-                  Line2D([], [], color="white", lw=1.4, ls=(0, (4, 3)), label="normal depth of 20 °C and 28 °C")])
-    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.42 / H), ncol=7, fontsize=10.5,
+               + [Patch(color=colors[0], label="below 20 °C")])
+    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.42 / H), ncol=6, fontsize=10.5,
                labelcolor=COLORS["text_2"], handlelength=1.4, columnspacing=1.1, frameon=False)
     add_title(fig, f"Layers of warm water in the equatorial Pacific: {NOW} compared with "
                    f"{join_and(str(y) for y in args.compare)}",
               "Slices along the equator, coloured by temperature layer; water above about 28 °C is warm enough to "
-              "drive heavy tropical rainfall.\nBars: the volume of water in each layer between 5°S and 5°N. The "
-              "dashed lines show where 20 °C and 28 °C normally lie.")
+              "drive heavy tropical rainfall.\nBars: the volume of water in each layer between 5°S and 5°N.")
     add_source(fig, "Data: NCEP GODAS (NOAA), monthly, 1° × 10 m to 205 m. Sections: 2°S–2°N; volumes: 5°S–5°N, "
                "120°E–80°W. Normal: 1991–2020 mean temperature. Frames interpolated.")
 
     seqs = [interpolate_months(s, args.steps) for s in sections]
     vseqs = [interpolate_months(v, args.steps) for v in vols]
-    iso_seqs = {th: interpolate_months(a, args.steps)[0] for th, a in normal_iso.items()}
     drawn = [[] for _ in rows]
     frames = AnimationFrames(fig, dpi=110)
     for i, pos in enumerate(seqs[0][1]):
@@ -168,9 +160,6 @@ def main():
             field = seqs[r][0][i]
             cf = ax.contourf(lon, depths, np.where(np.isfinite(field), field, 0), levels=bounds, cmap=cmap, norm=norm)
             drawn[r] = [cf]
-            for th in (20, 28):
-                ln, = ax.plot(lon, iso_seqs[th][i], color="white", lw=1.3, ls=(0, (4, 3)), alpha=0.85)
-                drawn[r].append(ln)
             v = vseqs[r][0][i]
             left = 0.0
             for rect, w in zip(bars[r], v[::-1]):                      # warmest layer first, from the left

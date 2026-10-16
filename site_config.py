@@ -273,9 +273,9 @@ FIGURE_NOTES = {
         takeaway="The hottest water has grown the most: the volume warmer than 28 °C is far above normal and above "
                  "2015, 1997 and 1982 at the same stage.",
         how="Each slice runs along the equator from Asia (left) to South America (right) and from 5 m down to 200 m. "
-            "Colours mark temperature layers, from below 20 °C (dark blue) to above 29 °C (dark red). The dashed "
-            "lines show where 20 °C and 28 °C normally lie; red reaching below or east of them means more warm water "
-            "than usual. The bar beside each slice adds up the volume in each layer, warmest on the left."),
+            "Colours mark temperature layers, from below 20 °C (dark blue) to above 29 °C (dark red); compare each "
+            "year with the Normal panel at the bottom to see how much deeper and farther east the warm layers reach. "
+            "The bar beside each slice adds up the volume in each layer, warmest on the left."),
     "anim_kelvin.py": dict(
         takeaway="A series of Kelvin waves has carried warm water from the western Pacific to South America since "
                  "late 2025, each one adding to the warm layer in the east.",
