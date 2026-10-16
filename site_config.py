@@ -245,8 +245,9 @@ FIGURE_NOTES = {
         takeaway="Rotate the model to see the base of the warm layer flatten across the Pacific in 2026, compared "
                  "with the tilt of a normal year.",
         how="Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year "
-            "and the slider or play button to move through the months. The lower surface is coloured by depth: red "
-            "where the warm layer is thick, blue where it is thin."),
+            "and the slider or play button to move through the months; the angle you choose is kept while it plays. "
+            "The two opacity sliders fade either surface. The lower surface is coloured by depth: red where the warm "
+            "layer is thick, blue where it is thin."),
     "anim_warm_water.py": dict(
         takeaway="More warm water is stored along the equator in 2026 than at the same stage of 2015, 1997 or 1982.",
         how="Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C "

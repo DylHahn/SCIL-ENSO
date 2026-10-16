@@ -187,6 +187,10 @@
   .o3-month { color: var(--text); font-weight: 600; min-width: 80px; }
   .o3-time [hidden] { display: none; }
   .o3-zoom { min-width: 34px; }
+  .o3-opacity { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 8px; font-size: 14px; color: var(--text-2); }
+  .o3-opacity[hidden] { display: none; }
+  .o3-opacity label { display: flex; align-items: center; gap: 8px; }
+  .o3-opacity input { width: 140px; accent-color: var(--accent); }
   .o3-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 900px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
@@ -337,8 +341,12 @@
     <button type="button" class="o3-zoom" data-k="1.25" aria-label="Zoom out">−</button>
     <button type="button" class="o3-reset">Reset view</button>
   </div>
+  <div class="o3-opacity" hidden>
+    <label>Sea surface <input type="range" min="0" max="1" step="0.05" value="0.55" data-trace="1"></label>
+    <label>Base of warm layer <input type="range" min="0" max="1" step="0.05" value="1" data-trace="0"></label>
+  </div>
   <p class="o3-note"></p>
-  <figcaption><b>Figure 6. Interactive 3D: the warm layer.</b> Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal: the temperature at 5 m above the base of the warm layer (the 20 °C isotherm), month by month.<details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year and the slider or play button to move through the months. The lower surface is coloured by depth: red where the warm layer is thick, blue where it is thin.</p></details></figcaption>
+  <figcaption><b>Figure 6. Interactive 3D: the warm layer.</b> Rotate and zoom a 3D model of the tropical Pacific for 2026, 2015, 1997, 1982 or the 1991–2020 normal: the temperature at 5 m above the base of the warm layer (the 20 °C isotherm), month by month.<details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use the + and − buttons to zoom. Use the buttons to change year and the slider or play button to move through the months; the angle you choose is kept while it plays. The two opacity sliders fade either surface. The lower surface is coloured by depth: red where the warm layer is thick, blue where it is thin.</p></details></figcaption>
   <noscript><p>The 3D view needs JavaScript.</p></noscript>
 </figure>
 <script>
@@ -355,6 +363,8 @@
   const plot = root.querySelector(".o3-plot"), slider = root.querySelector("input[type=range]");
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   let D, view = "layer", ci = 0, mi = 0, timer = null;
+  let camera = CAMERA.layer;                       // the reader's current viewing angle, kept between redraws
+  const opacity = [1, 0.55];                       // [base of warm layer, sea surface]
 
   const lonText = v => v <= 180 ? `${v}°E` : `${360 - v}°W`;
   const unpack = (a, k) => a.map(r => Array.isArray(r) ? unpack(r, k) : (r === D.missing ? null : r / k));
@@ -367,13 +377,13 @@
   }
   function layout() {
     const lonTicks = [120, 140, 160, 180, 200, 220, 240, 260, 280];
-    const common = {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: view,
+    const common = {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep",
                     font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12}};
     return Object.assign(common, {scene: {
       xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
       yaxis: axis("Latitude", {tickvals: [-20, -10, 0, 10, 20], ticktext: ["20°S", "10°S", "0°", "10°N", "20°N"]}),
       zaxis: axis("Depth (m)", {range: [-240, 5], tickvals: [0, -50, -100, -150, -200], ticktext: ["0", "50", "100", "150", "200"]}),
-      aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: 0.7}, camera: CAMERA.layer}});
+      aspectmode: "manual", aspectratio: {x: 3, y: 0.75, z: 0.7}, camera}});
   }
 
   function layerTraces() {
@@ -385,12 +395,13 @@
       v == null ? "" : `${lonText(D.lon[j])}, ${Math.abs(D.lat[i])}°${D.lat[i] < 0 ? "S" : "N"}<br>${f(v)}`));
     return [
       {type: "surface", x: D.lon, y: D.lat, z: deep, surfacecolor: z20, colorscale: TURBO, cmin: 0, cmax: 220,
+       opacity: opacity[0], visible: opacity[0] > 0,
        customdata: cd(z20, v => `20 °C depth: <b>${v.toFixed(0)} m</b>`), hovertemplate: hover,
        colorbar: {title: {text: "Depth of 20 °C (m)", side: "right"}, x: 1.0, len: 0.55, thickness: 12, y: 0.32,
                   tickfont: {color: css("--text-2")}}, lighting: {ambient: 0.85, diffuse: 0.4, specular: 0.05},
        contours: {z: {show: false}}},
       {type: "surface", x: D.lon, y: D.lat, z: flat, surfacecolor: sst, colorscale: TURBO, cmin: 18, cmax: 32,
-       opacity: 0.55, customdata: cd(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`), hovertemplate: hover,
+       opacity: opacity[1], visible: opacity[1] > 0, customdata: cd(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`), hovertemplate: hover,
        colorbar: {title: {text: "Surface (°C)", side: "right"}, x: 1.0, len: 0.38, thickness: 12, y: 0.8,
                   tickfont: {color: css("--text-2")}}, lighting: {ambient: 1, diffuse: 0, specular: 0}},
     ];
@@ -428,7 +439,12 @@
         b.addEventListener("click", () => { ci = i; draw(); }); box.appendChild(b);
       });
       root.querySelector(".o3-cover").remove();
+      root.querySelector(".o3-opacity").hidden = false;
       draw();
+      plot.on("plotly_relayout", e => {             // remember the angle after every drag or zoom
+        const cam = plot._fullLayout && plot._fullLayout.scene && plot._fullLayout.scene.camera;
+        if (e["scene.camera"] || e["scene.camera.eye"]) camera = JSON.parse(JSON.stringify(cam || camera));
+      });
     }).catch(() => { btn.textContent = "The 3D view could not be loaded."; });
   }
 
@@ -445,12 +461,16 @@
   });
   root.querySelectorAll(".o3-zoom").forEach(b => b.addEventListener("click", () => {
     if (!D) return;
-    const eye = (plot.layout.scene.camera || CAMERA[view]).eye, k = +b.dataset.k;
+    const eye = camera.eye, k = +b.dataset.k;
     Plotly.relayout(plot, {"scene.camera.eye": {x: eye.x * k, y: eye.y * k, z: eye.z * k}});
   }));
   root.querySelector(".o3-reset").addEventListener("click", () => {
-    if (D) Plotly.relayout(plot, {"scene.camera": CAMERA[view]});
+    if (D) { camera = CAMERA[view]; Plotly.relayout(plot, {"scene.camera": camera}); }
   });
+  root.querySelectorAll(".o3-opacity input").forEach(inp => inp.addEventListener("input", () => {
+    opacity[+inp.dataset.trace] = +inp.value;
+    if (D) Plotly.restyle(plot, {opacity: +inp.value, visible: +inp.value > 0}, [+inp.dataset.trace]);
+  }));
 })();
 </script>
 
