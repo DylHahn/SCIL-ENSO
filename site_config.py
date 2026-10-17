@@ -584,3 +584,58 @@ FIGURE_INFO = {
         "NOAA NCEI GHCN-Daily station records (water years October–September); El Niño strength from NOAA CPC RONI "
         "(December–February)."),
 }
+
+
+# ---------------------------------------------------------------------------------------------
+# Links to the public datasets, listed under each figure ("Get the data"). Each link was checked
+# when added; NOAA occasionally moves pages, so re-check them if a link breaks.
+# ---------------------------------------------------------------------------------------------
+DATASETS = {
+    "godas": ("NCEP GODAS ocean reanalysis (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.godas.html"),
+    "oisst_monthly": ("OISST v2.1 monthly (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html"),
+    "oisst_daily": ("OISST v2.1 daily (NOAA CoastWatch ERDDAP)",
+                    "https://coastwatch.pfeg.noaa.gov/erddap/info/ncdcOisst21Agg_LonPM180/index.html"),
+    "ersst": ("ERSST v5 (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.noaa.ersst.v5.html"),
+    "globaltemp_grid": ("NOAAGlobalTemp v6 (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.noaaglobaltemp.html"),
+    "globaltemp_series": ("Global temperature series (NOAA NCEI Climate at a Glance)",
+                          "https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/global/time-series"),
+    "roni": ("Relative Oceanic Niño Index (NOAA CPC)", "https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt"),
+    "roni_outlook": ("Official RONI outlook (NOAA CPC)",
+                     "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/outlook/"),
+    "roni_strengths": ("El Niño strength probabilities (NOAA CPC)",
+                       "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/strengths/"),
+    "nino_indices": ("Monthly Niño region indices (NOAA CPC)", "https://www.cpc.ncep.noaa.gov/data/indices/sstoi.indices"),
+    "altimetry": ("Blended satellite sea level (NOAA CoastWatch ERDDAP)",
+                  "https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html"),
+    "nclimgrid": ("nClimGrid monthly (NOAA NCEI)",
+                  "https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc:C00332"),
+    "ghcn": ("GHCN-Daily stations (NOAA NCEI)",
+             "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily"),
+    "cpc_outlook": ("Seasonal outlooks (NOAA CPC)",
+                    "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/seasonal.php"),
+    "cpc_gis": ("Outlook GIS files (NOAA CPC)", "https://www.cpc.ncep.noaa.gov/products/GIS/GIS_DATA/"),
+}
+GODAS_FIGS = ["anim_3d.py", "interactive_3d_data.py", "anim_warm_water.py", "anim_warm_layers.py",
+              "anim_upper_ocean.py", "subsurface_comparison.py", "hovmoller_upper_ocean.py"]
+FIGURE_DATA = {
+    "anim_sst.py": ["oisst_monthly"],
+    "anim_timeseries.py": ["ersst", "godas", "roni"],
+    "interactive_data.py": ["ersst", "godas", "roni", "roni_outlook"],
+    "event_ranking.py": ["roni", "roni_outlook"],
+    "roni_vs_past_events.py": ["roni", "roni_outlook", "roni_strengths"],
+    "global_temperature.py": ["globaltemp_series", "roni"],
+    **{f: ["godas"] for f in GODAS_FIGS},
+    "anim_kelvin.py": ["altimetry"],
+    "interactive_sealevel_data.py": ["altimetry"],
+    "surface_comparison.py": ["ersst", "globaltemp_grid"],
+    "nino_regions.py": ["nino_indices"],
+    "hovmoller_sst.py": ["ersst"],
+    "forecast_verification.py": ["roni_strengths", "roni"],
+    "socal_summer_anomalies.py": ["nclimgrid"],
+    "socal_station_heat.py": ["ghcn", "roni"],
+    "socal_marine_heat.py": ["oisst_daily"],
+    "socal_warming_since_1895.py": ["nclimgrid", "roni"],
+    "socal_precip_outlook.py": ["cpc_outlook", "cpc_gis"],
+    "socal_precip_el_nino_winters.py": ["nclimgrid", "roni"],
+    "socal_station_precip.py": ["ghcn", "roni"],
+}

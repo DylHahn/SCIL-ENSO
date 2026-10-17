@@ -26,7 +26,8 @@ from string import Template
 from PIL import Image
 
 from enso_common import HERE
-from site_config import AUTHOR, FIGURE_INFO, FIGURE_NOTES, GLOSSARY, PAGES, REPO_URL, SITE_URL
+from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, GLOSSARY, PAGES,
+                         REPO_URL, SITE_URL)
 
 DOCS = HERE / "docs"
 BUILD = HERE / "figures_public"
@@ -177,7 +178,10 @@ def write_page(page):
         cap = (f'<b class="figtitle">Figure {n}. {html.escape(short)}</b>'
                f'<dl class="figinfo"><dt>What it shows</dt><dd>{gloss(caption)}</dd>'
                f'<dt>How it relates to El Niño</dt><dd>{gloss(why)}</dd>'
-               f'<dt>Data</dt><dd>{html.escape(data_used)}</dd></dl>')
+               f'<dt>Data</dt><dd>{html.escape(data_used)}</dd>'
+               f'<dt>Get the data</dt><dd>' + " · ".join(
+                   f'<a href="{html.escape(DATASETS[k][1])}" target="_blank" rel="noopener">{html.escape(DATASETS[k][0])}</a>'
+                   for k in FIGURE_DATA[script]) + '</dd></dl>')
         toc[-1][1].append(f'<li value="{n}"><a href="#g{n}">{html.escape(short)}</a></li>')
         if is_interactive(script):
             if not (src / f"{s}.json").exists():
