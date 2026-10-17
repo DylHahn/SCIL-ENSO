@@ -14,6 +14,7 @@ release (third Thursday).
 import argparse
 import glob
 import re
+import shutil
 import urllib.request
 import zipfile
 
@@ -61,6 +62,8 @@ def fetch(var, refresh):
         urllib.request.urlretrieve(URL.format(var=var), z)
     out = OUTLOOK_DIR / var
     if refresh or not out.exists():
+        if out.exists():                    # remove the previous issue, or its files would mix with the new one
+            shutil.rmtree(out)
         with zipfile.ZipFile(z) as f:
             f.extractall(out)
     return out

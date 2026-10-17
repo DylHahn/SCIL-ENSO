@@ -53,14 +53,15 @@
   const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
 
   function axis(title, extra = {}) {
-    return Object.assign({title: {text: title, font: {size: 12}}, color: css("--text-2"), gridcolor: css("--line"),
+    return Object.assign({title: {text: title, font: {size: 15, weight: 700}}, color: css("--text-2"), gridcolor: css("--line"),
                           zerolinecolor: css("--line"), backgroundcolor: "rgba(0,0,0,0)", showspikes: false}, extra);
   }
   function layout() {
     const lonTicks = [160, 180, 200, 220, 240, 260];
     const v = VIEW[view];
     return {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep",
-            font: {family: getComputedStyle(document.body).fontFamily, color: css("--text-2"), size: 12},
+            font: {family: getComputedStyle(document.body).fontFamily, color: css("--text"), size: 13.5, weight: 600},
+            hoverlabel: {font: {size: 14}},
             scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
                     yaxis: axis("Latitude", {tickvals: [-10, 0, 10], ticktext: ["10°S", "0°", "10°N"]}),
                     zaxis: axis("cm", {range: v.z}),
@@ -76,7 +77,7 @@
                + " compared with normal"; })),
              hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
              colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
-                        tickfont: {color: css("--text-2")}}}];
+                        tickfont: {color: css("--text"), size: 13, weight: 600}}}];
   }
   function exaggeration() {
     const width = (D.lon.at(-1) - D.lon[0]) * 111.32e3, v = VIEW[view];

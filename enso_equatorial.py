@@ -44,7 +44,7 @@ def _map_strip(fig, rect):
     ax.plot([LON_RANGE[0], LON_RANGE[1]], [0, 0], transform=pc, color=COLORS["el_nino"], lw=1.4, zorder=2)
     ax.spines["geo"].set_edgecolor(COLORS["grid"])
     ax.text(0.01, 0.06, "New Guinea", transform=ax.transAxes, fontsize=8, color=COLORS["text"], va="bottom")
-    ax.text(0.99, 0.94, "S. America", transform=ax.transAxes, fontsize=8, color=COLORS["text"], va="top",
+    ax.text(0.97, 0.94, "S. America", transform=ax.transAxes, fontsize=8, color=COLORS["text"], va="top",
             ha="right")
     ax.text(0.5, 0.56, "equator", transform=ax.transAxes, fontsize=7.5, color=COLORS["el_nino"], ha="center",
             va="bottom")
@@ -64,7 +64,7 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
     else:
         cmap = plt.get_cmap(cmap_name, len(levels) - 1)
         norm = BoundaryNorm(levels, cmap.N)
-    width, gap, left = 0.198, 0.022, 0.10
+    width, gap, left = 0.194, 0.022, 0.118          # room on the left for bold month labels
     p_bottom, p_height = 0.19, 0.52
     cf = None
     fig.text(0.02, 1 - 1.30 / 10.4, HOW_TO_READ, ha="left", va="top", fontsize=11.5, color=COLORS["text"],

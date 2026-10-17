@@ -44,11 +44,11 @@ def main():
     past_years = sorted({onset_year(e) for e in find_events(load_roni(refresh=args.refresh))} - {NOW})
     past_years = [y for y in past_years if y < NOW]
     sst = load_gridded("sst", args.refresh)
-    panels = [("(a) Niño 3.4 sea surface temperature", "central equatorial Pacific · ERSST v5",
+    panels = [("(a) Niño 3.4 sea surface temperature", "central Pacific · ERSST v5",
                box_series(sst, (-5, 5), (190, 240))),
-              ("(b) Niño 1+2 sea surface temperature", "coastal Peru and Ecuador · ERSST v5",
+              ("(b) Niño 1+2 sea surface temperature", "off Peru and Ecuador · ERSST v5",
                box_series(sst, (-10, 0), (270, 280))),
-              ("(c) Upper-ocean (0–200 m) temperature", "equator, 180°–80°W · GODAS, 1980 onward",
+              ("(c) Upper-ocean (0–200 m) temperature", "180°–80°W · GODAS, from 1980",
                godas_heat_series())]
 
     fig, axes = plt.subplots(1, 3, figsize=(13, 7.4), sharex=True)
@@ -75,8 +75,8 @@ def main():
         ax.axhline(0, color=COLORS["text_2"], lw=0.8)
         allv = np.concatenate([v for v in data.values()] + [cur])
         lo, hi_v = np.nanmin(allv), np.nanmax(allv)
-        ax.set_ylim(lo - 0.3, hi_v + 0.15 * (hi_v - lo) + 0.6)       # room for the ranking box
-        ax.set_xlim(0, N_MONTHS - 1)
+        ax.set_ylim(lo - 0.3, hi_v + 0.22 * (hi_v - lo) + 0.8)       # room for the ranking box
+        ax.set_xlim(0, N_MONTHS - 1 + 4.5)                    # room for the year labels
         ax.set_xticks([0, 3, 6, 9, 12, 15, 18, 21])
         ax.set_xticklabels(["Jan\n1st year", "Apr", "Jul", "Oct", "Jan\n2nd year", "Apr", "Jul", "Oct"], fontsize=10)
         ax.yaxis.grid(True)

@@ -15,7 +15,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from enso_common import save
+from enso_common import make_readable, save
 
 
 class AnimationFrames:
@@ -23,6 +23,8 @@ class AnimationFrames:
         self.fig, self.dpi, self.frames, self.durations = fig, dpi, [], []
 
     def grab(self, duration_ms=120):
+        if not self.frames:
+            make_readable(self.fig)                            # same text style as the still images
         self.fig.set_dpi(self.dpi)
         self.fig.canvas.draw()
         rgba = np.asarray(self.fig.canvas.buffer_rgba())

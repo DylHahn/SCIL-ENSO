@@ -147,7 +147,7 @@ def draw_pair(fig, fields, levels, kind, panel_titles, notes=None, clear_middle=
 
 def season_years_text(years, season):
     if season == "Dec–Feb":
-        return ", ".join(f"{y - 1}–{str(y)[-2:]}" for y in years)
+        return ", ".join(f"{y - 1}/{y}" for y in years)
     return ", ".join(str(y) for y in years)
 
 

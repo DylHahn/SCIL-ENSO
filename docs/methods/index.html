@@ -94,7 +94,7 @@
                         border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
   .ex-controls button:hover { color: var(--text); border-color: var(--muted); }
   .ex-controls button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
-  .ex-desc { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .ex-desc { color: var(--text-2); font-size: 15px; margin: 0 0 10px; }
   .ex-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
   @media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
   .ex-chart { position: relative; outline: none; touch-action: pan-y; }
@@ -104,12 +104,12 @@
   .explorer .ex-zero { stroke: var(--text-2); stroke-width: 1; }
   .explorer .ex-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
   .explorer .ex-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer; }
-  .explorer .ex-tick { fill: var(--muted); font-size: 12px; }
-  .explorer .ex-sub { font-size: 11px; }
-  .explorer .ex-lab { fill: var(--text-2); font-size: 12.5px; font-weight: 600; }
+  .explorer .ex-tick { fill: var(--text-2); font-size: 13.5px; font-weight: 600; }
+  .explorer .ex-sub { font-size: 12.5px; }
+  .explorer .ex-lab { fill: var(--text); font-size: 14px; font-weight: 700; }
   .explorer .ex-now { fill: var(--text); font-weight: 700; }
   .ex-tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line);
-            border-radius: 8px; padding: 8px 10px; font-size: 13px; min-width: 210px; z-index: 2;
+            border-radius: 8px; padding: 8px 10px; font-size: 14px; min-width: 230px; z-index: 2;
             box-shadow: 0 4px 16px rgba(0,0,0,.4); }
   .ex-tip p { margin: 0; line-height: 1.55; color: var(--text-2); white-space: nowrap; }
   .ex-tip .ex-tip-h { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
@@ -117,7 +117,7 @@
   .ex-tip .ex-now span:last-child { color: var(--text); font-weight: 600; }
   .ex-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle;
             margin-right: 7px; }
-  .ex-rank-title { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+  .ex-rank-title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text); }
   .ex-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 12px 0 4px;
                font-size: 14px; color: var(--text-2); }
   .ex-legend select { font: inherit; font-size: 13px; color: var(--text-2); background: var(--bg);
@@ -202,7 +202,7 @@
   .o3-readout { position: absolute; left: 12px; top: 10px; margin: 0; padding: 6px 10px; font-size: 14px;
                 color: var(--text); background: rgba(13,13,14,.78); border-radius: 6px; max-width: calc(100% - 24px); }
   .o3-readout[hidden] { display: none; }
-  .o3-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; max-width: 900px; }
+  .o3-note { color: var(--text-2); font-size: 15px; margin: 8px 0 0; max-width: 900px; }
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 </style>

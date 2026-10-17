@@ -126,7 +126,7 @@ def main():
     bx.bar(reg.index, reg.values, width=0.8, color=[cols.get(c, COLORS["neutral"]) for c in cats], lw=0)
     bx.axhline(100, color=COLORS["text_2"], lw=1, ls=(0, (4, 3)))
     for y in years:
-        bx.annotate(f"{y - 1}–{str(y)[-2:]}", (y, reg[y]), xytext=(0, 3), textcoords="offset points", ha="center",
+        bx.annotate(f"{y - 1}/{y}", (y, reg[y]), xytext=(0, 3), textcoords="offset points", ha="center",
                     va="bottom", fontsize=9, color=COLORS["text"])
     bx.set_xlim(START - 1, END + 1)
     bx.set_ylim(0, reg.max() * 1.15)
@@ -142,13 +142,13 @@ def main():
     add_title(fig, "Southern California winter precipitation during strong El Niño events",
               f"November–March precipitation in the {n} winters since 1951 with a strong El Niño (RONI ≥ "
               f"+{args.threshold:.1f} °C) averaged {reg_pct:.0f}% of normal; {reg_wet} of {n} were\nwetter than "
-              f"normal region-wide. Outcomes vary widely between events: {driest - 1}–{str(driest)[-2:]} received "
+              f"normal region-wide. Outcomes vary widely between events: {driest - 1}/{driest} received "
               f"{reg[driest]:.0f}% of normal.")
     add_source(fig, "Data: NOAA NCEI nClimGrid monthly precipitation (~5 km), Nov–Mar totals; normal = "
                f"{NORMAL[0]}–{NORMAL[1]}; El Niño strength from NOAA CPC RONI (Dec–Feb). Very dry areas left blank.")
     save(fig, args.out,
          alt=f"Maps of Southern California November–March precipitation during {n} strong El Niño winters "
-             f"({', '.join(f'{y - 1}–{str(y)[-2:]}' for y in years)}): regional mean {reg_pct:.0f}% of normal, "
+             f"({', '.join(f'{y - 1}/{y}' for y in years)}): regional mean {reg_pct:.0f}% of normal, "
              f"{reg_wet} of {n} winters wetter than normal. Bar chart of every winter since 1951 coloured by ENSO "
              "phase.")
 

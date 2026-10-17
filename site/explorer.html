@@ -213,11 +213,11 @@
       : `${stage(month)}: all events (no ${label(D.now)} data yet)`;
     const svg = root.querySelector(".ex-bars");
     svg.replaceChildren();
-    const W = svg.clientWidth || 320, bh = 15, gap = 2, T = 4, H = T + rows.length * (bh + gap) + 4;
+    const W = svg.clientWidth || 320, bh = 17, gap = 2, T = 4, H = T + rows.length * (bh + gap) + 4;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     svg.setAttribute("height", H);
     const lo = Math.min(0, ...rows.map(x => x.v)), hi = Math.max(0, ...rows.map(x => x.v));
-    const L = 62, R = 58, X = v => L + (W - L - R) * (v - lo) / ((hi - lo) || 1);
+    const L = 80, R = 66, X = v => L + (W - L - R) * (v - lo) / ((hi - lo) || 1);
     rows.forEach((x, i) => {
       const y = T + i * (bh + gap), x0 = X(Math.min(0, x.v)), w = Math.abs(X(x.v) - X(0));
       el("rect", {x: x0, y, width: Math.max(1, w), height: bh, rx: 3, fill: colour(x.year),

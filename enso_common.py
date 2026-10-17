@@ -176,6 +176,8 @@ def apply_style(theme="light"):
         "legend.fontsize": 12,
         "lines.linewidth": 2.0,
         "text.color": COLORS["text"],
+        "font.weight": "bold",                              # bold text throughout, for legibility on screen
+        "axes.labelweight": "bold",
     })
 
 
@@ -196,10 +198,67 @@ def add_source(fig, text):
     fig.text(0.02, 0.012, text, ha="left", va="bottom", fontsize=10, color=COLORS["muted"])
 
 
+READABLE_SCALE, READABLE_MIN, READABLE_KEEP = 1.12, 11.0, 12.0
+
+
+def make_readable(fig):
+    """Make every label in a figure bold, and enlarge small text (below 12 pt) by 12% to at least
+    11 pt, so figures stay legible when scaled down on a web page; any line that would then run past
+    the edge of the figure is shrunk to fit. Applied once per figure, by save() and by
+    enso_anim.AnimationFrames before the first frame."""
+    if getattr(fig, "_readable", False):
+        return
+    fig._readable = True
+    grow = lambda s: s if s >= READABLE_KEEP else max(s * READABLE_SCALE, READABLE_MIN)
+    fig.canvas.draw()                                       # create the tick labels
+    tick_texts = set()
+    for ax in fig.axes:
+        axes = [("x", ax.xaxis), ("y", ax.yaxis)] + ([("z", ax.zaxis)] if hasattr(ax, "zaxis") else [])
+        for name, axis in axes:
+            labels = [t for t in axis.get_ticklabels() + axis.get_ticklabels(minor=True)]
+            tick_texts.update(id(t) for t in labels)
+            if labels:
+                size = grow(labels[0].get_fontsize())
+                try:
+                    ax.tick_params(axis=name, labelsize=size)
+                except ValueError:
+                    pass
+                for t in labels:
+                    t.set_fontsize(size)
+                    t.set_fontweight("bold")
+            axis.set_tick_params(which="both")
+    for t in fig.findobj(mpl.text.Text):
+        if id(t) in tick_texts:
+            continue
+        t.set_fontsize(grow(t.get_fontsize()))
+        t.set_fontweight("bold")
+    fit_to_figure(fig)
+    for ax in fig.axes:                                     # tick labels created after this keep the style
+        for axis in [ax.xaxis, ax.yaxis] + ([ax.zaxis] if hasattr(ax, "zaxis") else []):
+            for tick in axis.get_major_ticks() + axis.get_minor_ticks():
+                tick.label1.set_fontweight("bold")
+                tick.label2.set_fontweight("bold")
+
+
+def fit_to_figure(fig, margin_px=6):
+    """Shrink figure-level text (titles, subtitles, notes) that runs past the figure's edges."""
+    renderer = fig.canvas.get_renderer()
+    width = fig.bbox.width
+    for t in fig.texts:
+        if not t.get_text().strip():
+            continue
+        for _ in range(30):
+            box = t.get_window_extent(renderer)
+            if box.x1 <= width - margin_px and box.x0 >= margin_px:
+                break
+            t.set_fontsize(t.get_fontsize() * 0.97)
+
+
 def save(fig, out_path, alt=None):
     """Write the PNG; with `alt`, also write <name>.alt.txt for the web page's alt attribute."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    make_readable(fig)
     fig.savefig(out_path, dpi=200)
     if alt:
         out_path.with_suffix(".alt.txt").write_text(alt.strip() + "\n")

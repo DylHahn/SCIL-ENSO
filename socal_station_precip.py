@@ -52,12 +52,12 @@ def main():
     top.axhline(100, color=COLORS["text_2"], lw=1, ls=(0, (4, 3)))
     top.text(START - 0.6, 103, "normal", fontsize=10.5, color=COLORS["text_2"], va="bottom")
     for y in pct.index[cats.values == "Strong El Niño"]:
-        top.annotate(f"{y - 1}–{str(y)[-2:]}", (y, pct[y]), xytext=(0, 4), textcoords="offset points",
+        top.annotate(f"{y - 1}/{y}", (y, pct[y]), xytext=(0, 4), textcoords="offset points",
                      ha="center", va="bottom", fontsize=10, color=COLORS["text"])
     # this winter hasn't happened yet: a label, not a bar
-    top.text(args.season, 8, f"{args.season - 1}–{str(args.season)[-2:]}\n?", ha="center", va="bottom",
+    top.text(args.season, 8, f"{args.season - 1}/{args.season}\n?", ha="center", va="bottom",
              fontsize=10.5, fontweight="bold", color=COLORS["el_nino"])
-    top.set_xlim(START - 1, args.season + 2)
+    top.set_xlim(START - 1, args.season + 4)        # room for the "2026/2027 ?" label
     top.set_ylabel("Rain vs. normal (%)")
     top.yaxis.grid(True)
     top.set_axisbelow(True)
@@ -84,13 +84,14 @@ def main():
             ax.plot([j - 0.28, j + 0.28], [np.median(v)] * 2, color=COLORS["text"], lw=2, zorder=4)
             wet = int((v > 100).sum())
             strong = c == "Strong El Niño"
-            ax.text(j, -0.04, f"{short[c]}\n{wet}/{len(v)} above", transform=ax.get_xaxis_transform(),
-                    ha="center", va="top", fontsize=9.5, linespacing=1.2,
-                    color=COLORS["text"] if strong else COLORS["text_2"], fontweight="bold" if strong else "normal")
+            # the colour names the category (legend above); the label gives seasons above normal
+            ax.text(j, -0.04, f"{wet}/{len(v)}", transform=ax.get_xaxis_transform(), ha="center", va="top",
+                    fontsize=11.5, color=cols[c], fontweight="bold")
             if c == "Strong El Niño":
                 summary.append((name, wet, len(v), float(np.median(v))))
         ax.axhline(100, color=COLORS["text_2"], lw=1, ls=(0, (4, 3)), zorder=1)
         ax.set_xticks([])
+        ax.set_xlabel("Seasons above normal", fontsize=10, labelpad=24, color=COLORS["text_2"])
         ax.set_xlim(-0.6, len(CATEGORIES) - 0.4)
         ax.set_ylim(0, 300)
         ax.yaxis.grid(True)
@@ -103,7 +104,7 @@ def main():
         ax.text(0, 1.02, RAIN_NOTES[name], transform=ax.transAxes, fontsize=9.5, color=COLORS["text_2"],
                 va="bottom")
     fig.text(0.07, 0.035, "Each dot is one water year (Oct–Sep); horizontal bars are medians. "
-             "“6/7 above” = 6 of 7 seasons in that category had above-normal precipitation.", fontsize=10.5, color=COLORS["text_2"])
+             "“6/7” under a column = 6 of 7 seasons in that ENSO phase had above-normal precipitation.", fontsize=10.5, color=COLORS["text_2"])
 
     la = next(s for s in summary if s[0] == "Los Angeles")
     sd = next(s for s in summary if s[0] == "San Diego")
