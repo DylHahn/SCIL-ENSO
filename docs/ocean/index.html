@@ -304,14 +304,15 @@
   let camera = HOME.warm;                           // the reader's current viewing angle, kept between redraws
   const opacity = Object.fromEntries(Object.entries(VIEWS).map(([v, ls]) => [v, ls.map(l => l[2])]));
 
-  const lonText = v => v <= 180 ? `${v}°E` : `${360 - v}°W`;
-  const latText = v => `${Math.abs(v)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
+  const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
+  const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const unpack = (a, k) => a.map(r => Array.isArray(r) ? unpack(r, k) : (r === D.missing ? null : r / k));
   const caseYear = () => D.cases[ci].name === "Normal" ? null : +D.cases[ci].name;
   const monthLabel = (i, year) => { const [dy, mo] = D.months[i]; return `${MON[mo - 1]}${year ? " " + (year + dy) : ""}`; };
   const field = key => unpack(D.cases[ci][key][mi], key === "sst" ? D.scale.sst : D.scale.depth);
-  const hoverText = (vals, f) => vals.map((r, i) => r.map((v, j) => v == null ? "" :
-    `${lonText(D.lon[j])}, ${latText(D.lat[i])}<br>${f(v)}`));
+  // hover readout: position, depth and value at the point under the pointer
+  const where = (i, j) => `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b>`;
+  const hoverText = (vals, f) => vals.map((r, i) => r.map((v, j) => v == null ? "" : `${where(i, j)}<br>${f(v)}`));
   const flat = color => [[0, color], [1, color]];
 
   function axis(title, extra = {}) {
@@ -334,8 +335,8 @@
     return {type: "surface", x: D.lon, y: D.lat, z: sst.map(r => r.map(v => v == null ? null : 0)),
             surfacecolor: sst, colorscale: coloured ? TURBO : flat("#8a8984"), cmin: 18, cmax: 32,
             showscale: coloured, opacity: op, visible: op > 0,
-            customdata: hoverText(sst, v => `Temperature at 5 m: <b>${v.toFixed(1)} °C</b>`),
-            hovertemplate: "%{customdata}<extra></extra>", lighting: {ambient: 1, diffuse: 0, specular: 0},
+            text: hoverText(sst, v => `Depth <b>5 m</b> (near the surface)<br>Temperature <b>${v.toFixed(1)} °C</b>`),
+            hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 1, diffuse: 0, specular: 0},
             colorbar: {title: {text: "Surface (°C)", side: "right"}, x: 1.0, len: 0.38, thickness: 12, y: 0.8,
                        tickfont: {color: css("--text-2")}}};
   }
@@ -347,8 +348,8 @@
     return {type: "surface", x: D.lon, y: D.lat, z, surfacecolor: coloured ? d : d.map(r => r.map(() => 1)),
             colorscale: coloured ? TURBO : flat(ISO_COLOR[t]), cmin: 0, cmax: 220, showscale: coloured,
             opacity: op, visible: op > 0, lighting: {ambient: 0.8, diffuse: 0.45, specular: 0.05},
-            customdata: hoverText(d, v => `${t} °C reached at <b>${v.toFixed(0)} m</b>`),
-            hovertemplate: "%{customdata}<extra></extra>",
+            text: hoverText(d, v => `Depth <b>${v.toFixed(0)} m</b><br>Temperature <b>${t} °C</b> (this surface)`),
+            hovertemplate: "%{text}<extra></extra>",
             colorbar: {title: {text: "Depth of 20 °C (m)", side: "right"}, x: 1.0, len: 0.55, thickness: 12, y: 0.32,
                        tickfont: {color: css("--text-2")}}};
   }
@@ -357,9 +358,12 @@
     // water above t °C fills each column from the surface down to the t °C isotherm; Plotly draws the outline
     const t = +key.slice(1), d = field(`d${t}`);
     const rows = D.lat.map((la, i) => i).filter(i => Math.abs(D.lat[i]) <= HOT_LAT);
-    if (!grid) {
-      grid = {x: [], y: [], z: []};
-      DEPTHS.forEach(z => rows.forEach(i => D.lon.forEach(lo => { grid.x.push(lo); grid.y.push(D.lat[i]); grid.z.push(z); })));
+    if (!grid) {                                   // positions, and their hover text, are the same every month
+      grid = {x: [], y: [], z: [], text: []};
+      DEPTHS.forEach(z => rows.forEach(i => D.lon.forEach((lo, j) => {
+        grid.x.push(lo); grid.y.push(D.lat[i]); grid.z.push(z);
+        grid.text.push(`${where(i, j)}<br>Depth <b>${-z} m</b>`);
+      })));
     }
     const value = [];
     // columns where the isotherm does not occur (depth 0: the surface is cooler) are outside the volume
@@ -368,7 +372,7 @@
             surface: {count: 1}, caps: {x: {show: true}, y: {show: true}, z: {show: true}},
             colorscale: flat(t === 28 ? "#fdac34" : "#a91601"), showscale: false, opacity: op, visible: op > 0,
             lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.1},
-            hovertemplate: `Water above ${t} °C<extra></extra>`};
+            text: grid.text, hovertemplate: `<b>Water above ${t} °C</b><br>%{text}<extra></extra>`};
   }
 
   function traces() {
@@ -532,8 +536,8 @@
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   let D, view = "total", di = 0, timer = null, camera = HOME;
 
-  const lonText = v => v <= 180 ? `${Math.round(v)}°E` : `${Math.round(360 - v)}°W`;
-  const latText = v => `${Math.abs(Math.round(v))}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
+  const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
+  const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const dayLabel = i => { const [y, m, d] = D.dates[i].split("-").map(Number); return `${d} ${MON[m - 1]} ${y}`; };
   const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
 
@@ -554,9 +558,11 @@
   function trace() {
     const z = field(), v = VIEW[view];
     return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: RDBU, cmin: -v.c, cmax: v.c,
-             customdata: z.map((r, i) => r.map((val, j) => val == null ? "" :
-               `${lonText(D.lon[j])}, ${latText(D.lat[i])}<br><b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`)),
-             hovertemplate: "%{customdata}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
+             text: z.map((r, i) => r.map((val, j) => val == null ? "" :
+               `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
+               + `${view === "total" ? "Sea level" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
+               + " compared with normal")),
+             hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
              colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
                         tickfont: {color: css("--text-2")}}}];
   }

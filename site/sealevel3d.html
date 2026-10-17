@@ -45,8 +45,8 @@
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   let D, view = "total", di = 0, timer = null, camera = HOME;
 
-  const lonText = v => v <= 180 ? `${Math.round(v)}°E` : `${Math.round(360 - v)}°W`;
-  const latText = v => `${Math.abs(Math.round(v))}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
+  const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
+  const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const dayLabel = i => { const [y, m, d] = D.dates[i].split("-").map(Number); return `${d} ${MON[m - 1]} ${y}`; };
   const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
 
@@ -67,9 +67,11 @@
   function trace() {
     const z = field(), v = VIEW[view];
     return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: RDBU, cmin: -v.c, cmax: v.c,
-             customdata: z.map((r, i) => r.map((val, j) => val == null ? "" :
-               `${lonText(D.lon[j])}, ${latText(D.lat[i])}<br><b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`)),
-             hovertemplate: "%{customdata}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
+             text: z.map((r, i) => r.map((val, j) => val == null ? "" :
+               `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
+               + `${view === "total" ? "Sea level" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
+               + " compared with normal")),
+             hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
              colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
                         tickfont: {color: css("--text-2")}}}];
   }
