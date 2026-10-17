@@ -69,10 +69,11 @@
   function trace() {
     const z = field(), v = VIEW[view];
     return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c, cmax: v.c,
-             text: z.map((r, i) => r.map((val, j) => val == null ? "" :
+             // Plotly's 3D surfaces read hover text as text[x index][y index], the transpose of z
+             text: D.lon.map((_, j) => D.lat.map((_, i) => { const val = z[i][j]; return val == null ? "" :
                `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
                + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
-               + " compared with normal")),
+               + " compared with normal"; })),
              hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
              colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
                         tickfont: {color: css("--text-2")}}}];

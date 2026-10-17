@@ -315,7 +315,11 @@
   const field = key => unpack(D.cases[ci][key][at()], key === "sst" ? D.scale.sst : D.scale.depth);
   // hover readout: position, depth and value at the point under the pointer
   const where = (i, j) => `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b>`;
-  const hoverText = (vals, f) => vals.map((r, i) => r.map((v, j) => v == null ? "" : `${where(i, j)}<br>${f(v)}`));
+  // Plotly's 3D surfaces read hover text as text[x index][y index], the transpose of z, so build it that way
+  const hoverText = (vals, f) => D.lon.map((_, j) => D.lat.map((_, i) => {
+    const v = vals[i][j];
+    return v == null ? "" : `${where(i, j)}<br>${f(v)}`;
+  }));
   const flat = color => [[0, color], [1, color]];
 
   function axis(title, extra = {}) {
@@ -564,10 +568,11 @@
   function trace() {
     const z = field(), v = VIEW[view];
     return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c, cmax: v.c,
-             text: z.map((r, i) => r.map((val, j) => val == null ? "" :
+             // Plotly's 3D surfaces read hover text as text[x index][y index], the transpose of z
+             text: D.lon.map((_, j) => D.lat.map((_, i) => { const val = z[i][j]; return val == null ? "" :
                `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
                + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
-               + " compared with normal")),
+               + " compared with normal"; })),
              hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
              colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
                         tickfont: {color: css("--text-2")}}}];
