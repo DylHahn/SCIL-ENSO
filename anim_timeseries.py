@@ -77,8 +77,8 @@ def main():
         lo, hi_v = np.nanmin(allv), np.nanmax(allv)
         ax.set_ylim(lo - 0.3, hi_v + 0.15 * (hi_v - lo) + 0.6)       # room for the ranking box
         ax.set_xlim(0, N_MONTHS - 1)
-        ax.set_xticks([0, 3, 6, 9, 12, 15])
-        ax.set_xticklabels([f"Jan\nyear 0", "Apr", "Jul", "Oct", "Jan\nyear +1", "Apr"], fontsize=10.5)
+        ax.set_xticks([0, 3, 6, 9, 12, 15, 18, 21])
+        ax.set_xticklabels(["Jan\n1st year", "Apr", "Jul", "Oct", "Jan\n2nd year", "Apr", "Jul", "Oct"], fontsize=10)
         ax.yaxis.grid(True)
         ax.set_axisbelow(True)
         ax.set_title(title, fontsize=13, loc="left", pad=20)
@@ -112,7 +112,7 @@ def main():
             st["now_line"].set_data(xs, ys)
             st["now_dot"].set_data([xs[-1]], [ys[-1]])
             st["now_lbl"].set_position((xs[-1] + 0.25, ys[-1] + 0.08))
-            st["now_lbl"].set_text(f"{NOW} {ys[-1]:+.1f}")
+            st["now_lbl"].set_text(f"{NOW}/{NOW + 1} {ys[-1]:+.1f}")
             # year labels at the line heads, nudged apart vertically so they do not overlap
             span = np.diff(st["ax"].get_ylim())[0]
             placed = [ys[-1] + 0.03 * span] if not phase2 else []      # keep clear of the 2026 label
@@ -122,7 +122,7 @@ def main():
                     ly += 0.02 * span
                 placed.append(ly)
                 st["hi_lbl"][y].set_position((hx + 0.25, ly))
-                st["hi_lbl"][y].set_text(str(y))
+                st["hi_lbl"][y].set_text(f"{y}/{y + 1}")
             st["cursor"].set_xdata([tc if not phase2 else st["last"]] * 2)
             # ranking at the current month (whole months only, so the text does not flicker)
             k = int(round(tc))
@@ -138,14 +138,14 @@ def main():
             st["rank"].set_text(txt)
 
     from matplotlib.lines import Line2D
-    handles = ([Line2D([], [], color=COLORS["el_nino"], lw=3.4, label=f"{NOW}–{str(NOW + 1)[-2:]}")]
-               + [Line2D([], [], color=c, lw=2, label=f"{y}–{str(y + 1)[-2:]}") for y, c in HIGHLIGHT.items()]
+    handles = ([Line2D([], [], color=COLORS["el_nino"], lw=3.4, label=f"{NOW}/{NOW + 1}")]
+               + [Line2D([], [], color=c, lw=2, label=f"{y}/{y + 1}") for y, c in HIGHLIGHT.items()]
                + [Line2D([], [], color=COLORS["neutral"], lw=1, label="Other El Niños since 1950")])
     fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.055, 0.775), ncol=6, fontsize=10.5,
                labelcolor=COLORS["text_2"], handlelength=1.8, columnspacing=1.2)
     status = fig.text(0.965, 0.775 + 0.012, "", ha="right", va="bottom", fontsize=11.5, fontweight="bold",
                       color=COLORS["text"])
-    add_title(fig, f"How the {NOW} El Niño has developed compared with every El Niño since 1950",
+    add_title(fig, f"How the {NOW}/{NOW + 1} El Niño has developed compared with every El Niño since 1950",
               "Each line is one El Niño, aligned on January of the year it developed, so all events advance through "
               "the calendar together.\nThe box in each panel ranks the current event against every past event at "
               "the same stage.")

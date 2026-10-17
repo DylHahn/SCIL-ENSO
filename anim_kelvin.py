@@ -35,6 +35,7 @@ M_PER_DEG = 111.32e3
 SPEEDS = np.arange(2.0, 3.51, 0.05)      # m/s; first-mode Kelvin waves travel at roughly 2.5–3 m/s
 MIN_CM = 3.0
 GAP_DAYS = 20
+START = f"{NOW - 1}-10-01"            # first day shown
 
 
 def wave_signal(anom, window=91):
@@ -76,24 +77,26 @@ def main():
     args = ap.parse_args()
 
     apply_style(args.theme)
-    raw = daily(f"{NOW - 1}-07-01", refresh=args.refresh)
+    raw = daily(f"{NOW - 1}-07-01", refresh=args.refresh)        # extra months so the 91-day filter is complete
     anom = anomalies(raw).dropna(how="all")
     lons = np.array(anom.columns, float)
     keep = (lons >= LON_RANGE[0]) & (lons <= LON_RANGE[1])
     anom, lons = anom.loc[:, keep], lons[keep]
     sig = wave_signal(anom)
+    anom, sig = anom.loc[START:], sig.loc[START:]                 # shown from October of the year before onset
     waves = track_waves(sig)
     dates = anom.index
 
-    H = 11.05
+    H = 11.9
     fig = plt.figure(figsize=(13, H))
-    W = 0.63
-    prof = fig.add_axes([0.08, 1 - 3.20 / H, W, 1.55 / H])
-    hov = fig.add_axes([0.08, 1.0 / H, W, 6.1 / H], sharex=prof)
+    W = 0.62
+    HOV = (1.1, 6.1)                                              # bottom panel: bottom and height, inches
+    prof = fig.add_axes([0.085, 1 - 3.35 / H, W, 1.6 / H])
+    hov = fig.add_axes([0.085, HOV[0] / H, W, HOV[1] / H])
 
     # bottom: the wave signal, revealed day by day
     levels = np.arange(-10, 10.1, 2)
-    cmap = plt.get_cmap("RdBu_r", len(levels) + 1)
+    cmap = plt.get_cmap("jet", len(levels) + 1)                 # rainbow scale for contrast
     norm = BoundaryNorm(levels, cmap.N, extend="both")
     data = np.ma.masked_invalid(sig.values)
     mesh = hov.pcolormesh(lons, dates, np.ma.array(data, mask=True), cmap=cmap, norm=norm, shading="nearest",
@@ -104,51 +107,67 @@ def main():
     hov.set_xticks([140, 160, 180, 200, 220, 240, 260])
     hov.yaxis.set_major_locator(mdates.MonthLocator())
     hov.yaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
-    hov.tick_params(axis="y", labelsize=9.5)
-    hov.set_title("The Kelvin-wave signal, day by day (time runs down): each red streak slanting right is one wave",
-                  fontsize=12, loc="left", pad=6, color=COLORS["text"])
-    now_line = hov.axhline(dates[0], color="white", lw=1.0, alpha=0.8)
-    cax = fig.add_axes([0.08 + W + 0.015, 1.0 / H, 0.011, 2.6 / H])
+    hov.tick_params(axis="both", labelsize=11)
+    for t in hov.get_xticklabels() + hov.get_yticklabels():
+        t.set_fontweight("bold")
+    hov.set_xlabel("Longitude along the equator", fontsize=12, fontweight="bold", color=COLORS["text"])
+    hov.set_ylabel("Date (time runs down)", fontsize=12, fontweight="bold", color=COLORS["text"])
+    hov.set_title("Kelvin-wave signal along the equator, day by day: each streak slanting right is one wave",
+                  fontsize=13.5, fontweight="bold", loc="left", pad=8, color=COLORS["text"])
+    now_line = hov.axhline(dates[0], color="white", lw=1.2, alpha=0.9)
+    cax = fig.add_axes([0.085 + W + 0.012, HOV[0] / H, 0.012, HOV[1] / H])     # as tall as the panel
     cb = fig.colorbar(mesh, cax=cax, ticks=levels[::1])
     cb.outline.set_visible(False)
-    cb.ax.tick_params(labelsize=9, length=0)
-    cb.set_label("Wave signal (cm)", fontsize=10, color=COLORS["text_2"])
+    cb.ax.tick_params(labelsize=10.5, length=0)
+    for t in cb.ax.get_yticklabels():
+        t.set_fontweight("bold")
+    cb.set_label("Kelvin-wave signal (cm): sea level above (red) or below (blue) its 91-day average", fontsize=11,
+                 fontweight="bold", color=COLORS["text"])
 
     # middle: total sea level along the equator on the day shown
     prof.axhline(0, color=COLORS["text_2"], lw=0.8)
     top = float(np.nanmax(anom.values))
     prof.set_ylim(-20, max(30, np.ceil(top / 10) * 10 + 5))
     prof.yaxis.grid(True, color=COLORS["grid"], lw=0.6)
-    prof.set_ylabel("cm", fontsize=10)
-    plt.setp(prof.get_xticklabels(), visible=False)
-    prof_title = prof.set_title("", fontsize=12, loc="left", pad=6, color=COLORS["text"])
+    prof.set_ylabel("SSH anomaly (cm)", fontsize=12, fontweight="bold", color=COLORS["text"])
+    prof.set_xlim(*LON_RANGE)
+    prof.xaxis.set_major_formatter(FuncFormatter(lon_label))
+    prof.set_xticks([140, 160, 180, 200, 220, 240, 260])
+    prof.set_xlabel("Longitude along the equator", fontsize=12, fontweight="bold", color=COLORS["text"])
+    prof.tick_params(axis="both", labelsize=11)
+    for t in prof.get_xticklabels() + prof.get_yticklabels():
+        t.set_fontweight("bold")
+    prof_title = prof.set_title("", fontsize=13.5, fontweight="bold", loc="left", pad=8, color=COLORS["text"])
     line, = prof.plot([], [], color=COLORS["text"], lw=1.5)
     fills = []
 
     # right: the list of waves, filled in as each one completes its crossing
-    lx = 0.08 + W + 0.062
-    fig.text(lx, 1 - 3.70 / H, "Kelvin waves traced", fontsize=13, fontweight="bold", color=COLORS["text"])
-    fig.text(lx, 1 - 4.05 / H, "left 150°E  →  reached 95°W   speed", fontsize=9.5, color=COLORS["muted"])
+    lx = 0.085 + W + 0.1
+    top_tab = H - (HOV[0] + HOV[1])                                 # level with the top of the bottom panel
+    fig.text(lx, 1 - (top_tab + 0.05) / H, "Kelvin waves traced", fontsize=14, fontweight="bold",
+             color=COLORS["text"], va="top")
+    fig.text(lx, 1 - (top_tab + 0.4) / H, "left 150°E → reached 95°W, speed", fontsize=10.5, fontweight="bold",
+             color=COLORS["text_2"], va="top")
     rows, tracks = [], []
     for n, (t0, c, s, t1) in enumerate(waves, 1):
-        rows.append((t1, fig.text(lx, 1 - (4.50 + 0.42 * (n - 1)) / H,
-                                  f"{n:>2}  {t0:%-d %b}  →  {t1:%-d %b %Y}  {c:.1f} m/s", fontsize=9.5,
-                                  color=COLORS["text"], alpha=0, family="monospace")))
-        ln, = hov.plot([X0, X1], [t0, t1], color="black", lw=2.8, alpha=0)
-        ln2, = hov.plot([X0, X1], [t0, t1], color="#ffe08a", lw=1.5, ls=(0, (6, 3)), alpha=0)
-        num = hov.text(X0 - 1.5, t0, str(n), fontsize=11, fontweight="bold", color="#ffe08a", ha="right",
+        rows.append((t1, fig.text(lx, 1 - (top_tab + 0.85 + 0.45 * (n - 1)) / H,
+                                  f"{n}  {t0:%-d %b} → {t1:%-d %b %Y}\n    {c:.1f} m/s", fontsize=10.5,
+                                  fontweight="bold", color=COLORS["text"], alpha=0, va="top", linespacing=1.15)))
+        ln, = hov.plot([X0, X1], [t0, t1], color="black", lw=3.0, alpha=0)
+        ln2, = hov.plot([X0, X1], [t0, t1], color="white", lw=1.6, ls=(0, (6, 3)), alpha=0)
+        num = hov.text(X0 - 1.5, t0, str(n), fontsize=12, fontweight="bold", color="white", ha="right",
                        va="center", alpha=0, bbox=dict(boxstyle="round,pad=0.2", fc="black", ec="none", alpha=0))
         tracks.append((t1, ln, ln2, num))
-    note = fig.text(lx, 1 - (4.70 + 0.42 * len(waves)) / H,
-                    "A wave is listed once it has crossed\nthe Pacific; waves still travelling\nappear in later "
-                    "monthly updates.", fontsize=9.5, color=COLORS["muted"], va="top", linespacing=1.35)
+    note = fig.text(lx, 1 - (top_tab + 1.0 + 0.45 * len(waves)) / H,
+                    "A wave is listed once it\nhas crossed the Pacific;\nwaves still travelling\nappear in later "
+                    "updates.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
 
-    add_title(fig, f"Kelvin waves: the pulses of warm water that built the {NOW} El Niño",
+    add_title(fig, f"Kelvin waves: the pulses of warm water that built the {NOW}/{NOW + 1} El Niño",
               "Bursts of westerly wind in the western Pacific send pulses of warm water east along the equator. Each "
               "raises sea level by a few\ncentimetres as it passes, so satellites can follow it across the Pacific.")
     add_source(fig, "Data: NOAA blended satellite altimetry (daily, 0.25°, 1°S–1°N), anomalies from the 2017–2024 "
                "seasonal cycle. Wave signal: anomaly minus its 91-day running mean.\nWaves traced automatically "
-               "(150°E–95°W, 2.0–3.5 m/s, wave signal ≥ +3 cm). Top panel: total anomaly.")
+               "(150°E–95°W, 2.0–3.5 m/s, wave signal ≥ +3 cm). Top panel: sea surface height (SSH) anomaly.")
 
     frames = AnimationFrames(fig, dpi=105)
     idx = list(range(0, len(dates), args.every))
@@ -164,7 +183,8 @@ def main():
             f.remove()
         fills = [prof.fill_between(lons, 0, v, where=v > 0, color="#e8574a", alpha=0.7, lw=0, interpolate=True),
                  prof.fill_between(lons, 0, v, where=v < 0, color="#3987e5", alpha=0.7, lw=0, interpolate=True)]
-        prof_title.set_text(f"Total sea level along the equator, {d:%-d %B %Y}: the warm water piling up in the east")
+        prof_title.set_text(f"Sea level height (SSH) along the equator, {d:%-d %B %Y}: The warm water piling up in "
+                            "the east")
         for t1, ln, ln2, num in tracks:
             on = 1.0 if d >= t1 else 0.0
             ln.set_alpha(0.55 * on); ln2.set_alpha(on); num.set_alpha(on); num.get_bbox_patch().set_alpha(0.7 * on)

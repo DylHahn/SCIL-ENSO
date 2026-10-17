@@ -2,7 +2,7 @@
 Data for the interactive 3D sea level view on the website (site/sealevel3d.html).
 
 Daily satellite sea level anomaly over 12°S–12°N, 145°E–82°W at 1° (NOAA blended altimetry via
-CoastWatch ERDDAP), every second day from July of the year before onset to the latest day, as
+CoastWatch ERDDAP), every second day from October of the year before onset to the latest day, as
   * total: anomaly relative to the 2017–2024 seasonal cycle, 5-day running mean;
   * wave: the total minus its 91-day running mean at each point, which removes the slow build-up
     and leaves Kelvin waves and other fast changes.
@@ -25,6 +25,7 @@ from interactive_3d_data import for_display
 NOW = 2026
 LAT, LON = (-12, 12), (145, 278)
 EVERY = 2                                         # days between frames
+START = f"{NOW - 1}-10-01"                        # first day shown (earlier days feed the 91-day filter)
 SCALE = 2                                         # stored value = cm × SCALE
 
 
@@ -38,6 +39,7 @@ def main():
     anom = band_anomalies(daily_band(f"{NOW - 1}-07-01", refresh=args.refresh))
     anom = anom.sel(latitude=slice(*LAT), longitude=slice(*LON)).dropna("time", how="all")
     wave = anom - anom.rolling(time=91, center=True, min_periods=30).mean()
+    anom, wave = anom.sel(time=slice(START, None)), wave.sel(time=slice(START, None))   # shown from October
     pick = np.arange(0, anom.sizes["time"], EVERY)
     if pick[-1] != anom.sizes["time"] - 1:
         pick = np.append(pick, anom.sizes["time"] - 1)

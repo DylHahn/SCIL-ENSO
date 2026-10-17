@@ -78,7 +78,7 @@ def main():
         cur = y == now
         ax.spines["geo"].set_edgecolor(COLORS["el_nino"] if cur else COLORS["grid"])
         ax.spines["geo"].set_linewidth(2.5 if cur else 0.8)
-        ax.text(0.0, 1.04, f"{calendar.month_name[month]} {y}", transform=ax.transAxes, fontsize=15,
+        ax.text(0.0, 1.04, f"{y}/{y + 1} · {calendar.month_name[month]} {y}", transform=ax.transAxes, fontsize=15,
                 fontweight="bold", color=COLORS["el_nino"] if cur else COLORS["text"], va="bottom")
         ax.text(1.0, 1.04, f"Niño 3.4 box {v34:+.1f} °C · whole tropics {vtrop:+.1f} °C",
                 transform=ax.transAxes, fontsize=11, color=COLORS["text"] if cur else COLORS["text_2"],

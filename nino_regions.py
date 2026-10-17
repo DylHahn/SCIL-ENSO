@@ -5,7 +5,7 @@ Monthly SST anomalies in Niño 4 (western–central Pacific), Niño 3.4, Niño 3
 Niño 1+2 (off Peru and Ecuador), from January of each onset year to June of the
 following year. The distribution of warming from west to east distinguishes
 eastern-Pacific El Niño events (largest anomalies near South America, e.g.
-1997–98) from central-Pacific events. Source: NOAA CPC monthly Niño indices
+1997/1998) from central-Pacific events. Source: NOAA CPC monthly Niño indices
 (OISST v2.1, anomalies relative to 1991–2020).
 
     python nino_regions.py
@@ -107,7 +107,7 @@ def main():
     axes[0].set_ylabel("SST anomaly (°C)")
     fig.text(0.525, 0.06, "Months from January of the onset year (second “Jan” = following year)",
              ha="center", fontsize=11, color=COLORS["text_2"])
-    handles = [plt.Line2D([], [], color=colors[y], lw=3.0 if y == now else 1.8, label=f"{y}–{str(y + 1)[-2:]}")
+    handles = [plt.Line2D([], [], color=colors[y], lw=3.0 if y == now else 1.8, label=f"{y}/{y + 1}")
                for y in args.years]
     fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.065, 0.51), ncol=len(args.years),
                fontsize=11.5, labelcolor=COLORS["text_2"])
@@ -122,15 +122,15 @@ def main():
     add_title(fig, "Distribution of sea surface warming across the Niño regions",
               f"Monthly anomalies in four regions, from the western–central Pacific (left) to the coast of Peru and "
               f"Ecuador (right). In {last:%B %Y} the warming\nwas concentrated in the east ({east:+.1f} °C in Niño 1+2 "
-              f"versus {west:+.1f} °C in Niño 4), an eastern-Pacific pattern closest to {analog}–{str(analog + 1)[-2:]}"
+              f"versus {west:+.1f} °C in Niño 4), an eastern-Pacific pattern closest to {analog}/{analog + 1}"
               + tail)
     add_source(fig, "Data: NOAA Climate Prediction Center monthly Niño indices (OISST v2.1), anomalies relative "
                "to the 1991–2020 climatology.")
     save(fig, args.out,
          alt=f"Line charts of monthly SST anomalies in the Niño 4, 3.4, 3 and 1+2 regions for "
-             + join_and(f"{y}–{str(y + 1)[-2:]}" for y in args.years)
+             + join_and(f"{y}/{y + 1}" for y in args.years)
              + f". In {last:%B %Y}: " + "; ".join(f"{r} {v:+.1f} °C" for r, v in zip(REGIONS, cur_vec))
-             + f". Closest past event at the same stage: {analog}–{str(analog + 1)[-2:]}.")
+             + f". Closest past event at the same stage: {analog}/{analog + 1}.")
 
 
 if __name__ == "__main__":

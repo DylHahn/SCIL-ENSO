@@ -1,6 +1,6 @@
 # SCIL ENSO
 
-Figures and website explaining the 2026–27 El Niño and its effects on Southern California,
+Figures and website explaining the 2026/2027 El Niño and its effects on Southern California,
 built entirely from public NOAA data. By Dylan Hahn.
 
 **Website:** https://dylhahn.github.io/SCIL-ENSO/
@@ -123,4 +123,4 @@ files in `data/godas/`, which are not part of this repository.
 
 ## Citation
 
-Hahn, D. (2026). *SCIL ENSO: The 2026–27 El Niño in historical context.* https://dylhahn.github.io/SCIL-ENSO/
+Hahn, D. (2026). *SCIL ENSO: The 2026/2027 El Niño in historical context.* https://dylhahn.github.io/SCIL-ENSO/

@@ -81,7 +81,7 @@
     const W = svg.clientWidth || 700, H = Math.max(300, Math.min(440, W * 0.62));
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     svg.setAttribute("height", H);
-    const L = 44, R = 64, T = 14, B = 40, n = D.n_months;
+    const L = 44, R = 86, T = 14, B = 40, n = D.n_months;
     const all = Object.values(m.series).flat().concat((m.forecast || []).map(f => f[1])).filter(v => v != null);
     let lo = Math.floor(Math.min(...all) - 0.2), hi = Math.ceil(Math.max(...all) + 0.2);
     const step = hi - lo > 5 ? 1 : 0.5;
@@ -139,7 +139,7 @@
       placed.push({ly, x: X(e.k)});
       if (+e.y === D.now) el("circle", {cx: X(e.k), cy: Y(e.v), r: 5, fill: NOW_COL, stroke: "var(--bg)", "stroke-width": 2}, svg);
       el("text", {x: X(e.k) + 8, y: ly, class: "ex-lab" + (+e.y === D.now ? " ex-now" : "")}, svg).textContent =
-        +e.y === D.now ? `${e.y} ${fmt(e.v)}` : e.y;
+        +e.y === D.now ? `${label(e.y)} ${fmt(e.v)}` : label(e.y);
     });
     geo.cross = el("line", {y1: T, y2: H - B, class: "ex-cross"}, svg);
     geo.dots = el("g", {}, svg);
@@ -209,8 +209,8 @@
     const rows = valuesAt(month);
     const r = rows.findIndex(x => x.year === D.now) + 1;
     root.querySelector(".ex-rank-title").textContent = r
-      ? `${stage(month)}: ${D.now} ranks ${r} of ${rows.length}`
-      : `${stage(month)}: all events (no ${D.now} data yet)`;
+      ? `${stage(month)}: ${label(D.now)} ranks ${r} of ${rows.length}`
+      : `${stage(month)}: all events (no ${label(D.now)} data yet)`;
     const svg = root.querySelector(".ex-bars");
     svg.replaceChildren();
     const W = svg.clientWidth || 320, bh = 15, gap = 2, T = 4, H = T + rows.length * (bh + gap) + 4;
@@ -254,7 +254,7 @@
   function table() {
     const k = lastNow(), wrap = root.querySelector(".ex-table-wrap");
     const t = html("table"), head = t.createTHead().insertRow();
-    ["Event", "Peak RONI", `Value in ${MON[k % 12]} (same stage as latest ${D.now})`, "Maximum, Jan–following Jun"]
+    ["Event", "Peak RONI", `Value in ${MON[k % 12]} (same stage as latest ${label(D.now)})`, "Maximum, Jan–following Dec"]
       .forEach(h => head.appendChild(html("th", "", h)));
     const body = t.createTBody();
     valuesAt(k).forEach(r => {

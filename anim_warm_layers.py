@@ -9,7 +9,8 @@ pooling.
 Right: the volume of water in each layer over 5°S–5°N, 120°E–80°W (the warm water volume box
 used by NOAA PMEL), in 10¹⁴ m³; the full bar is the warm water volume above 20 °C.
 
-Months run from July of the year before onset to the latest GODAS month. Frames are interpolated
+Each event runs from January of its first year to December of the next; the current event holds at
+the latest GODAS month. Frames are interpolated
 between months for smooth playback.
 
     python anim_warm_layers.py
@@ -25,7 +26,8 @@ from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 
 from anim_warm_water import R_EARTH, WWV_BOX, d20, load_temps, monthly_normal
-from enso_anim import AnimationFrames, interpolate_months
+from enso_anim import (EVENT_MONTHS, AnimationFrames, event_months, event_name, hold_last, interpolate_months,
+                       month_label)
 from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, join_and, lon_label
 
 NOW = 2026
@@ -57,29 +59,34 @@ def volumes(temps, lat, lon, depths):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982])
-    ap.add_argument("--steps", type=int, default=4, help="interpolated frames per month")
+    ap.add_argument("--steps", type=int, default=2, help="interpolated frames per month")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--out", default=str(FIG_DIR / "anim" / "anim_warm_layers.png"))
     args = ap.parse_args()
 
     apply_style(args.theme)
-    span = pd.date_range(f"{NOW - 1}-07-01", f"{NOW}-12-01", freq="MS")
-    temps, months, lat, lon, depths = load_temps(span, args.refresh)
-    offsets = [(m.year - NOW, m.month) for m in months]
-    rows = [(str(NOW), temps)]
+    # each El Niño from January of its first year to December of the next
+    temps, months, lat, lon, depths = load_temps(event_months(NOW), args.refresh)
+    latest = months[-1]
+    years = [NOW] + list(args.compare)
+    rows = [(event_name(NOW), temps)]
     for y in args.compare:
-        t, got, _, _, _ = load_temps([pd.Timestamp(y + dy, mo, 1) for dy, mo in offsets])
-        assert len(got) == len(months), f"GODAS months missing for {y}"
-        rows.append((str(y), t))
-    normal = monthly_normal([mo for _, mo in offsets])
+        t, got, _, _, _ = load_temps(event_months(y))
+        assert len(got) == EVENT_MONTHS, f"GODAS months missing for {y}"
+        rows.append((event_name(y), t))
+    normal = monthly_normal([m.month for m in event_months(2000)])
     rows.append(("Normal (1991–2020)", normal))
-    n = len(months)
+    n = EVENT_MONTHS
 
     eq = (lat >= EQ[0]) & (lat <= EQ[1])
     west = lon >= LON_MIN                                                      # east of the Maritime Continent
     sections = [np.nanmean(t[:, :, eq, :], axis=2)[:, :, west] for _, t in rows]   # (time, depth, lon)
     vols = [volumes(t, lat, lon, depths) for _, t in rows]                     # (time, layer)
+    haves = [len(v) for v in vols]
+    last = [v[haves[0] - 1] for v in vols]                                     # at the current event's latest month
+    sections = [hold_last(x)[0] for x in sections]             # the current event holds at its latest month
+    vols = [hold_last(v)[0] for v in vols]
     lon = lon[west]
 
     colors = layer_colors()
@@ -140,10 +147,11 @@ def main():
                + [Patch(color=colors[0], label="below 20 °C")])
     fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.42 / H), ncol=6, fontsize=10.5,
                labelcolor=COLORS["text_2"], handlelength=1.4, columnspacing=1.1, frameon=False)
-    add_title(fig, f"Layers of warm water in the equatorial Pacific: {NOW} compared with "
-                   f"{join_and(str(y) for y in args.compare)}",
-              "Slices along the equator, coloured by temperature layer; water above about 28 °C is warm enough to "
-              "drive heavy tropical rainfall.\nBars: the volume of water in each layer between 5°S and 5°N.")
+    add_title(fig, f"Layers of warm water: {event_name(NOW)} compared with "
+                   f"{join_and(event_name(y) for y in args.compare)}",
+              "January of each El Niño's first year to December of the next. Slices along the equator, coloured by "
+              "temperature layer; water above\nabout 28 °C drives heavy tropical rainfall. Bars: the volume of water in "
+              "each layer between 5°S and 5°N.")
     add_source(fig, "Data: NCEP GODAS (NOAA), monthly, 1° × 10 m to 205 m. Sections: 2°S–2°N; volumes: 5°S–5°N, "
                "120°E–80°W. Normal: 1991–2020 mean temperature. Frames interpolated.")
 
@@ -153,7 +161,6 @@ def main():
     frames = AnimationFrames(fig, dpi=110)
     for i, pos in enumerate(seqs[0][1]):
         kk = int(round(pos))
-        dy, mo = offsets[kk]
         for r, ax in enumerate(sec_axes):
             for art in drawn[r]:
                 art.remove()
@@ -168,17 +175,17 @@ def main():
                 left += w
             totals[r].set_text(f"total {v.sum():.1f}  ·  above 28 °C {v[3:].sum():.1f}")
             year = rows[r][0]
-            labels[r].set_text(f"{calendar.month_name[mo]} {int(year) + dy}" if r < len(rows) - 1
-                               else calendar.month_name[mo])
-        frames.grab(800 if abs(pos - round(pos)) < 1e-9 else 90)
+            labels[r].set_text(month_label(years[r], kk, haves[r]) if r < len(rows) - 1
+                               else calendar.month_name[kk % 12 + 1])
+        frames.grab(600 if abs(pos - round(pos)) < 1e-9 else 90)
     frames.durations[-1] = 3500
 
-    last = [v[-1] for v in vols]
     names = [nm for nm, _ in rows]
     frames.save(args.out, quality=86,
-                alt=f"Animated equatorial Pacific sections coloured by temperature layer from {months[0]:%B %Y} to "
-                    f"{months[-1]:%B %Y} for {join_and(names)}, with bars of warm water volume by layer. In "
-                    f"{months[-1]:%B}, water above 28 °C between 5°S and 5°N totalled "
+                alt=f"Animated equatorial Pacific sections coloured by temperature layer from January of each El "
+                    f"Niño's first year to December of the next, for {join_and(names)} (the current event to "
+                    f"{latest:%B %Y}), with bars of warm water volume by layer. In {latest:%B} of the first year, "
+                    f"water above 28 °C between 5°S and 5°N totalled "
                     + join_and(f"{v[3:].sum():.1f} × 10¹⁴ m³ in {nm}" for nm, v in zip(names, last))
                     + "; water above 20 °C totalled "
                     + join_and(f"{v.sum():.1f}" for v in last) + " × 10¹⁴ m³ respectively.")

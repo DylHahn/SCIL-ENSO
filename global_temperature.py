@@ -36,7 +36,7 @@ def main():
     ytd = load_global_temp(args.refresh, ytd=True)
     roni = load_roni(refresh=args.refresh)
 
-    # Dec–Feb RONI is stored on January: an El Niño "of winter 1997–98" sits on Jan 1998
+    # Dec–Feb RONI is stored on January: an El Niño "of winter 1997/1998" sits on Jan 1998
     djf = pd.Series({t.year: v for t, v in roni.items() if t.month == 1})
     after_strong = {y for y in temp.index if djf.get(y, 0) >= args.threshold}
     full = load_global_temp(args.refresh)

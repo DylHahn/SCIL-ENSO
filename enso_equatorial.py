@@ -74,7 +74,7 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
         x0 = left + k * (width + gap)
         cur = y == highlight
         strip = _map_strip(fig, [x0, p_bottom + p_height + 0.012, width, 0.052])
-        strip.set_title(f"{y}–{str(y + 1)[-2:]}", fontsize=15, fontweight="bold", loc="left", pad=6,
+        strip.set_title(f"{y}/{y + 1}", fontsize=15, fontweight="bold", loc="left", pad=6,
                         color=COLORS["el_nino"] if cur else COLORS["text"])
         ax = fig.add_axes([x0, p_bottom, width, p_height])
         t = np.arange(len(months))

@@ -60,7 +60,7 @@ def main():
         seg = roni[f"{yr}-01":f"{yr + 1}-06"]
         x = seg.index + pd.DateOffset(years=y0 - yr)
         ax.plot(x, seg.values, color=COLORS["muted"], lw=1.6, alpha=0.9)
-        lbl = f"{yr}–{str(yr + 1)[-2:]}"
+        lbl = f"{yr}/{yr + 1}"
         if seg.max() > record_val:
             record_val, record_lbl = seg.max(), lbl
 
@@ -99,15 +99,15 @@ def main():
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%Y"))
 
-    handles = [Line2D([], [], color=COLORS["el_nino"], lw=3.4, label=f"{y0}–{str(y0 + 1)[-2:]} observed"),
+    handles = [Line2D([], [], color=COLORS["el_nino"], lw=3.4, label=f"{y0}/{y0 + 1} observed"),
                Line2D([], [], color=COLORS["el_nino"], lw=2.4, ls=(0, (4, 3)), label="NOAA forecast (median)"),
                Patch(color=COLORS["el_nino"], alpha=0.35, label="Forecast range (25–75%, 5–95%)"),
-               Line2D([], [], color=COLORS["muted"], lw=1.6, label="Very strong El Niños: 1972, 1982, 1997, 2015")]
+               Line2D([], [], color=COLORS["muted"], lw=1.6, label="Very strong El Niños: 1972/1973, 1982/1983, 1997/1998, 2015/2016")]
     ax.legend(handles=handles, loc="lower right", ncol=2, fontsize=11.5, labelcolor=COLORS["text_2"],
               bbox_to_anchor=(1.0, 0.0))
 
     vs = strengths["en_vstrong"]
-    add_title(fig, f"The {y0}–{str(y0 + 1)[-2:]} El Niño compared with the strongest events since 1950",
+    add_title(fig, f"The {y0}/{y0 + 1} El Niño compared with the strongest events since 1950",
               f"Relative Oceanic Niño Index (RONI), 3-month means. NOAA's {outlook.attrs['issued']} outlook gives a "
               f"{vs.max():.0f}% probability of a very strong event (≥ +2.0 °C)\nby "
               f"{season_words(strengths.loc[vs.idxmax(), 'season'])}; its median forecast peak of {fc['p50'].max():+.1f} °C "

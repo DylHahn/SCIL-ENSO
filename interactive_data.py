@@ -1,7 +1,7 @@
 """
 Data for the interactive El Niño event explorer on the website (site/explorer.html).
 
-Writes one JSON file with, for every El Niño since 1950 and for the current event, 18 monthly
+Writes one JSON file with, for every El Niño since 1950 and for the current event, 24 monthly
 values aligned on January of the onset year, for six measures:
   Niño 3.4, Niño 1+2, Niño 3 and Niño 4 SST anomalies (ERSST v5), the upper-200 m temperature
   anomaly along the equator, 180°–80°W (GODAS, 1980 onward), and NOAA's RONI (with the current
@@ -59,7 +59,7 @@ def main():
                measures=[], events=[])
     for y in years + [NOW]:
         ev = events.get(y)
-        out["events"].append(dict(year=y, label=f"{y}–{str(y + 1)[-2:]}",
+        out["events"].append(dict(year=y, label=f"{y}/{y + 1}",
                                   peak=None if y == NOW else round(float(ev.max()), 2)))
     for key, name, desc, s in measures:
         series = {str(y): clean(aligned(s, y)) for y in years + [NOW]}

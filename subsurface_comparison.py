@@ -71,7 +71,7 @@ def main():
         ax.set_ylabel("Depth (m)", fontsize=11)
         ax.set_facecolor(COLORS["land"])
         cur = y == now
-        ax.text(0.01, 0.92, f"{calendar.month_name[month]} {y}", transform=ax.transAxes, fontsize=14,
+        ax.text(0.01, 0.92, f"{y}/{y + 1} · {calendar.month_name[month]} {y}", transform=ax.transAxes, fontsize=14,
                 fontweight="bold", color="#111111", va="top",
                 bbox=dict(facecolor="white", edgecolor=COLORS["el_nino"] if cur else "none",
                           linewidth=2, alpha=0.9, pad=3))

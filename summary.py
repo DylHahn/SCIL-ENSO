@@ -44,10 +44,10 @@ def versus_past():
     best = {r: max(PAST, key=lambda y: same[y][r]) for r in ("Niño 3.4", "Niño 1+2")}
     if not ahead:
         return None
-    parts = [f"{r} ({now[r]:+.1f} °C, against {same[best[r]][r]:+.1f} °C in {best[r]})" for r in ahead]
+    parts = [f"{r} ({now[r]:+.1f} °C, against {same[best[r]][r]:+.1f} °C in {_lbl(best[r])})" for r in ahead]
     return ("Compared with past events",
             f"In {m:%B}, {join_and(parts)} {'is' if len(parts) == 1 else 'are'} warmer than in "
-            f"{join_and(str(y) for y in PAST)} at the same point in the year.")
+            f"{join_and(_lbl(y) for y in PAST)} at the same point in the year.")
 
 
 def subsurface():
@@ -63,7 +63,7 @@ def subsurface():
     best = max(range(len(PAST)), key=lambda k: vals[k + 1])
     return ("Below the surface",
             f"In {last:%B}, the upper 200 m of the central and eastern equatorial Pacific was {vals[0]:+.1f} °C above "
-            f"normal, compared with at most {vals[best + 1]:+.1f} °C ({PAST[best]}) in past very strong events at the "
+            f"normal, compared with at most {vals[best + 1]:+.1f} °C ({_lbl(PAST[best])}) in past very strong events at the "
             "same stage.")
 
 
@@ -123,7 +123,7 @@ def _same_stage(series, years, now):
 
 
 def _lbl(y):
-    return f"{y}–{str(y + 1)[-2:]}"
+    return f"{y}/{y + 1}"
 
 
 def _hottest_water(years, now):
@@ -187,8 +187,8 @@ def differences():
     if len(record) >= 3:
         parts = [f"{r} {v_r:+.1f} °C ({pv:+.1f} °C)" for r, v_r, b, pv, _ in record]
         out.append(("Record warmth across the whole equatorial Pacific",
-                    f"At their peaks, past very strong events were strongest either near South America (1982, 1997) "
-                    f"or farther west (2015). In {month(k)}, the current event is the warmest on record at this stage "
+                    f"At their peaks, past very strong events were strongest either near South America (1982/1983, 1997/1998) "
+                    f"or farther west (2015/2016). In {month(k)}, the current event is the warmest on record at this stage "
                     f"in {'all four' if len(record) == 4 else f'{len(record)} of the four'} Niño regions (previous high in "
                     "brackets): " + ", ".join(parts) + "."))
 

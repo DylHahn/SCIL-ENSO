@@ -189,7 +189,7 @@ def write_page(page):
             img_dir.mkdir(exist_ok=True)
             shutil.copy2(src / f"{s}.json", img_dir / f"{s}.json")
             body.append((SITE / INTERACTIVE_TEMPLATES[script]).read_text().replace("{{ID}}", f"g{n}")
-                        .replace("{{DATA}}", f"img/{s}.json")
+                        .replace("{{DATA}}", f"img/{s}.json?v={dt.date.today():%Y%m%d}")
                         .replace("{{TAKEAWAY}}", takeaway).replace("{{CAPTION}}", cap + how))
             continue
         if not (src / f"{s}.png").exists():

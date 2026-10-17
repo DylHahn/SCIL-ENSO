@@ -50,3 +50,41 @@ def interpolate_months(stack, steps):
     out.append(stack[-1])
     pos.append(len(stack) - 1)
     return out, pos
+
+
+# ---------------------------------------------------------------------------------------------
+# Event calendars: every El Niño is shown from January of its onset year to December of the next
+# ---------------------------------------------------------------------------------------------
+EVENT_MONTHS = 24
+
+
+def event_name(year):
+    """'2015/2016' style name for the El Niño that began in `year`."""
+    return f"{year}/{year + 1}"
+
+
+def event_months(year, n=EVENT_MONTHS):
+    """Month-start dates from January of `year` to December of the following year."""
+    import pandas as pd
+    return list(pd.date_range(f"{year}-01-01", periods=n, freq="MS"))
+
+
+def hold_last(stack, n=EVENT_MONTHS):
+    """Pad a (time, ...) stack to `n` months by repeating its last month, for an event still in
+    progress. Returns (padded stack, number of months with data)."""
+    stack = np.asarray(stack)
+    have = len(stack)
+    if have >= n:
+        return stack[:n], n
+    return np.concatenate([stack, np.repeat(stack[-1:], n - have, axis=0)]), have
+
+
+def month_label(year, k, have=None):
+    """'March 2016' for month k of the event that began in `year`; once k passes the months with
+    data (an event in progress), the latest month is shown with '(latest data)'."""
+    import calendar
+    if have is not None and k >= have:
+        k, tail = have - 1, " (latest data)"
+    else:
+        tail = ""
+    return f"{calendar.month_name[k % 12 + 1]} {year + k // 12}{tail}"

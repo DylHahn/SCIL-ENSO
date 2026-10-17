@@ -20,7 +20,8 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 from matplotlib.ticker import FuncFormatter
 
-from enso_anim import AnimationFrames, interpolate_months
+from enso_anim import (EVENT_MONTHS, AnimationFrames, event_months, event_name, hold_last, interpolate_months,
+                       month_label)
 from enso_common import (FIG_DIR, GODAS_DIR, COLORS, add_source, add_title, apply_style, download_godas_year,
                          godas_equatorial_section, join_and, lon_label)
 
@@ -30,7 +31,7 @@ def main():
     ap.add_argument("--year", type=int, default=2026)
     ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982],
                     help="past onset years to show (GODAS begins in 1980)")
-    ap.add_argument("--steps", type=int, default=4)
+    ap.add_argument("--steps", type=int, default=2)
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--out", default=str(FIG_DIR / "anim" / "anim_upper_ocean.png"))
@@ -39,11 +40,12 @@ def main():
     import xarray as xr
     apply_style(args.theme)
     with xr.open_dataset(download_godas_year(args.year, args.refresh)) as ds:
-        months = list(pd.to_datetime(ds["time"].values))
-    dates = [m.strftime("%Y-%m-%d") for m in months] + [f"{y}-{m.month:02d}-01" for y in args.compare
-                                                          for m in months]
-    depths, lons, anoms, temps = godas_equatorial_section(GODAS_DIR, dates)
+        months = list(pd.to_datetime(ds["time"].values))           # months of the current event with data
     n = len(months)
+    # each El Niño from January of its first year to December of the next
+    dates = [m.strftime("%Y-%m-%d") for m in months] + [m.strftime("%Y-%m-%d") for y in args.compare
+                                                          for m in event_months(y)]
+    depths, lons, anoms, temps = godas_equatorial_section(GODAS_DIR, dates)
     from scipy.ndimage import zoom
 
     def fine(a, z=4):
@@ -52,10 +54,19 @@ def main():
 
     lons_f = np.linspace(lons.min(), lons.max(), len(lons) * 4)
     depths_f = np.linspace(depths.min(), depths.max(), len(depths) * 4)
-    normal = temps[:n] - anoms[:n]                      # 1991–2020 monthly normal = temperature − anomaly
-    names = [str(args.year)] + [str(y) for y in args.compare]
-    rows = ([(nm, temps[i * n:(i + 1) * n]) for i, nm in enumerate(names)] + [("Normal (1991–2020)", normal)])
-    row_anoms = [anoms[i * n:(i + 1) * n] for i in range(len(names))] + [np.zeros_like(normal)]
+    years = [args.year] + list(args.compare)
+    names = [event_name(y) for y in years]
+    parts = [(temps[:n], anoms[:n])] + [(temps[n + i * EVENT_MONTHS:n + (i + 1) * EVENT_MONTHS],
+                                          anoms[n + i * EVENT_MONTHS:n + (i + 1) * EVENT_MONTHS])
+                                         for i in range(len(args.compare))]
+    normal = parts[1][0] - parts[1][1]                  # 1991–2020 monthly normal = temperature − anomaly (24 months)
+    rows, row_anoms, haves = [], [], []
+    for nm, (t, a) in zip(names, parts):
+        tp, have = hold_last(t)
+        rows.append((nm, tp)); row_anoms.append(hold_last(a)[0]); haves.append(have)
+    rows.append(("Normal (1991–2020)", normal)); row_anoms.append(np.zeros_like(normal)); haves.append(EVENT_MONTHS)
+    latest = months[-1]
+    N = EVENT_MONTHS
     east = (lons >= 180) & (lons <= 280)
 
     # fixed sizes in inches so the layout works for any number of rows
@@ -97,11 +108,12 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("Ocean temperature (°C), 2°S–2°N · black line: 20 °C isotherm (base of the warm layer)",
                  fontsize=11, color=COLORS["text_2"])
-    add_title(fig, f"Equatorial Pacific upper-ocean temperature, Jan–{months[-1]:%b}: {args.year} compared "
-                   f"with {join_and(str(y) for y in args.compare)}",
-              "Normally the warm layer is thick in the west and thin in the east, where cold water lies close to the "
-              "surface. During El Niño\nthe warm layer deepens in the east and the 20 °C line flattens. The value at right of each panel is the "
-              "upper-200 m anomaly, 180°–80°W.")
+    add_title(fig, f"Upper-ocean temperature along the equator: {event_name(args.year)} compared "
+                   f"with {join_and(event_name(y) for y in args.compare)}",
+              "Each El Niño runs from January of its first year to December of the next; the "
+              f"{event_name(args.year)} panel holds at the latest month.\nDuring El Niño the warm layer deepens in the "
+              "east and the 20 °C line flattens. The value at right of each panel is the upper-200 m anomaly, "
+              "180°–80°W.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), monthly, 1° × 10 m, resampled for display; normal = "
                "1991–2020. Frames are interpolated between months.")
 
@@ -112,21 +124,21 @@ def main():
         for r, (name, _) in enumerate(rows):
             field = seqs[r][0][i]
             meshes[r].set_array(fine(field).ravel())
-            year = name if r < len(rows) - 1 else ""
-            month = f"{calendar.month_name[months[k].month]} {year}".strip()
+            month = (month_label(years[r], k, haves[r]) if r < len(rows) - 1 else calendar.month_name[k % 12 + 1])
             if r < len(rows) - 1:
-                a = (1 - (pos - int(pos))) * row_anoms[r][int(pos)] + (pos - int(pos)) * row_anoms[r][min(int(pos) + 1, n - 1)]
+                a = (1 - (pos - int(pos))) * row_anoms[r][int(pos)] + (pos - int(pos)) * row_anoms[r][min(int(pos) + 1, N - 1)]
                 month += f"  ·  upper 200 m {float(np.nanmean(a[:, east])):+.1f} °C"
             labels[r].set_text(month)
             if iso[r] is not None:
                 iso[r].remove()
             iso[r] = axes[r].contour(lons, depths, field, levels=[20], colors="black", linewidths=1.6)
-        frames.grab(800 if abs(pos - round(pos)) < 1e-9 else 90)
+        frames.grab(600 if abs(pos - round(pos)) < 1e-9 else 90)
     frames.durations[-1] = 3000
-    last = [float(np.nanmean(a[-1][:, east])) for a in row_anoms[:-1]]
+    last = [float(np.nanmean(a[n - 1][:, east])) for a in row_anoms[:-1]]
     frames.save(args.out, quality=86,
-                alt=f"Animated depth–longitude sections of equatorial Pacific ocean temperature from January to "
-                    f"{months[-1]:%B} for {join_and(names)} and the 1991–2020 normal. In {months[-1]:%B}, the "
+                alt=f"Animated depth–longitude sections of equatorial Pacific ocean temperature from January of each El "
+                    f"Niño's first year to December of the next, for {join_and(names)} (the current event to "
+                    f"{latest:%B %Y}) and the 1991–2020 normal. In {latest:%B} of the first year, the "
                     f"upper 200 m east of 180° departed from normal by "
                     + join_and(f"{v:+.1f} °C in {nm}" for nm, v in zip(names, last)) + ".")
 

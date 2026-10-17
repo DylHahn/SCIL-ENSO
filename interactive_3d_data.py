@@ -2,8 +2,9 @@
 Data for the interactive 3D view of the tropical Pacific on the website (site/ocean3d.html), and
 shared loading for the rotating 3D animation (anim_3d.py).
 
-For 2026, the past very strong El Niños (2015, 1997, 1982) and the 1991–2020 normal,
-monthly from July of the year before onset to the latest GODAS month:
+For 2026/2027, the past very strong El Niños (2015/2016, 1997/1998, 1982/1983) and the 1991–2020
+normal, monthly from January of each event's first year to December of the next (the current event to
+the latest GODAS month):
 near-surface (5 m) temperature over 20°S–20°N, 130°E–80°W and the depth of the 20 °C isotherm
 beneath it (the base of the warm upper layer), at 1° latitude × 2° longitude.
 All values come from NCEP GODAS (public NOAA data).
@@ -48,15 +49,15 @@ def for_display(stack, coast=2, sigma=1.0):
 
 def cases(refresh=False):
     """[(name, temps[time, depth, lat, lon])...] plus months, lat, lon, depths and calendar offsets."""
-    span = pd.date_range(f"{NOW - 1}-07-01", f"{NOW}-12-01", freq="MS")
-    temps, months, lat, lon, depths = load_temps(span, refresh)
-    offsets = [(m.year - NOW, m.month) for m in months]
-    out = [(str(NOW), temps)]
+    from enso_anim import EVENT_MONTHS, event_months, event_name
+    temps, months, lat, lon, depths = load_temps(event_months(NOW), refresh)
+    offsets = [(m.year - 2000, m.month) for m in event_months(2000)]          # all 24 months of an event
+    out = [(event_name(NOW), temps)]                                          # in progress: fewer months
     for y in COMPARE:
-        t, got, _, _, _ = load_temps([pd.Timestamp(y + dy, mo, 1) for dy, mo in offsets])
-        assert len(got) == len(months), f"GODAS months missing for {y}"
-        out.append((str(y), t))
-    out.append(("Normal", monthly_normal([mo for _, mo in offsets])))
+        t, got, _, _, _ = load_temps(event_months(y))
+        assert len(got) == EVENT_MONTHS, f"GODAS months missing for {y}"
+        out.append((event_name(y), t))
+    out.append(("Normal", monthly_normal([m.month for m in event_months(2000)])))
     return out, months, offsets, lat, lon, depths
 
 
@@ -92,8 +93,7 @@ def main():
     path = Path(args.out)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, separators=(",", ":")))
-    print(f"Saved {path} ({path.stat().st_size / 1e6:.1f} MB, {len(months)} months, "
-          f"{months[0]:%b %Y}–{months[-1]:%b %Y})")
+    print(f"Saved {path} ({path.stat().st_size / 1e6:.1f} MB; current event {months[0]:%b %Y}–{months[-1]:%b %Y})")
 
 
 if __name__ == "__main__":

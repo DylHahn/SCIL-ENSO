@@ -65,7 +65,7 @@ def main():
                "relative to the 1991–2020 monthly climatology.",
         out=args.out, highlight=now, cbar_ticks=np.arange(17, 29, 2),
         alt=f"Longitude–time diagrams of upper-200 m temperature anomalies along the equatorial Pacific for "
-            + join_and(f"{y}–{str(y + 1)[-2:]}" for y in args.years)
+            + join_and(f"{y}/{y + 1}" for y in args.years)
             + f". Central–eastern Pacific mean in {last:%B}: {now} {east_mean[now][last]:+.1f} °C; "
             + "; ".join(f"{y} {v:+.1f} °C" for y, v in same.items()) + ".")
 

@@ -9,8 +9,8 @@ surges east along the equator, deepening the warm layer off South America. Each 
 reports the equatorial warm water volume (WWV, the volume above the 20 °C isotherm over
 5°S–5°N, 120°E–80°W, after NOAA PMEL) and its departure from normal.
 
-The run starts in July of the year before onset, to show the build-up, and ends at the latest
-GODAS month. The normal is D20 of the 1991–2020 monthly mean temperature. Frames are
+Each event runs from January of its first year to December of the next; the current event holds at
+the latest GODAS month. The normal is D20 of the 1991–2020 monthly mean temperature. Frames are
 interpolated between months for smooth playback.
 
     python anim_warm_water.py
@@ -24,7 +24,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 
-from enso_anim import AnimationFrames, interpolate_months
+from enso_anim import (EVENT_MONTHS, AnimationFrames, event_months, event_name, hold_last, interpolate_months,
+                       month_label)
 from enso_common import (FIG_DIR, GODAS_DEPTHS, GODAS_DIR, COLORS, add_source, add_title, apply_style,
                          download_godas_year, godas_path, join_and)
 
@@ -53,7 +54,7 @@ def load_temps(months, refresh=False):
                 vals = da.sel(time=months[pick]).values
                 out[pick, j] = vals - 273.15 if np.nanmean(vals) > 100 else vals
     missing = [i for i in range(len(months)) if np.isnan(out[i]).all()]
-    for y in sorted({months[i].year for i in missing}):
+    for y in sorted({months[i].year for i in missing if months[i].year <= pd.Timestamp.today().year}):
         with xr.open_dataset(download_godas_year(y, refresh)) as ds:
             da = ds["pottmp"].sel(lat=slice(*LAT), lon=slice(*LON), level=[float(d) for d in depths])
             have = pd.to_datetime(da["time"].values)
@@ -110,7 +111,7 @@ def main():
     ap.add_argument("--year", type=int, default=2026)
     ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982],
                     help="past onset years to show (GODAS begins in 1980)")
-    ap.add_argument("--steps", type=int, default=4, help="interpolated frames per month")
+    ap.add_argument("--steps", type=int, default=2, help="interpolated frames per month")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--out", default=str(FIG_DIR / "anim" / "anim_warm_water.png"))
@@ -121,18 +122,25 @@ def main():
     from scipy.ndimage import zoom
 
     apply_style(args.theme)
-    span = pd.date_range(f"{args.year - 1}-07-01", f"{args.year}-12-01", freq="MS")
-    temps, months, lat, lon, depths = load_temps(span, args.refresh)
-    offsets = [(m.year - args.year, m.month) for m in months]
-    rows = [(str(args.year), d20(temps, depths))]
+    # each El Niño from January of its first year to December of the next; the current event holds at its
+    # latest month
+    temps, months, lat, lon, depths = load_temps(event_months(args.year), args.refresh)
+    latest = months[-1]
+    years = [args.year] + list(args.compare)
+    stacks = [d20(temps, depths)]
     for y in args.compare:
-        t, got, _, _, _ = load_temps([pd.Timestamp(y + dy, mo, 1) for dy, mo in offsets])
-        assert len(got) == len(months), f"GODAS months missing for {y}"
-        rows.append((str(y), d20(t, depths)))
-    rows.append(("Normal (1991–2020)", d20(monthly_normal([mo for _, mo in offsets]), depths)))
-    n = len(months)
-    wwv_rows = [[wwv(f, lat, lon) for f in stack] for _, stack in rows]
-    normal_wwv = wwv_rows[-1]
+        t, got, _, _, _ = load_temps(event_months(y))
+        assert len(got) == EVENT_MONTHS, f"GODAS months missing for {y}"
+        stacks.append(d20(t, depths))
+    normal = d20(monthly_normal([m.month for m in event_months(2000)]), depths)
+    wwv_rows = [hold_last([wwv(f, lat, lon) for f in st])[0] for st in stacks]
+    normal_wwv = [wwv(f, lat, lon) for f in normal]
+    rows, haves = [], []
+    for y, st in zip(years, stacks):
+        sp, have = hold_last(st)
+        rows.append((event_name(y), sp)); haves.append(have)
+    rows.append(("Normal (1991–2020)", normal)); haves.append(EVENT_MONTHS)
+    n = EVENT_MONTHS
 
     land = np.isnan(rows[0][1][0])
     Z = 3                                                   # resample 3× for a smooth display of the 1° grid
@@ -180,11 +188,11 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("Depth of the 20 °C isotherm (m): thickness of the warm upper layer · dashed lines: 5°S and 5°N",
                  fontsize=11, color=COLORS["text_2"])
-    add_title(fig, f"Warm water across the tropical Pacific, {months[0]:%b %Y}–{months[-1]:%b %Y}: {args.year} "
-                   f"compared with {join_and(str(y) for y in args.compare)}",
-              "Red and dark red show where the warm upper layer is thickest. Warm water builds up in the west before "
-              "an El Niño and surges east along\nthe equator as it develops. WWV: warm water volume between 5°S and "
-              "5°N (10$^{14}$ m³), with its departure from normal in brackets.")
+    add_title(fig, f"Warm water across the tropical Pacific: {event_name(args.year)} compared with "
+                   f"{join_and(event_name(y) for y in args.compare)}",
+              "January of each El Niño's first year to December of the next. Red shows where the warm upper layer is "
+              "thickest: it surges east along\nthe equator as El Niño develops and drains away as it ends. WWV: warm "
+              "water volume between 5°S and 5°N (10$^{14}$ m³), departure from normal in brackets.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), monthly, 1° × ⅓°, 10 m levels to 205 m, resampled for "
                "display; normal from the 1991–2020 mean temperature. Frames are interpolated between months.")
 
@@ -196,22 +204,25 @@ def main():
         for r, (name, _) in enumerate(rows):
             field = seqs[r][0][i]
             meshes[r].set_array(fine(field).ravel())
-            dy = offsets[k][0]
             if r < len(rows) - 1:
-                when = f"{calendar.month_name[offsets[k][1]]} {int(name) + dy}"
-                v = (1 - f) * wwv_rows[r][int(pos)] + f * wwv_rows[r][min(int(pos) + 1, n - 1)]
-                vn = (1 - f) * normal_wwv[int(pos)] + f * normal_wwv[min(int(pos) + 1, n - 1)]
+                when = month_label(years[r], k, haves[r])
+                p0 = min(pos, haves[r] - 1)                    # an event in progress holds at its latest month
+                i0, f0 = int(p0), p0 - int(p0)
+                v = (1 - f0) * wwv_rows[r][i0] + f0 * wwv_rows[r][min(i0 + 1, n - 1)]
+                vn = (1 - f0) * normal_wwv[i0] + f0 * normal_wwv[min(i0 + 1, n - 1)]
                 labels[r].set_text(f"{when}  ·  WWV {v:.1f} ({round(v - vn, 1) + 0.0:+.1f}) × 10$^{{14}}$ m³")
             else:
-                labels[r].set_text(f"{calendar.month_name[offsets[k][1]]}  ·  WWV {normal_wwv[k]:.1f} × 10$^{{14}}$ m³")
-        frames.grab(800 if abs(pos - round(pos)) < 1e-9 else 90)
+                labels[r].set_text(f"{calendar.month_name[k % 12 + 1]}  ·  WWV {normal_wwv[k]:.1f} × 10$^{{14}}$ m³")
+        frames.grab(600 if abs(pos - round(pos)) < 1e-9 else 90)
     frames.durations[-1] = 3000
     names = [nm for nm, _ in rows[:-1]]
     frames.save(args.out, quality=86,
-                alt=f"Animated maps of the depth of the 20 °C isotherm across the tropical Pacific from "
-                    f"{months[0]:%B %Y} to {months[-1]:%B %Y} for {join_and(names)} and the 1991–2020 normal. In "
-                    f"{months[-1]:%B}, the equatorial warm water volume departed from normal by "
-                    + join_and(f"{w[-1] - normal_wwv[-1]:+.1f} × 10¹⁴ m³ in {nm}" for nm, w in zip(names, wwv_rows))
+                alt=f"Animated maps of the depth of the 20 °C isotherm across the tropical Pacific from January of "
+                    f"each El Niño's first year to December of the next, for {join_and(names)} (the current event to "
+                    f"{latest:%B %Y}) and the 1991–2020 normal. In {latest:%B} of the first year, the equatorial warm "
+                    f"water volume departed from normal by "
+                    + join_and(f"{w[haves[0] - 1] - normal_wwv[haves[0] - 1]:+.1f} × 10¹⁴ m³ in {nm}"
+                               for nm, w in zip(names, wwv_rows))
                     + ".")
 
 

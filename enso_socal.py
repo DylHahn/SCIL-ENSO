@@ -9,7 +9,7 @@ Stations (long, near-complete records through the present):
   * Santa Barbara              USC00047902   (1893–)
 
 Rainy season = water year, 1 Oct to 30 Sep, labelled by the year it ends
-(the 2026–27 season is "2027"), as NWS Los Angeles and San Diego report it.
+(the 2026/2027 season is "2027"), as NWS Los Angeles and San Diego report it.
 Its El Niño category comes from NOAA's Dec–Feb RONI inside that season.
 """
 

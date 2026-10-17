@@ -2,7 +2,7 @@
 Equatorial 4 — Anomaly time series across El Niño events since 1950
 
 Every El Niño since 1950 (NOAA's RONI rule: five or more overlapping seasons at
-≥ +0.5 °C), aligned on January of its onset year and followed for 18 months:
+≥ +0.5 °C), aligned on January of its onset year and followed to December of the following year:
   (a) Niño 3.4 SST anomaly        — ERSST v5, 1950–present
   (b) Niño 1+2 SST anomaly        — ERSST v5 (coastal Peru and Ecuador)
   (c) Upper-200 m temperature anomaly, 2°S–2°N, 180°–80°W — GODAS, 1980–present
@@ -23,7 +23,7 @@ from enso_common import (FIG_DIR, GODAS_DIR, COLORS, add_source, add_title, appl
                          find_events, godas_equatorial_section, join_and, load_roni, save)
 from enso_stats import load_gridded
 
-N_MONTHS = 18
+N_MONTHS = 24                    # January of the onset year to December of the next
 HIGHLIGHT = {1982: "#3987e5", 1997: "#199e70", 2015: "#c98500"}      # same slots as figure 9
 NOW = 2026
 
@@ -108,8 +108,8 @@ def main():
         ax.set_title(title, fontsize=13, loc="left", pad=20)
         ax.text(0, 1.02, f"{sub} · {len(past)} past events", transform=ax.transAxes, fontsize=9.5,
                 color=COLORS["text_2"], va="bottom")
-        ax.set_xticks([0, 3, 6, 9, 12, 15])
-        ax.set_xticklabels(["Jan", "Apr", "Jul", "Oct", "Jan", "Apr"], fontsize=10.5)
+        ax.set_xticks([0, 3, 6, 9, 12, 15, 18, 21])
+        ax.set_xticklabels(["Jan", "Apr", "Jul", "Oct", "Jan", "Apr", "Jul", "Oct"], fontsize=10.5)
         ax.set_xlim(0, N_MONTHS - 1)
         ax.yaxis.grid(True)
         ax.set_axisbelow(True)
@@ -119,8 +119,8 @@ def main():
     axes[0].set_ylabel("Anomaly (°C), relative to 1991–2020")
     fig.text(0.52, 0.085, "Months from January of the onset year (second “Jan” = following year)",
              ha="center", fontsize=11, color=COLORS["text_2"])
-    handles = ([Line2D([], [], color=COLORS["el_nino"], lw=3.2, label=f"{NOW}–{str(NOW + 1)[-2:]}")]
-               + [Line2D([], [], color=c, lw=2, label=f"{y}–{str(y + 1)[-2:]}") for y, c in HIGHLIGHT.items()]
+    handles = ([Line2D([], [], color=COLORS["el_nino"], lw=3.2, label=f"{NOW}/{NOW + 1}")]
+               + [Line2D([], [], color=c, lw=2, label=f"{y}/{y + 1}") for y, c in HIGHLIGHT.items()]
                + [Line2D([], [], color=COLORS["neutral"], lw=1, label="Other El Niño events since 1950"),
                   Line2D([], [], color=COLORS["text"], lw=1.8, ls=(0, (4, 3)), label="Mean of past events")])
     fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.055, 0.775), ncol=6, fontsize=10.5,
@@ -137,7 +137,7 @@ def main():
     save(fig, args.out,
          alt="Three panels of monthly anomaly time series for every El Niño since 1950, aligned by onset year: "
              + "; ".join(f"{name}: current {v:+.1f} °C, highest past value at the same stage {pv:+.1f} °C "
-                         f"({py}–{str(py + 1)[-2:]})" for name, v, _, _, py, pv in summary) + ".")
+                         f"({py}/{py + 1})" for name, v, _, _, py, pv in summary) + ".")
 
 
 if __name__ == "__main__":

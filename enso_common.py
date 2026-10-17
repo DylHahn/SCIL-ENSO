@@ -302,10 +302,10 @@ def find_events(s, threshold=0.5, min_len=5):
 
 
 def event_label(ev):
-    """'1997–98' style name for an event (a season starting Jan–Feb belongs to the previous winter)."""
+    """'1997/1998' style name for an event (a season starting Jan–Feb belongs to the previous winter)."""
     y0 = ev.index[0].year if ev.index[0].month >= 3 else ev.index[0].year - 1
     y1 = ev.index[-1].year
-    return f"{y0}–{str(y1)[-2:]}" if y1 > y0 else str(y0)
+    return f"{y0}/{y1}" if y1 > y0 else str(y0)
 
 
 def load_roni(local_file=None, refresh=False) -> pd.Series:

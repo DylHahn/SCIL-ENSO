@@ -68,9 +68,12 @@
   const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
   const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const unpack = (a, k) => a.map(r => Array.isArray(r) ? unpack(r, k) : (r === D.missing ? null : r / k));
-  const caseYear = () => D.cases[ci].name === "Normal" ? null : +D.cases[ci].name;
+  const caseYear = () => D.cases[ci].name === "Normal" ? null : parseInt(D.cases[ci].name, 10);
+  // an event still in progress has fewer months: beyond its latest month it holds there
+  const have = () => D.cases[ci].sst.length;
+  const at = () => Math.min(mi, have() - 1);
   const monthLabel = (i, year) => { const [dy, mo] = D.months[i]; return `${MON[mo - 1]}${year ? " " + (year + dy) : ""}`; };
-  const field = key => unpack(D.cases[ci][key][mi], key === "sst" ? D.scale.sst : D.scale.depth);
+  const field = key => unpack(D.cases[ci][key][at()], key === "sst" ? D.scale.sst : D.scale.depth);
   // hover readout: position, depth and value at the point under the pointer
   const where = (i, j) => `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b>`;
   const hoverText = (vals, f) => vals.map((r, i) => r.map((v, j) => v == null ? "" : `${where(i, j)}<br>${f(v)}`));
@@ -175,7 +178,7 @@
 
   function draw() {
     const year = caseYear(), c = D.cases[ci];
-    root.querySelector(".o3-month").textContent = monthLabel(mi, year);
+    root.querySelector(".o3-month").textContent = monthLabel(at(), year) + (mi > at() ? " (latest data)" : "");
     root.querySelectorAll(".o3-cases button").forEach((b, i) => b.setAttribute("aria-pressed", i === ci));
     root.querySelectorAll(".o3-views button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
     root.querySelector(".o3-note").textContent = NOTES[view] +
@@ -184,9 +187,10 @@
     ro.hidden = view !== "hot";
     if (view === "hot") {
       const n = D.cases.at(-1);
-      ro.textContent = `Between 5°S and 5°N, ${monthLabel(mi, year)}: water above 28 °C ${c.v28[mi].toFixed(1)} × 10¹⁴ m³`
-        + (c === n ? "" : ` (normal ${n.v28[mi].toFixed(1)})`) + ` · above 29 °C ${c.v29[mi].toFixed(1)}`
-        + (c === n ? "" : ` (normal ${n.v29[mi].toFixed(1)})`);
+      const k = at();
+      ro.textContent = `Between 5°S and 5°N, ${monthLabel(k, year)}: water above 28 °C ${c.v28[k].toFixed(1)} × 10¹⁴ m³`
+        + (c === n ? "" : ` (normal ${n.v28[k].toFixed(1)})`) + ` · above 29 °C ${c.v29[k].toFixed(1)}`
+        + (c === n ? "" : ` (normal ${n.v29[k].toFixed(1)})`);
     }
     Plotly.react(plot, traces(), layout(), {displayModeBar: false, responsive: true, scrollZoom: false});
   }
@@ -198,7 +202,7 @@
       const s = document.createElement("script"); s.src = LIB; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
     });
     Promise.all([lib, fetch(root.dataset.src).then(r => r.json())]).then(([, d]) => {
-      D = d; mi = D.months.length - 1;
+      D = d; mi = D.cases[0].sst.length - 1;          // open on the current event's latest month
       slider.max = D.months.length - 1; slider.value = mi;
       const box = root.querySelector(".o3-cases");
       D.cases.forEach((c, i) => {

@@ -2,7 +2,7 @@
   {{TAKEAWAY}}
   <div class="o3-bar">
     <div class="o3-group o3-views" role="group" aria-label="View">
-      <button type="button" data-view="total" aria-pressed="true">Total sea level</button>
+      <button type="button" data-view="total" aria-pressed="true">Sea level height (SSH)</button>
       <button type="button" data-view="wave" aria-pressed="false">Kelvin-wave signal</button>
     </div>
   </div>
@@ -33,10 +33,12 @@
   const RDBU = [[0, "#053061"], [0.1, "#2065ab"], [0.2, "#4393c3"], [0.3, "#90c4dd"], [0.4, "#d1e5f0"],
     [0.5, "#f7f6f6"], [0.6, "#fddbc7"], [0.7, "#f3a481"], [0.8, "#d6604d"], [0.9, "#b1182b"], [1, "#67001f"]];
   // colour range and vertical range (cm) for each view
+  // matplotlib "jet" for the Kelvin-wave signal, as in the Kelvin wave figure
+  const JET = [[0.0, "#000080"], [0.1, "#0000f1"], [0.2, "#004cff"], [0.3, "#00b0ff"], [0.4, "#29ffce"], [0.5, "#7dff7a"], [0.6, "#ceff29"], [0.7, "#ffc400"], [0.8, "#ff6800"], [0.9, "#f10800"], [1.0, "#800000"]];
   const VIEW = {
-    total: {c: 30, z: [-25, 60], label: "Sea level anomaly (cm)",
-            note: "Height and colour show sea level compared with normal for the time of year. Warm water takes up more space, so the sea surface rises where warm water piles up: watch the ridge along the equator grow toward South America (right)."},
-    wave: {c: 10, z: [-15, 20], label: "Kelvin-wave signal (cm)",
+    total: {c: 30, z: [-25, 60], label: "SSH anomaly (cm)", scale: RDBU,
+            note: "Height and colour show sea level height (SSH) compared with normal for the time of year. Warm water takes up more space, so the sea surface rises where warm water piles up: watch the ridge along the equator grow toward South America (right)."},
+    wave: {c: 10, z: [-15, 20], label: "Kelvin-wave signal (cm)", scale: JET,
            note: "The slow build-up has been removed (each point minus its 91-day average), leaving the fast changes. Red ridges that travel from left to right along the equator are Kelvin waves; each takes about two months to cross the Pacific."},
   };
   const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -66,10 +68,10 @@
   }
   function trace() {
     const z = field(), v = VIEW[view];
-    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: RDBU, cmin: -v.c, cmax: v.c,
+    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c, cmax: v.c,
              text: z.map((r, i) => r.map((val, j) => val == null ? "" :
                `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
-               + `${view === "total" ? "Sea level" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
+               + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
                + " compared with normal")),
              hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
              colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,

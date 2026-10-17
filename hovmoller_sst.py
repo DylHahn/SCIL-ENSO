@@ -2,7 +2,7 @@
 Equatorial 1 — Sea surface temperature anomalies along the equator (Hovmöller)
 
 Monthly SST anomalies averaged over 2°S–2°N from 130°E to 80°W, January of each
-onset year to January of the following year, for 1982–83, 1997–98, 2015–16 and
+onset year to January of the following year, for 1982/1983, 1997/1998, 2015/2016 and
 the current event. Anomalies are relative to the 1991–2020 monthly climatology.
 Source: NOAA ERSST v5 (as hosted on iCHARM).
 
@@ -59,7 +59,7 @@ def main():
                "relative to the 1991–2020 monthly climatology.",
         out=args.out, highlight=now, cbar_ticks=np.arange(20, 32, 2),
         alt=f"Longitude–time diagrams of sea surface temperature anomalies along the equatorial Pacific for "
-            + ", ".join(f"{y}–{str(y + 1)[-2:]}" for y in args.years)
+            + ", ".join(f"{y}/{y + 1}" for y in args.years)
             + f". Maximum eastern Pacific anomaly in {last:%B}: {now} {peaks[now][1]:+.1f} °C; "
             + "; ".join(f"{y} {v:+.1f} °C" for y, v in same.items()) + ".")
 

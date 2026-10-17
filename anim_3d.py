@@ -5,7 +5,7 @@ Two rotating 3D blocks of the tropical Pacific (15°S–15°N, 135°E–85°W) f
 semi-transparent top surface is the temperature at 5 m; the lower surface is the depth of the
 20 °C isotherm, the base of the warm upper layer. In a normal year the warm layer is thick in the
 west and thin in the east; in 2026 it has flattened and deepened toward South America. Months run
-from July of the year before onset to the latest GODAS month while the camera turns slowly.
+from January of the onset year to the latest GODAS month while the camera turns slowly.
 Depth is greatly exaggerated.
 
     python anim_3d.py
@@ -20,7 +20,7 @@ from matplotlib.colors import BoundaryNorm
 
 from anim_warm_water import d20, load_temps, monthly_normal
 from interactive_3d_data import for_display
-from enso_anim import AnimationFrames, interpolate_months
+from enso_anim import AnimationFrames, event_months, event_name, interpolate_months
 from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style
 
 NOW = 2026
@@ -37,14 +37,14 @@ def main():
     args = ap.parse_args()
 
     apply_style(args.theme)
-    span = pd.date_range(f"{NOW - 1}-07-01", f"{NOW}-12-01", freq="MS")
+    span = event_months(NOW)                       # January of the onset year to the latest month
     temps, months, lat, lon, depths = load_temps(span, args.refresh)
     normal = monthly_normal([m.month for m in months])
     la = np.flatnonzero((lat >= LAT[0]) & (lat <= LAT[1]))[::LAT_STEP]
     lo = np.flatnonzero((lon >= LON[0]) & (lon <= LON[1]))[::LON_STEP]
     pick = lambda a: a[:, la][:, :, lo]
     lat, lon = lat[la], lon[lo]
-    rows = [("Normal (1991–2020)", normal), (str(NOW), temps)]
+    rows = [("Normal (1991–2020)", normal), (event_name(NOW), temps)]
     fields = [(pick(for_display(t[:, 0])), pick(for_display(d20(t, depths)))) for _, t in rows]
     X, Y = np.meshgrid(lon, lat)
     width_m = (lon.max() - lon.min()) * 111e3
@@ -97,7 +97,7 @@ def main():
         cb.outline.set_visible(False)
         cb.ax.tick_params(labelsize=10, length=0)
         cb.set_label(text, fontsize=10.5, color=COLORS["text_2"])
-    add_title(fig, "The tropical Pacific in 3D: the warm upper layer in a normal year and in 2026",
+    add_title(fig, f"The tropical Pacific in 3D: the warm upper layer in a normal year and in {event_name(NOW)}",
               "The lower surface is the base of the warm layer (20 °C). Normally it is deep in the west and rises "
               "toward South America;\nduring El Niño warm water spreads east and the layer flattens. Depth is "
               f"exaggerated about {round(exag, -3):,.0f} times.")
