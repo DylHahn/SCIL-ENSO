@@ -1,5 +1,5 @@
 """
-Rebuild the SCIL ENSO website in one command: every figure, then every page in docs/.
+Rebuild the SDSU Climate Informatics Lab ENSO Visualizations website in one command: every figure, then every page in docs/.
 
     python update_site.py --refresh            # monthly update: re-download NOAA data, rebuild everything
     python update_site.py                      # rebuild from cached data
@@ -136,6 +136,37 @@ def differences_html(gloss):
     return f'<ol class="diffs">\n{rows}\n</ol>' if items else ""
 
 
+SEARCH = []                                                  # every figure and glossary term, for the search box
+
+
+def slugify(text):
+    import unicodedata
+    t = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+
+
+def write_search_index():
+    import json
+    (DOCS / "search-index.json").write_text(json.dumps(SEARCH, ensure_ascii=False, separators=(",", ":")))
+    print(f"Wrote {DOCS / 'search-index.json'} ({len(SEARCH)} entries)")
+
+
+# pages that were renamed: the old address forwards to the new tab
+REDIRECTS = {"compare": "surface/"}
+
+
+def write_redirects():
+    for old, new in REDIRECTS.items():
+        d = DOCS / old
+        if d.exists():
+            shutil.rmtree(d)
+        d.mkdir(parents=True)
+        (d / "index.html").write_text(
+            f'<!doctype html><meta charset="utf-8"><title>Moved</title>'
+            f'<meta http-equiv="refresh" content="0; url=../{new}"><link rel="canonical" href="../{new}">'
+            f'<p>This page has moved to <a href="../{new}">../{new}</a>.</p>')
+
+
 def toc_html(groups):
     groups = [(h, items) for h, items in groups if items]
     if not groups:
@@ -183,6 +214,12 @@ def write_page(page):
                    f'<a href="{html.escape(DATASETS[k][1])}" target="_blank" rel="noopener">{html.escape(DATASETS[k][0])}</a>'
                    for k in FIGURE_DATA[script]) + '</dd></dl>')
         toc[-1][1].append(f'<li value="{n}"><a href="#g{n}">{html.escape(short)}</a></li>')
+        SEARCH.append(dict(t=f"Figure {n}. {short}", p=page["tab"], g=page.get("group") or "",
+                           s=notes.get("takeaway") or caption,                # shown under the result
+                           u=(f"{page['slug']}/" if page["slug"] else "") + f"#g{n}",
+                           k=" ".join([notes.get("takeaway", ""), page["tab"], toc[-1][0] or ""]),
+                           x=" ".join([caption, notes.get("how", ""), *FIGURE_INFO[script],
+                                       *(DATASETS[d][0] for d in FIGURE_DATA[script])])))
         if is_interactive(script):
             if not (src / f"{s}.json").exists():
                 raise SystemExit(f"Missing {s}.json: run update_site.py without --site-only first.")
@@ -221,21 +258,29 @@ def write_page(page):
 
     extra = page["extra"]
     if page["key"] == "methods":
-        terms = "\n".join(f"  <dt>{html.escape(t)}</dt><dd>{html.escape(d)}</dd>"
+        for t, d in GLOSSARY.items():
+            if t != "anomalies":
+                SEARCH.append(dict(t=t, p="Glossary", g="Methods & Data", u=f"methods/#term-{slugify(t)}", k=t, x=d, s=d))
+        terms = "\n".join(f'  <dt id="term-{slugify(t)}">{html.escape(t)}</dt><dd>{html.escape(d)}</dd>'
                           for t, d in sorted(GLOSSARY.items(), key=lambda kv: kv[0].lower()) if t != "anomalies")
         extra = (SITE / "methods.html").read_text().format(repo=REPO_URL, site=SITE_URL, year=dt.date.today().year,
                                                            glossary=terms)
-    tabs = []
-    for p in PAGES:
+    tabs, groups = [], []
+    for p in PAGES:                                         # tabs grouped under their topic
+        if not groups or groups[-1][0] != p.get("group"):
+            groups.append((p.get("group"), []))
         href = up + (f"{p['slug']}/" if p["slug"] else "")
         current = ' aria-current="page"' if p is page else ""
-        tabs.append(f'  <a href="{href or "./"}"{current}>{html.escape(p["tab"])}</a>')
+        groups[-1][1].append(f'<a href="{href or "./"}"{current}>{html.escape(p["tab"])}</a>')
+    for g, links in groups:
+        label = f'<span class="tablabel">{html.escape(g)}</span>' if g else ""
+        tabs.append(f'  <div class="tabgroup">{label}{"".join(links)}</div>')
     data = ("  <p><b>Data</b> (all public, from NOAA):</p>\n  <ul>\n"
             + "\n".join(f"    <li>{html.escape(d)}</li>" for d in page["data"]) + "\n  </ul>") if page["data"] else ""
 
     page_html = Template((SITE / "page.html").read_text()).substitute(
         title=html.escape(page["title"]), description=html.escape(page["lede"]), home=up or "./", up=up,
-        author=html.escape(AUTHOR), tabs="\n".join(tabs), kicker=html.escape(page["kicker"]),
+        author=html.escape(AUTHOR), tabs="\n".join(tabs), today=f"{dt.date.today():%Y%m%d}", kicker=html.escape(page["kicker"]),
         h1=html.escape(page["h1"]), lede=lede, updated=dt.date.today().strftime("%B %-d, %Y"),
         fullres=" Select a figure to view it at full resolution." if n else "",
         summary=summary, explainer=(SITE / "explainer.html").read_text() if page.get("explainer") else "",
@@ -265,6 +310,8 @@ def main():
     (DOCS / ".nojekyll").write_text("")              # serve files as-is (no Jekyll processing)
     for page in PAGES:
         write_page(page)
+    write_search_index()
+    write_redirects()
     print("\nDone." if not failed else f"\nFinished with errors in: {', '.join(failed)}")
     sys.exit(1 if failed else 0)
 

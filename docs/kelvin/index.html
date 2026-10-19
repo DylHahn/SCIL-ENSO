@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kelvin waves and sea level · ENSO Visualizations · SDSU Climate Informatics Lab</title>
+<meta name="description" content="Bursts of westerly wind send pulses of warm water east along the equator. Each raises sea level by a few centimetres, so daily satellite sea level shows every wave crossing the Pacific and the warm water piling up near South America.">
+<style>
+  :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
+          --accent: #e8574a; --line: #2b2b2a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
+  a { color: var(--text-2); }
+  a:hover { color: var(--text); }
+  .site { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 20px;
+          padding: 8px 0 16px; }
+  .site .brand { display: flex; flex-direction: column; color: var(--text); text-decoration: none; line-height: 1.2; }
+  .site .brand .lab { font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+                      color: var(--text-2); }
+  .site .brand .name { font-size: 24px; font-weight: 800; letter-spacing: .01em; }
+  .site .brand .name span { color: var(--accent); }
+  .site .right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  /* search */
+  .search { position: relative; }
+  .search input { font: inherit; font-size: 15px; width: min(320px, 70vw); padding: 8px 12px 8px 34px;
+                  color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; }
+  .search input:focus { outline: 2px solid var(--muted); outline-offset: 1px; }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px;
+                stroke: var(--muted); fill: none; stroke-width: 2; pointer-events: none; }
+  .search-results { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: min(460px, 92vw);
+                    background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 6px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,.6); max-height: 70vh; overflow-y: auto; }
+  .search-results[hidden] { display: none; }
+  .search-results a { display: block; padding: 8px 10px; border-radius: 6px; text-decoration: none; color: var(--text); }
+  .search-results a:hover, .search-results a[aria-selected="true"] { background: var(--surface); }
+  .search-results .r-title { font-weight: 700; font-size: 15px; }
+  .search-results .r-where { font-size: 13px; color: var(--muted); }
+  .search-results .r-text { font-size: 13.5px; color: var(--text-2); margin-top: 2px; }
+  .search-results .empty { padding: 10px; color: var(--muted); font-size: 14px; }
+  .site .author { color: var(--text-2); font-size: 15px; }
+  .tabs { display: flex; gap: 6px 22px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap;
+          align-items: flex-end; }
+  .tabgroup { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2px; }
+  .tablabel { width: 100%; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+              color: var(--muted); padding: 0 16px 2px; }
+  .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
+            margin-bottom: -1px; font-weight: 500; }
+  .tabs a:hover { color: var(--text); }
+  .tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+  header p.kicker { color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+                    font-size: 14px; margin: 0 0 8px; }
+  h1 { font-size: clamp(28px, 4.5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+  h2 { font-size: 22px; margin: 32px 0 8px; }
+  .lede { color: var(--text-2); font-size: 19px; max-width: 760px; margin: 0 0 12px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .summary { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0;
+             padding: 20px 28px 22px; margin: 0 0 40px; }
+  .summary h2 { margin: 0 0 12px; font-size: 20px; }
+  .summary dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; }
+  .summary dt { color: var(--text); font-weight: 600; }
+  .summary dd { margin: 0; color: var(--text-2); }
+  .summary .asof { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+  @media (max-width: 640px) { .summary dl { grid-template-columns: 1fr; gap: 2px 0; }
+                              .summary dd { margin-bottom: 10px; } }
+  .toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 28px;
+         padding: 20px 24px; margin: 0 0 56px; background: var(--surface); border-radius: 10px; }
+  .toc-group p { margin: 0 0 6px; color: var(--text); font-weight: 600; font-size: 15px; }
+  .toc ol { margin: 0; padding-left: 26px; font-size: 15px; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { color: var(--text-2); text-decoration: none; }
+  .toc a:hover { color: var(--text); text-decoration: underline; }
+  p.intro { color: var(--text-2); font-size: 18px; max-width: 820px; margin: -12px 0 32px; }
+  h2.section { font-size: 26px; margin: 8px 0 24px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  figure { margin: 0 0 64px; scroll-margin-top: 24px; }
+  figure a { display: block; }
+  img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
+  figcaption { margin-top: 14px; color: var(--text-2); max-width: 820px; }
+  figcaption a { display: inline; }
+  figcaption b { color: var(--text); }
+  .figtitle { display: block; font-size: 17px; margin-bottom: 6px; }
+  .figinfo { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; font-size: 15.5px; }
+  .figinfo dt { color: var(--text); font-weight: 600; }
+  .figlinks { margin: 8px 0 0; font-size: 14.5px; }
+  .figinfo dd { margin: 0; color: var(--text-2); }
+  @media (max-width: 640px) { .figinfo { grid-template-columns: 1fr; gap: 0; } .figinfo dd { margin-bottom: 8px; } }
+  .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
+          color: var(--text-2); }
+  .note h2 { color: var(--text); }
+  .prose { color: var(--text-2); max-width: 900px; margin: 0 0 56px; }
+  .prose h2 { color: var(--text); }
+  .prose dt { color: var(--text); font-weight: 600; margin-top: 12px; }
+  .prose dd { margin: 2px 0 0 0; }
+  .prose li { margin-bottom: 8px; }
+  .prose b { color: var(--text); }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 8px 0 12px; }
+  .prose th, .prose td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .prose th { color: var(--text); font-weight: 600; }
+  .prose code { background: var(--surface); padding: 1px 6px; border-radius: 4px; }
+  @media (max-width: 640px) {
+    .tabgroup { flex-wrap: nowrap; }
+    .tablabel { display: none; }                    /* one swipeable row of tabs on phones */
+    .site .right { width: 100%; }
+    .search input { width: 100%; }
+    .search { flex: 1; }
+    .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            margin-bottom: 28px; }
+    .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
+    .prose table { display: block; overflow-x: auto; }
+  }
+  .diffs { counter-reset: d; list-style: none; padding: 0; margin: 0 0 48px; display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .diffs li { counter-increment: d; background: var(--surface); border-radius: 10px; padding: 16px 18px 16px 52px;
+              position: relative; color: var(--text-2); font-size: 15.5px; line-height: 1.55; }
+  .diffs li::before { content: counter(d); position: absolute; left: 16px; top: 14px; width: 24px; height: 24px;
+                      border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700;
+                      font-size: 14px; display: grid; place-items: center; }
+  .diffs b { display: block; color: var(--text); font-size: 16.5px; margin-bottom: 4px; }
+  /* interactive event explorer */
+  .explorer { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .ex-controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ex-controls button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                        border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .ex-controls button:hover { color: var(--text); border-color: var(--muted); }
+  .ex-controls button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .ex-desc { color: var(--text-2); font-size: 15px; margin: 0 0 10px; }
+  .ex-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 860px) { .ex-grid { grid-template-columns: 1fr; } }
+  .ex-chart { position: relative; outline: none; touch-action: pan-y; }
+  .ex-chart:focus-visible { box-shadow: 0 0 0 2px var(--muted); border-radius: 6px; }
+  .explorer svg { display: block; width: 100%; overflow: visible; }
+  .explorer .ex-gl { stroke: var(--line); stroke-width: 1; }
+  .explorer .ex-zero { stroke: var(--text-2); stroke-width: 1; }
+  .explorer .ex-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .explorer .ex-hit { stroke: transparent; stroke-width: 12; fill: none; cursor: pointer; }
+  .explorer .ex-tick { fill: var(--text-2); font-size: 13.5px; font-weight: 600; }
+  .explorer .ex-sub { font-size: 12.5px; }
+  .explorer .ex-lab { fill: var(--text); font-size: 14px; font-weight: 700; }
+  .explorer .ex-now { fill: var(--text); font-weight: 700; }
+  .ex-tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line);
+            border-radius: 8px; padding: 8px 10px; font-size: 14px; min-width: 230px; z-index: 2;
+            box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+  .ex-tip p { margin: 0; line-height: 1.55; color: var(--text-2); white-space: nowrap; }
+  .ex-tip .ex-tip-h { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+  .ex-tip b { color: var(--text); margin-right: 2px; }
+  .ex-tip .ex-now span:last-child { color: var(--text); font-weight: 600; }
+  .ex-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle;
+            margin-right: 7px; }
+  .ex-rank-title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text); }
+  .ex-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 12px 0 4px;
+               font-size: 14px; color: var(--text-2); }
+  .ex-legend select { font: inherit; font-size: 13px; color: var(--text-2); background: var(--bg);
+                      border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+  .ex-table summary { cursor: pointer; color: var(--text-2); font-size: 14px; margin: 8px 0; }
+  .ex-table-wrap { overflow-x: auto; }
+  .ex-table table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+  .ex-table th, .ex-table td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--line); color: var(--text-2); }
+  .ex-table th { color: var(--text); font-weight: 600; }
+  /* "Start here" explainer */
+  .explainer { background: var(--surface); border-radius: 10px; padding: 20px 24px 18px; margin: 0 0 40px; }
+  .explainer h2 { margin: 0 0 14px; font-size: 22px; }
+  .ex-diagrams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  @media (max-width: 760px) { .ex-diagrams { grid-template-columns: 1fr; } }
+  .ex-diagrams svg { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px;
+                     color: var(--text-2); font-family: inherit; }
+  .dg-title { fill: var(--text); font-size: 17px; font-weight: 700; }
+  .dg-accent { fill: var(--accent); }
+  .dg-label { fill: var(--text); font-size: 13px; font-weight: 600; }
+  .dg-small { fill: var(--text-2); font-size: 12px; }
+  .dg-dark { fill: #fff; }
+  .dg-light { fill: #cde2fb; }
+  .dg-land { fill: #3a3936; }
+  .dg-thermo { fill: none; stroke: #fff; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .8; }
+  .dg-cloud { fill: #77766f; }
+  .dg-rain line { stroke: #86b6ef; stroke-width: 2; stroke-linecap: round; }
+  .dg-wind line, .dg-flow line, .dg-up line { stroke: currentColor; stroke-width: 2.5; }
+  .dg-wind { color: var(--text); }
+  .dg-flow { color: #fff; }
+  .dg-up { color: #cde2fb; }
+  .ex-text { color: var(--text-2); max-width: 900px; }
+  .ex-text p { margin: 10px 0; }
+  .ex-text b { color: var(--text); }
+  .ex-more { font-size: 15px; }
+  /* reading aids */
+  .takeaway { color: var(--text); font-size: 18px; font-weight: 600; line-height: 1.45; margin: 0 0 12px;
+              max-width: 900px; padding-left: 12px; border-left: 3px solid var(--accent); }
+  .how { margin-top: 10px; }
+  .how summary { cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600; width: fit-content; }
+  .how p { margin: 6px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 15.5px; }
+  .term { border-bottom: 1px dotted var(--muted); cursor: help; }
+  .term:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; border-radius: 2px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .gloss-tip { position: absolute; z-index: 10; max-width: min(320px, calc(100vw - 32px)); background: var(--bg);
+               color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
+               font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
+  .gloss-tip b { color: var(--text); display: block; }
+  .player { position: relative; }
+  .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
+          font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
+          border-radius: 999px; padding: 12px 22px; cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.5);
+          white-space: nowrap; }
+  .play:hover, .play:focus-visible { background: var(--accent); border-color: var(--accent); }
+  .play .size { font-weight: 400; opacity: .8; font-size: 14px; }
+  /* interactive 3D view */
+  .ocean3d { background: var(--surface); border-radius: 10px; padding: 18px 20px 16px; }
+  .o3-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; }
+  .o3-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .o3-group button, .o3-time button { font: inherit; font-size: 14px; color: var(--text-2); background: transparent;
+                     border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+  .o3-group button:hover, .o3-time button:hover { color: var(--text); border-color: var(--muted); }
+  .o3-group button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+  .o3-group button:disabled { opacity: .35; cursor: default; }
+  .o3-stage { position: relative; height: min(600px, 70vh); min-height: 380px; background: var(--bg);
+              border-radius: 8px; }
+  .o3-plot { position: absolute; inset: 0; }
+  .o3-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+              gap: 14px; text-align: center; color: var(--text-2); padding: 16px; }
+  .o3-cover p { margin: 0; }
+  .o3-cover .play { position: static; transform: none; }
+  .o3-time { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .o3-time input { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .o3-month { color: var(--text); font-weight: 600; min-width: 80px; }
+  .o3-time [hidden] { display: none; }
+  .o3-zoom { min-width: 34px; }
+  .o3-opacity { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 8px; font-size: 14px; color: var(--text-2); }
+  .o3-opacity[hidden] { display: none; }
+  .o3-opacity label { display: flex; align-items: center; gap: 7px; }
+  .o3-opacity input { width: 110px; accent-color: var(--accent); }
+  .o3-lead { color: var(--muted); }
+  .o3-swatch { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+  .o3-readout { position: absolute; left: 12px; top: 10px; margin: 0; padding: 6px 10px; font-size: 14px;
+                color: var(--text); background: rgba(13,13,14,.78); border-radius: 6px; max-width: calc(100% - 24px); }
+  .o3-readout[hidden] { display: none; }
+  .o3-note { color: var(--text-2); font-size: 15px; margin: 8px 0 0; max-width: 900px; }
+  footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
+  footer ul, .note ul { padding-left: 20px; }
+</style>
+</head>
+<body>
+<main>
+<div class="site">
+  <a class="brand" href="../"><span class="lab">SDSU Climate Informatics Lab</span>
+    <span class="name">ENSO <span>Visualizations</span></span></a>
+  <div class="right">
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      <input type="search" id="site-search" placeholder="Search figures, e.g. Kelvin waves" autocomplete="off"
+             aria-label="Search all figures" aria-controls="search-results" aria-expanded="false" role="combobox">
+      <div class="search-results" id="search-results" role="listbox" hidden></div>
+    </div>
+    <span class="author">Dylan Hahn</span>
+  </div>
+</div>
+<nav class="tabs" aria-label="Pages">
+  <div class="tabgroup"><span class="tablabel">El Niño 2026/2027</span><a href="../">Overview</a><a href="../surface/">Sea Surface Temperature</a><a href="../ocean/">Ocean Heat Below the Surface</a><a href="../kelvin/" aria-current="page">Kelvin Waves &amp; Sea Level</a><a href="../records/">Records &amp; Forecasts</a></div>
+  <div class="tabgroup"><span class="tablabel">Southern California</span><a href="../socal/">Heat</a><a href="../socal-precip/">Rainfall</a></div>
+  <div class="tabgroup"><span class="tablabel">About</span><a href="../methods/">Methods &amp; Data</a></div>
+</nav>
+<header>
+  <p class="kicker">El Niño 2026/2027 · Kelvin waves &amp; sea level</p>
+  <h1>Kelvin waves and sea level: the pulses that carried the warm water east</h1>
+  <p class="lede">Bursts of westerly wind send pulses of warm water east along the equator. Each raises sea level by a few centimetres, so daily satellite sea level shows every wave crossing the Pacific and the warm water piling up near South America.</p>
+  <p class="meta">Updated October 19, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+</header>
+
+
+<nav class="toc" aria-label="Figures on this page">
+<div class="toc-group"><ol><li value="1"><a href="#g1">Animation: Kelvin waves</a></li><li value="2"><a href="#g2">Interactive 3D: sea level and Kelvin waves</a></li></ol></div>
+</nav>
+<figure id="g1"><p class="takeaway">A series of <span class="term" tabindex="0" data-def="Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.">Kelvin waves<span class="vh"> (Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.)</span></span> has carried warm water from the western Pacific to South America since late 2025, each one adding to the warm layer in the east.</p><div class="player"><img src="img/01_anim_kelvin.png" data-anim="img/01_anim_kelvin.webp" alt="Animated infographic of Kelvin waves along the equatorial Pacific from October 2025 to 16 October 2026, from daily satellite sea level. 6 Kelvin waves crossed the Pacific: wave 1 left 150°E on 7 December and reached 95°W on 28 January 2026 at 2.8 m/s; wave 2 left 150°E on 24 January and reached 95°W on 14 March 2026 at 3.0 m/s; wave 3 left 150°E on 20 March and reached 95°W on 7 May 2026 at 3.0 m/s; wave 4 left 150°E on 12 April and reached 95°W on 27 May 2026 at 3.2 m/s; wave 5 left 150°E on 13 July and reached 95°W on 29 August 2026 at 3.1 m/s; wave 6 left 150°E on 3 September and reached 95°W on 15 October 2026 at 3.4 m/s. Sea level east of 130°W rose from -5 cm to +45 cm over the period." width="2598" height="2377" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b class="figtitle">Figure 1. Animation: Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Every Kelvin wave since October 2025 traced in daily satellite sea level along the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific.</dd><dt>How it relates to El Niño</dt><dd>Kelvin waves carry warm water from the western to the eastern Pacific. Each one deepens the warm layer in the east and warms the surface there one to two months later, which helps forecasters anticipate further warming.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly (0.25°), averaged over 1°S–1°N, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle.</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><p class="figlinks"><a href="img/01_anim_kelvin.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/01_anim_kelvin.png" target="_blank" rel="noopener">still image of the final frame</a></p><details class="how"><summary>How to read this figure</summary><p>Top: sea level height (SSH) along the equator on the day shown, rising in the east as warm water piles up. Bottom: the Kelvin-wave signal day by day, with time running down the page, so each wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has crossed the Pacific.</p></details></figcaption></figure>
+<figure id="g2" class="ocean3d" data-src="img/02_interactive_sealevel_data.json?v=20261019">
+  <p class="takeaway">Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.</p>
+  <div class="o3-bar">
+    <div class="o3-group o3-views" role="group" aria-label="View">
+      <button type="button" data-view="total" aria-pressed="true">Sea level height (SSH)</button>
+      <button type="button" data-view="wave" aria-pressed="false">Kelvin-wave signal</button>
+    </div>
+  </div>
+  <div class="o3-stage">
+    <div class="o3-plot" aria-label="Interactive 3D view of sea level across the tropical Pacific. Drag to rotate."></div>
+    <div class="o3-cover">
+      <p>Rotatable 3D landscape of daily satellite sea level across the tropical Pacific.</p>
+      <button type="button" class="play o3-load"><span aria-hidden="true">▶</span> Load the 3D view <span class="size">(about 2 MB)</span></button>
+    </div>
+  </div>
+  <div class="o3-time" hidden>
+    <button type="button" class="o3-play" aria-label="Play days">▶</button>
+    <input type="range" min="0" value="0" aria-label="Day">
+    <span class="o3-month"></span>
+    <button type="button" class="o3-zoom" data-k="0.8" aria-label="Zoom in">+</button>
+    <button type="button" class="o3-zoom" data-k="1.25" aria-label="Zoom out">−</button>
+    <button type="button" class="o3-reset">Reset view</button>
+  </div>
+  <p class="o3-note"></p>
+  <figcaption><b class="figtitle">Figure 2. Interactive 3D: sea level and Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave signal alone.</dd><dt>How it relates to El Niño</dt><dd>Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a daily, ocean-wide picture of where <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span>&#x27;s heat is accumulating and of the Kelvin waves that carry it east; higher sea level along the coasts of the Americas is itself one of El Niño&#x27;s effects.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N at 1°, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle; wave signal = anomaly minus its 91-day running mean.</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days play. Sea level height (SSH) shows the full rise; Kelvin-wave signal removes the slow build-up so that the waves stand out as red ridges travelling from left to right along the equator.</p></details></figcaption>
+  <noscript><p>The 3D view needs JavaScript.</p></noscript>
+</figure>
+<script>
+(() => {
+  const root = document.getElementById("g2");
+  const LIB = "https://cdn.jsdelivr.net/npm/plotly.js-gl3d-dist-min@2.35.2/plotly-gl3d.min.js";
+  // matplotlib "RdBu_r": blue below normal, white near normal, red above (as in the Kelvin wave figure)
+  const RDBU = [[0, "#053061"], [0.1, "#2065ab"], [0.2, "#4393c3"], [0.3, "#90c4dd"], [0.4, "#d1e5f0"],
+    [0.5, "#f7f6f6"], [0.6, "#fddbc7"], [0.7, "#f3a481"], [0.8, "#d6604d"], [0.9, "#b1182b"], [1, "#67001f"]];
+  // colour range and vertical range (cm) for each view
+  // matplotlib "jet" for the Kelvin-wave signal, as in the Kelvin wave figure
+  const JET = [[0.0, "#000080"], [0.1, "#0000f1"], [0.2, "#004cff"], [0.3, "#00b0ff"], [0.4, "#29ffce"], [0.5, "#7dff7a"], [0.6, "#ceff29"], [0.7, "#ffc400"], [0.8, "#ff6800"], [0.9, "#f10800"], [1.0, "#800000"]];
+  const VIEW = {
+    total: {c: 30, z: [-25, 60], label: "SSH anomaly (cm)", scale: RDBU,
+            note: "Height and colour show sea level height (SSH) compared with normal for the time of year. Warm water takes up more space, so the sea surface rises where warm water piles up: watch the ridge along the equator grow toward South America (right)."},
+    wave: {c: 10, z: [-15, 20], label: "Kelvin-wave signal (cm)", scale: JET,
+           note: "The slow build-up has been removed (each point minus its 91-day average), leaving the fast changes. Red ridges that travel from left to right along the equator are Kelvin waves; each takes about two months to cross the Pacific."},
+  };
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const HOME = {eye: {x: 0.35, y: -1.9, z: 1.25}};
+  const plot = root.querySelector(".o3-plot"), slider = root.querySelector(".o3-time input");
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let D, view = "total", di = 0, timer = null, camera = HOME;
+
+  const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
+  const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
+  const dayLabel = i => { const [y, m, d] = D.dates[i].split("-").map(Number); return `${d} ${MON[m - 1]} ${y}`; };
+  const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
+
+  function axis(title, extra = {}) {
+    return Object.assign({title: {text: title, font: {size: 15, weight: 700}}, color: css("--text-2"), gridcolor: css("--line"),
+                          zerolinecolor: css("--line"), backgroundcolor: "rgba(0,0,0,0)", showspikes: false}, extra);
+  }
+  function layout() {
+    const lonTicks = [160, 180, 200, 220, 240, 260];
+    const v = VIEW[view];
+    return {paper_bgcolor: "rgba(0,0,0,0)", margin: {l: 0, r: 0, t: 0, b: 0}, uirevision: "keep",
+            font: {family: getComputedStyle(document.body).fontFamily, color: css("--text"), size: 13.5, weight: 600},
+            hoverlabel: {font: {size: 14}},
+            scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
+                    yaxis: axis("Latitude", {tickvals: [-10, 0, 10], ticktext: ["10°S", "0°", "10°N"]}),
+                    zaxis: axis("cm", {range: v.z}),
+                    aspectmode: "manual", aspectratio: {x: 3, y: 0.8, z: 0.75}, camera}};
+  }
+  function trace() {
+    const z = field(), v = VIEW[view];
+    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c, cmax: v.c,
+             // Plotly's 3D surfaces read hover text as text[x index][y index], the transpose of z
+             text: D.lon.map((_, j) => D.lat.map((_, i) => { const val = z[i][j]; return val == null ? "" :
+               `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
+               + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
+               + " compared with normal"; })),
+             hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
+             colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
+                        tickfont: {color: css("--text"), size: 13, weight: 600}}}];
+  }
+  function exaggeration() {
+    const width = (D.lon.at(-1) - D.lon[0]) * 111.32e3, v = VIEW[view];
+    return (0.75 / ((v.z[1] - v.z[0]) / 100)) / (3 / width);
+  }
+  function draw() {
+    root.querySelector(".o3-month").textContent = dayLabel(di);
+    root.querySelectorAll(".o3-views button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
+    const ex = exaggeration();
+    root.querySelector(".o3-note").textContent = VIEW[view].note +
+      ` Height is exaggerated about ${(ex / 1e6).toFixed(0)} million times. Drag to rotate; use + and − to zoom.`;
+    Plotly.react(plot, trace(), layout(), {displayModeBar: false, responsive: true, scrollZoom: false});
+  }
+  function start() {
+    const btn = root.querySelector(".o3-load");
+    btn.disabled = true; btn.textContent = "Loading…";
+    const lib = window.Plotly ? Promise.resolve() : new Promise((ok, fail) => {
+      const s = document.createElement("script"); s.src = LIB; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+    });
+    Promise.all([lib, fetch(root.dataset.src).then(r => r.json())]).then(([, d]) => {
+      D = d; di = D.dates.length - 1;
+      slider.max = D.dates.length - 1; slider.value = di;
+      root.querySelector(".o3-cover").remove();
+      root.querySelector(".o3-time").hidden = false;
+      draw();
+      plot.on("plotly_relayout", e => {             // remember the angle after every drag or zoom
+        const cam = plot._fullLayout && plot._fullLayout.scene && plot._fullLayout.scene.camera;
+        if (e["scene.camera"] || e["scene.camera.eye"]) camera = JSON.parse(JSON.stringify(cam || camera));
+      });
+    }).catch(() => { btn.textContent = "The 3D view could not be loaded."; });
+  }
+
+  root.querySelector(".o3-load").addEventListener("click", start);
+  root.querySelectorAll(".o3-views button").forEach(b => b.addEventListener("click", () => {
+    view = b.dataset.view;
+    if (D) draw();
+  }));
+  slider.addEventListener("input", () => { di = +slider.value; draw(); });
+  root.querySelector(".o3-play").addEventListener("click", e => {
+    if (timer) { clearInterval(timer); timer = null; e.target.textContent = "▶"; return; }
+    if (di === D.dates.length - 1) di = -1;
+    e.target.textContent = "❚❚";
+    timer = setInterval(() => {
+      di += 1; slider.value = di; draw();
+      if (di >= D.dates.length - 1) { clearInterval(timer); timer = null; e.target.textContent = "▶"; }
+    }, 110);
+  });
+  root.querySelectorAll(".o3-zoom").forEach(b => b.addEventListener("click", () => {
+    if (!D) return;
+    const eye = camera.eye, k = +b.dataset.k;
+    Plotly.relayout(plot, {"scene.camera.eye": {x: eye.x * k, y: eye.y * k, z: eye.z * k}});
+  }));
+  root.querySelector(".o3-reset").addEventListener("click", () => {
+    if (D) { camera = HOME; Plotly.relayout(plot, {"scene.camera": camera}); }
+  });
+})();
+</script>
+
+
+<footer>
+  <p><b>Data</b> (all public, from NOAA):</p>
+  <ul>
+    <li>Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP</li>
+  </ul>
+  <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and methods:
+  <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
+</footer>
+</main>
+<script>
+// Glossary: show a term's definition on hover, keyboard focus or tap
+(() => {
+  const tip = document.createElement("div");
+  tip.className = "gloss-tip"; tip.hidden = true; document.body.appendChild(tip);
+  const show = t => {
+    tip.replaceChildren();
+    const b = document.createElement("b"); b.textContent = t.firstChild.textContent;
+    tip.append(b, document.createTextNode(t.dataset.def)); tip.hidden = false;
+    const r = t.getBoundingClientRect(), w = tip.offsetWidth;
+    tip.style.left = Math.max(16, Math.min(r.left + scrollX, scrollX + innerWidth - w - 16)) + "px";
+    tip.style.top = (r.bottom + scrollY + 6) + "px";
+  };
+  const hide = () => { tip.hidden = true; };
+  document.querySelectorAll(".term").forEach(t => {
+    t.addEventListener("mouseenter", () => show(t)); t.addEventListener("mouseleave", hide);
+    t.addEventListener("focus", () => show(t)); t.addEventListener("blur", hide);
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+})();
+// Animations load only when played
+document.querySelectorAll(".player .play").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const img = btn.parentElement.querySelector("img");
+    btn.disabled = true; btn.textContent = "Loading animation…";
+    img.addEventListener("load", () => btn.remove(), {once: true});
+    img.src = img.dataset.anim;
+  });
+});
+</script>
+<script>
+// Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
+(() => {
+  const input = document.getElementById("site-search"), box = document.getElementById("search-results");
+  const up = "../", src = up + "search-index.json?v=20261019";
+  let index = null, sel = -1;
+  const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {
+    index = d.map(e => ({...e, ft: fold(e.t), fk: fold(e.k || ""), fx: fold(e.x || ""), fp: fold(e.p + " " + e.g)}));
+    return index;
+  });
+  function search(q) {
+    const words = fold(q).split(/[^a-z0-9.\/+]+/).filter(w => w.length > 1 || /\d/.test(w));
+    if (!words.length) return [];
+    return index.map(e => {
+      let score = 0;
+      for (const w of words) {
+        const s = (e.ft.includes(w) ? 6 : 0) + (e.fk.includes(w) ? 3 : 0) + (e.fp.includes(w) ? 2 : 0)
+                  + (e.fx.includes(w) ? 1 : 0);
+        if (!s) return null;                          // every word must match somewhere
+        score += s;
+      }
+      return {e, score: score + (e.p === "Glossary" ? -1 : 0)};
+    }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 8);
+  }
+  function snippet(e, q) {
+    const text = e.s || e.x;
+    return text.length > 140 ? text.slice(0, 137) + "…" : text;
+  }
+  function render(results, q) {
+    box.replaceChildren(); sel = -1;
+    if (!q.trim()) { box.hidden = true; input.setAttribute("aria-expanded", "false"); return; }
+    if (!results.length) {
+      const d = document.createElement("div"); d.className = "empty"; d.textContent = "No figures match “" + q + "”.";
+      box.append(d);
+    }
+    results.forEach(({e}, i) => {
+      const a = document.createElement("a"); a.href = up + e.u; a.setAttribute("role", "option"); a.id = "sr-" + i;
+      const t = document.createElement("div"); t.className = "r-title"; t.textContent = e.t;
+      const w = document.createElement("div"); w.className = "r-where"; w.textContent = (e.g ? e.g + " › " : "") + e.p;
+      const x = document.createElement("div"); x.className = "r-text"; x.textContent = snippet(e, q);
+      a.append(t, w, x); box.append(a);
+    });
+    box.hidden = false; input.setAttribute("aria-expanded", "true");
+  }
+  input.addEventListener("focus", load);
+  input.addEventListener("input", () => load().then(() => render(search(input.value), input.value)));
+  input.addEventListener("keydown", ev => {
+    const items = [...box.querySelectorAll("a")];
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+      ev.preventDefault();
+      if (!items.length) return;
+      sel = (sel + (ev.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      items.forEach((a, i) => a.setAttribute("aria-selected", i === sel));
+      input.setAttribute("aria-activedescendant", items[sel].id);
+    } else if (ev.key === "Enter" && items.length) {
+      ev.preventDefault(); location.href = items[Math.max(sel, 0)].href;
+    } else if (ev.key === "Escape") {
+      box.hidden = true; input.blur();
+    }
+  });
+  document.addEventListener("click", ev => { if (!ev.target.closest(".search")) box.hidden = true; });
+  // jumping to a figure on the same page: close the list
+  box.addEventListener("click", () => { box.hidden = true; });
+})();
+</script>
+</body>
+</html>

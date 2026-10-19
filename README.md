@@ -1,4 +1,4 @@
-# SCIL ENSO
+# SDSU Climate Informatics Lab · ENSO Visualizations
 
 Figures and website explaining the 2026/2027 El Niño and its effects on Southern California,
 built entirely from public NOAA data. By Dylan Hahn.
@@ -7,12 +7,16 @@ built entirely from public NOAA data. By Dylan Hahn.
 
 | Tab | Contents |
 |---|---|
-| El Niño 2026 | Start here, "What's happening now", "Why this El Niño stands out", sea surface animation, development compared with every El Niño since 1950 (animation and interactive explorer), ranking, NOAA forecast, global temperature |
-| Below the surface | 3D animation and interactive 3D model, warm water and warm-water layers, Kelvin waves, sea level in 3D, equatorial sections |
-| Detailed comparisons | Surface maps by event, Niño regions, equatorial SST Hovmöller, forecast verification |
-| Southern California Heat | Warming since 1895, marine heatwaves in the Southern California Bight, summer 2026 anomaly maps, station warm nights and hot days |
-| Southern California Precipitation | NOAA seasonal outlook, precipitation in strong El Niño winters, station rainfall by ENSO phase |
-| Methods & data | Data sources, definitions, methods by figure, limitations, citation |
+| **El Niño 2026/2027** › Overview | "What's happening now", "Why this El Niño stands out", development compared with every El Niño since 1950 (animation and interactive explorer), NOAA forecast |
+| › Sea Surface Temperature | Sea surface animation, maps by event, Niño regions, equatorial SST Hovmöller |
+| › Ocean Heat Below the Surface | 3D animation and interactive 3D model, warm water and warm-water layers, equatorial sections and Hovmöller |
+| › Kelvin Waves & Sea Level | Kelvin wave tracker and interactive 3D sea level |
+| › Records & Forecasts | Event ranking, forecast verification, global temperature |
+| **Southern California** › Heat | Summer 2026 anomalies, station warm nights and hot days, marine heatwaves, warming since 1895 |
+| › Rainfall | NOAA seasonal outlook, strong El Niño winters, station rainfall by ENSO phase |
+| Methods & Data | Data sources, definitions, glossary, methods by figure, limitations, citation |
+
+Every page has a search box that finds figures (and glossary terms) across all tabs.
 
 ## Monthly update
 
@@ -34,7 +38,7 @@ GitHub Pages republishes the site a minute or two after the push. Other options:
 
 ```bash
 python update_site.py                       # rebuild from cached data
-python update_site.py --pages socal-heat    # rebuild one tab's figures (el-nino, ocean, compare, socal-heat, socal-precip)
+python update_site.py --pages socal-heat    # rebuild one tab's figures (el-nino, surface, ocean, kelvin, records, socal-heat, socal-precip)
 python update_site.py --site-only           # rewrite the pages only (e.g. after editing text)
 python update_site.py --pages el-nino --figures anim_3d.py   # rebuild only some figures
 python summary.py                           # print the "What's happening now" summary
@@ -123,4 +127,4 @@ files in `data/godas/`, which are not part of this repository.
 
 ## Citation
 
-Hahn, D. (2026). *SCIL ENSO: The 2026/2027 El Niño in historical context.* https://dylhahn.github.io/SCIL-ENSO/
+Hahn, D. (2026). *ENSO Visualizations: The 2026/2027 El Niño in historical context.* SDSU Climate Informatics Lab. https://dylhahn.github.io/SCIL-ENSO/

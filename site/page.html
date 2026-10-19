@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SCIL ENSO · $title</title>
+<title>$title · ENSO Visualizations · SDSU Climate Informatics Lab</title>
 <meta name="description" content="$description">
 <style>
   :root { --bg: #0d0d0e; --surface: #1c1c1b; --text: #f4f4f1; --text-2: #c3c2b7; --muted: #8a8984;
@@ -14,12 +14,37 @@
   main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 72px; }
   a { color: var(--text-2); }
   a:hover { color: var(--text); }
-  .site { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px;
+  .site { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 20px;
           padding: 8px 0 16px; }
-  .site .brand { font-weight: 700; font-size: 20px; letter-spacing: .06em; color: var(--text); text-decoration: none; }
-  .site .brand span { color: var(--accent); }
+  .site .brand { display: flex; flex-direction: column; color: var(--text); text-decoration: none; line-height: 1.2; }
+  .site .brand .lab { font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+                      color: var(--text-2); }
+  .site .brand .name { font-size: 24px; font-weight: 800; letter-spacing: .01em; }
+  .site .brand .name span { color: var(--accent); }
+  .site .right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  /* search */
+  .search { position: relative; }
+  .search input { font: inherit; font-size: 15px; width: min(320px, 70vw); padding: 8px 12px 8px 34px;
+                  color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; }
+  .search input:focus { outline: 2px solid var(--muted); outline-offset: 1px; }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px;
+                stroke: var(--muted); fill: none; stroke-width: 2; pointer-events: none; }
+  .search-results { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: min(460px, 92vw);
+                    background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 6px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,.6); max-height: 70vh; overflow-y: auto; }
+  .search-results[hidden] { display: none; }
+  .search-results a { display: block; padding: 8px 10px; border-radius: 6px; text-decoration: none; color: var(--text); }
+  .search-results a:hover, .search-results a[aria-selected="true"] { background: var(--surface); }
+  .search-results .r-title { font-weight: 700; font-size: 15px; }
+  .search-results .r-where { font-size: 13px; color: var(--muted); }
+  .search-results .r-text { font-size: 13.5px; color: var(--text-2); margin-top: 2px; }
+  .search-results .empty { padding: 10px; color: var(--muted); font-size: 14px; }
   .site .author { color: var(--text-2); font-size: 15px; }
-  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 6px 22px; border-bottom: 1px solid var(--line); margin: 0 0 40px; flex-wrap: wrap;
+          align-items: flex-end; }
+  .tabgroup { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0 2px; }
+  .tablabel { width: 100%; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+              color: var(--muted); padding: 0 16px 2px; }
   .tabs a { padding: 10px 16px; color: var(--text-2); text-decoration: none; border-bottom: 2px solid transparent;
             margin-bottom: -1px; font-weight: 500; }
   .tabs a:hover { color: var(--text); }
@@ -74,6 +99,11 @@
   .prose th { color: var(--text); font-weight: 600; }
   .prose code { background: var(--surface); padding: 1px 6px; border-radius: 4px; }
   @media (max-width: 640px) {
+    .tabgroup { flex-wrap: nowrap; }
+    .tablabel { display: none; }                    /* one swipeable row of tabs on phones */
+    .site .right { width: 100%; }
+    .search input { width: 100%; }
+    .search { flex: 1; }
     .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
             margin-bottom: 28px; }
     .tabs a { white-space: nowrap; padding: 10px 12px; font-size: 15px; }
@@ -210,8 +240,17 @@
 <body>
 <main>
 <div class="site">
-  <a class="brand" href="$home">SCIL <span>ENSO</span></a>
-  <span class="author">$author</span>
+  <a class="brand" href="$home"><span class="lab">SDSU Climate Informatics Lab</span>
+    <span class="name">ENSO <span>Visualizations</span></span></a>
+  <div class="right">
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      <input type="search" id="site-search" placeholder="Search figures, e.g. Kelvin waves" autocomplete="off"
+             aria-label="Search all figures" aria-controls="search-results" aria-expanded="false" role="combobox">
+      <div class="search-results" id="search-results" role="listbox" hidden></div>
+    </div>
+    <span class="author">$author</span>
+  </div>
 </div>
 <nav class="tabs" aria-label="Pages">
 $tabs
@@ -262,6 +301,72 @@ document.querySelectorAll(".player .play").forEach(btn => {
     img.src = img.dataset.anim;
   });
 });
+</script>
+<script>
+// Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
+(() => {
+  const input = document.getElementById("site-search"), box = document.getElementById("search-results");
+  const up = "$up", src = up + "search-index.json?v=$today";
+  let index = null, sel = -1;
+  const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {
+    index = d.map(e => ({...e, ft: fold(e.t), fk: fold(e.k || ""), fx: fold(e.x || ""), fp: fold(e.p + " " + e.g)}));
+    return index;
+  });
+  function search(q) {
+    const words = fold(q).split(/[^a-z0-9.\/+]+/).filter(w => w.length > 1 || /\d/.test(w));
+    if (!words.length) return [];
+    return index.map(e => {
+      let score = 0;
+      for (const w of words) {
+        const s = (e.ft.includes(w) ? 6 : 0) + (e.fk.includes(w) ? 3 : 0) + (e.fp.includes(w) ? 2 : 0)
+                  + (e.fx.includes(w) ? 1 : 0);
+        if (!s) return null;                          // every word must match somewhere
+        score += s;
+      }
+      return {e, score: score + (e.p === "Glossary" ? -1 : 0)};
+    }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 8);
+  }
+  function snippet(e, q) {
+    const text = e.s || e.x;
+    return text.length > 140 ? text.slice(0, 137) + "…" : text;
+  }
+  function render(results, q) {
+    box.replaceChildren(); sel = -1;
+    if (!q.trim()) { box.hidden = true; input.setAttribute("aria-expanded", "false"); return; }
+    if (!results.length) {
+      const d = document.createElement("div"); d.className = "empty"; d.textContent = "No figures match “" + q + "”.";
+      box.append(d);
+    }
+    results.forEach(({e}, i) => {
+      const a = document.createElement("a"); a.href = up + e.u; a.setAttribute("role", "option"); a.id = "sr-" + i;
+      const t = document.createElement("div"); t.className = "r-title"; t.textContent = e.t;
+      const w = document.createElement("div"); w.className = "r-where"; w.textContent = (e.g ? e.g + " › " : "") + e.p;
+      const x = document.createElement("div"); x.className = "r-text"; x.textContent = snippet(e, q);
+      a.append(t, w, x); box.append(a);
+    });
+    box.hidden = false; input.setAttribute("aria-expanded", "true");
+  }
+  input.addEventListener("focus", load);
+  input.addEventListener("input", () => load().then(() => render(search(input.value), input.value)));
+  input.addEventListener("keydown", ev => {
+    const items = [...box.querySelectorAll("a")];
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+      ev.preventDefault();
+      if (!items.length) return;
+      sel = (sel + (ev.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      items.forEach((a, i) => a.setAttribute("aria-selected", i === sel));
+      input.setAttribute("aria-activedescendant", items[sel].id);
+    } else if (ev.key === "Enter" && items.length) {
+      ev.preventDefault(); location.href = items[Math.max(sel, 0)].href;
+    } else if (ev.key === "Escape") {
+      box.hidden = true; input.blur();
+    }
+  });
+  document.addEventListener("click", ev => { if (!ev.target.closest(".search")) box.hidden = true; });
+  // jumping to a figure on the same page: close the list
+  box.addEventListener("click", () => { box.hidden = true; });
+})();
 </script>
 </body>
 </html>
