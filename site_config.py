@@ -306,16 +306,17 @@ FIGURE_NOTES = {
                  "late 2025, each one adding to the warm layer in the east.",
         how="Top: sea level height (SSH) along the equator on the day shown, rising in the east as warm water piles up. "
             "Bottom: the Kelvin-wave signal day by day, with time running down the page, so each "
-            "wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has "
-            "crossed the Pacific."),
+            "wave is a red streak slanting down to the right. White dashed lines trace each wave once it has "
+            "crossed the Pacific. Use the cm and inches buttons above the figure to switch units."),
     "interactive_sealevel_data.py": dict(
-        takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm "
+        takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm (16 in) since mid-2025 as warm "
                  "water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.",
         how="Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days "
             "play. Sea level height (SSH) shows the full rise; Kelvin-wave signal removes the slow build-up so that the "
-            "waves stand out as red ridges travelling from left to right along the equator."),
+            "waves stand out as red ridges travelling from left to right along the equator. The cm and inches "
+            "buttons switch the units."),
     "anim_sealevel_3d.py": dict(
-        takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm "
+        takeaway="Sea level along the equator in the eastern Pacific has risen by about 40 cm (16 in) since mid-2025 as warm "
                  "water piled up, with Kelvin-wave ridges arriving one after another.",
         how="The landscape is the tropical Pacific seen from the south, with Asia to the left and South America to "
             "the right; its height and colour are the sea level anomaly. Watch the red ridge along the equator: "
@@ -662,4 +663,11 @@ FIGURE_DATA = {
     "socal_precip_outlook.py": ["cpc_outlook", "cpc_gis"],
     "socal_precip_el_nino_winters.py": ["nclimgrid", "roni"],
     "socal_station_precip.py": ["ghcn", "roni"],
+}
+
+
+# Figures drawn in more than one version, with a switch above the figure on the page:
+# script -> [(button label, extra command-line arguments)], the first being the default.
+FIGURE_VARIANTS = {
+    "anim_kelvin.py": [("cm", []), ("inches", ["--units", "in"])],
 }

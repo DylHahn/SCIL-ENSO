@@ -1,6 +1,10 @@
 <figure id="{{ID}}" class="ocean3d" data-src="{{DATA}}">
   {{TAKEAWAY}}
   <div class="o3-bar">
+    <div class="o3-group o3-units" role="group" aria-label="Units">
+      <button type="button" data-unit="cm" aria-pressed="true">cm</button>
+      <button type="button" data-unit="in" aria-pressed="false">inches</button>
+    </div>
     <div class="o3-group o3-views" role="group" aria-label="View">
       <button type="button" data-view="total" aria-pressed="true">Sea level height (SSH)</button>
       <button type="button" data-view="wave" aria-pressed="false">Kelvin-wave signal</button>
@@ -45,12 +49,13 @@
   const HOME = {eye: {x: 0.35, y: -1.9, z: 1.25}};
   const plot = root.querySelector(".o3-plot"), slider = root.querySelector(".o3-time input");
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  let D, view = "total", di = 0, timer = null, camera = HOME;
+  let D, view = "total", di = 0, timer = null, camera = HOME, unit = "cm";
+  const K = () => unit === "in" ? 1 / 2.54 : 1;                    // data are in cm
 
   const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
   const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const dayLabel = i => { const [y, m, d] = D.dates[i].split("-").map(Number); return `${d} ${MON[m - 1]} ${y}`; };
-  const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
+  const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale * K()));
 
   function axis(title, extra = {}) {
     return Object.assign({title: {text: title, font: {size: 15, weight: 700}}, color: css("--text-2"), gridcolor: css("--line"),
@@ -64,19 +69,19 @@
             hoverlabel: {font: {size: 14}},
             scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
                     yaxis: axis("Latitude", {tickvals: [-10, 0, 10], ticktext: ["10°S", "0°", "10°N"]}),
-                    zaxis: axis("cm", {range: v.z}),
+                    zaxis: axis(unit, {range: v.z.map(x => x * K())}),
                     aspectmode: "manual", aspectratio: {x: 3, y: 0.8, z: 0.75}, camera}};
   }
   function trace() {
     const z = field(), v = VIEW[view];
-    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c, cmax: v.c,
+    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c * K(), cmax: v.c * K(),
              // Plotly's 3D surfaces read hover text as text[x index][y index], the transpose of z
              text: D.lon.map((_, j) => D.lat.map((_, i) => { const val = z[i][j]; return val == null ? "" :
                `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
-               + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
+               + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} ${unit}</b>`
                + " compared with normal"; })),
              hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
-             colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
+             colorbar: {title: {text: v.label.replace("(cm)", `(${unit})`), side: "right"}, len: 0.6, thickness: 12,
                         tickfont: {color: css("--text"), size: 13, weight: 600}}}];
   }
   function exaggeration() {
@@ -113,6 +118,11 @@
   root.querySelector(".o3-load").addEventListener("click", start);
   root.querySelectorAll(".o3-views button").forEach(b => b.addEventListener("click", () => {
     view = b.dataset.view;
+    if (D) draw();
+  }));
+  root.querySelectorAll(".o3-units button").forEach(b => b.addEventListener("click", () => {
+    unit = b.dataset.unit;
+    root.querySelectorAll(".o3-units button").forEach(o => o.setAttribute("aria-pressed", o === b));
     if (D) draw();
   }));
   slider.addEventListener("input", () => { di = +slider.value; draw(); });

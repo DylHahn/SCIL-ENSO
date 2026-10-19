@@ -73,6 +73,7 @@ def main():
     ap.add_argument("--every", type=int, default=4, help="days per animation frame")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--units", choices=["cm", "in"], default="cm", help="units for sea level (the website shows both)")
     ap.add_argument("--out", default=str(FIG_DIR / "anim" / "anim_kelvin.png"))
     args = ap.parse_args()
 
@@ -86,6 +87,9 @@ def main():
     anom, sig = anom.loc[START:], sig.loc[START:]                 # shown from October of the year before onset
     waves = track_waves(sig)
     dates = anom.index
+    # waves are traced in centimetres; values are shown in the chosen units
+    k, U = (1.0, "cm") if args.units == "cm" else (1 / 2.54, "in")
+    anom, sig = anom * k, sig * k
 
     H = 11.9
     fig = plt.figure(figsize=(13, H))
@@ -95,7 +99,7 @@ def main():
     hov = fig.add_axes([0.085, HOV[0] / H, W, HOV[1] / H])
 
     # bottom: the wave signal, revealed day by day
-    levels = np.arange(-10, 10.1, 2)
+    levels = np.arange(-10, 10.1, 2) if U == "cm" else np.arange(-4, 4.1, 1)
     cmap = plt.get_cmap("jet", len(levels) + 1)                 # rainbow scale for contrast
     norm = BoundaryNorm(levels, cmap.N, extend="both")
     data = np.ma.masked_invalid(sig.values)
@@ -121,15 +125,16 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     for t in cb.ax.get_yticklabels():
         t.set_fontweight("bold")
-    cb.set_label("Kelvin-wave signal (cm): sea level above (red) or below (blue) its 91-day average", fontsize=11,
+    cb.set_label(f"Kelvin-wave signal ({U}): sea level above (red) or below (blue) its 91-day average", fontsize=11,
                  fontweight="bold", color=COLORS["text"])
 
     # middle: total sea level along the equator on the day shown
     prof.axhline(0, color=COLORS["text_2"], lw=0.8)
     top = float(np.nanmax(anom.values))
-    prof.set_ylim(-20, max(30, np.ceil(top / 10) * 10 + 5))
+    step = 10 if U == "cm" else 4
+    prof.set_ylim(-2 * step, max(3 * step, np.ceil(top / step) * step + step / 2))
     prof.yaxis.grid(True, color=COLORS["grid"], lw=0.6)
-    prof.set_ylabel("SSH anomaly (cm)", fontsize=12, fontweight="bold", color=COLORS["text"])
+    prof.set_ylabel(f"SSH anomaly ({U})", fontsize=12, fontweight="bold", color=COLORS["text"])
     prof.set_xlim(*LON_RANGE)
     prof.xaxis.set_major_formatter(FuncFormatter(lon_label))
     prof.set_xticks([140, 160, 180, 200, 220, 240, 260])
@@ -164,10 +169,11 @@ def main():
 
     add_title(fig, f"Kelvin waves: the pulses of warm water that built the {NOW}/{NOW + 1} El Niño",
               "Bursts of westerly wind in the western Pacific send pulses of warm water east along the equator. Each "
-              "raises sea level by a few\ncentimetres as it passes, so satellites can follow it across the Pacific.")
+              "raises sea level by a few\n" + ("centimetres" if U == "cm" else "centimetres (about an inch)")
+              + " as it passes, so satellites can follow it across the Pacific.")
     add_source(fig, "Data: NOAA blended satellite altimetry (daily, 0.25°, 1°S–1°N), anomalies from the 2017–2024 "
                "seasonal cycle. Wave signal: anomaly minus its 91-day running mean.\nWaves traced automatically "
-               "(150°E–95°W, 2.0–3.5 m/s, wave signal ≥ +3 cm). Top panel: sea surface height (SSH) anomaly.")
+               "(150°E–95°W, 2.0–3.5 m/s, wave signal ≥ +3 cm, 1.2 in). Top panel: sea surface height (SSH) anomaly.")
 
     frames = AnimationFrames(fig, dpi=105)
     idx = list(range(0, len(dates), args.every))
@@ -198,8 +204,8 @@ def main():
                     f"{dates[-1]:%-d %B %Y}, from daily satellite sea level. {len(waves)} Kelvin waves crossed the "
                     "Pacific: " + "; ".join(f"wave {n} left 150°E on {t0:%-d %B} and reached 95°W on {t1:%-d %B %Y} "
                                             f"at {c:.1f} m/s" for n, (t0, c, s, t1) in enumerate(waves, 1))
-                    + f". Sea level east of 130°W rose from {np.nanmean(anom.values[0][east]):+.0f} cm to "
-                      f"{np.nanmean(anom.values[-1][east]):+.0f} cm over the period.")
+                    + f". Sea level east of 130°W rose from {np.nanmean(anom.values[0][east]):+.0f} {U} to "
+                      f"{np.nanmean(anom.values[-1][east]):+.0f} {U} over the period.")
 
 
 if __name__ == "__main__":

@@ -195,6 +195,11 @@
                color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
                font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
   .gloss-tip b { color: var(--text); display: block; }
+  .variant-switch { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 14px; color: var(--text-2); }
+  .variant-switch span { font-weight: 600; margin-right: 4px; }
+  .variant-switch button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text-2); background: transparent;
+                           border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
+  .variant-switch button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
   .player { position: relative; }
   .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
           font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
@@ -268,10 +273,14 @@
 <nav class="toc" aria-label="Figures on this page">
 <div class="toc-group"><ol><li value="1"><a href="#g1">Animation: Kelvin waves</a></li><li value="2"><a href="#g2">Interactive 3D: sea level and Kelvin waves</a></li></ol></div>
 </nav>
-<figure id="g1"><p class="takeaway">A series of <span class="term" tabindex="0" data-def="Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.">Kelvin waves<span class="vh"> (Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.)</span></span> has carried warm water from the western Pacific to South America since late 2025, each one adding to the warm layer in the east.</p><div class="player"><img src="img/01_anim_kelvin.png" data-anim="img/01_anim_kelvin.webp" alt="Animated infographic of Kelvin waves along the equatorial Pacific from October 2025 to 16 October 2026, from daily satellite sea level. 6 Kelvin waves crossed the Pacific: wave 1 left 150°E on 7 December and reached 95°W on 28 January 2026 at 2.8 m/s; wave 2 left 150°E on 24 January and reached 95°W on 14 March 2026 at 3.0 m/s; wave 3 left 150°E on 20 March and reached 95°W on 7 May 2026 at 3.0 m/s; wave 4 left 150°E on 12 April and reached 95°W on 27 May 2026 at 3.2 m/s; wave 5 left 150°E on 13 July and reached 95°W on 29 August 2026 at 3.1 m/s; wave 6 left 150°E on 3 September and reached 95°W on 15 October 2026 at 3.4 m/s. Sea level east of 130°W rose from -5 cm to +45 cm over the period." width="2598" height="2377" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b class="figtitle">Figure 1. Animation: Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Every Kelvin wave since October 2025 traced in daily satellite sea level along the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific.</dd><dt>How it relates to El Niño</dt><dd>Kelvin waves carry warm water from the western to the eastern Pacific. Each one deepens the warm layer in the east and warms the surface there one to two months later, which helps forecasters anticipate further warming.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly (0.25°), averaged over 1°S–1°N, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle.</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><p class="figlinks"><a href="img/01_anim_kelvin.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/01_anim_kelvin.png" target="_blank" rel="noopener">still image of the final frame</a></p><details class="how"><summary>How to read this figure</summary><p>Top: sea level height (SSH) along the equator on the day shown, rising in the east as warm water piles up. Bottom: the Kelvin-wave signal day by day, with time running down the page, so each wave is a red streak slanting down to the right. Yellow dashed lines trace each wave once it has crossed the Pacific.</p></details></figcaption></figure>
+<figure id="g1"><p class="takeaway">A series of <span class="term" tabindex="0" data-def="Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.">Kelvin waves<span class="vh"> (Pulses of warm water that travel east along the equator beneath the surface, crossing the Pacific in about two months.)</span></span> has carried warm water from the western Pacific to South America since late 2025, each one adding to the warm layer in the east.</p><div class="variant-switch" role="group" aria-label="Units"><span>Units:</span><button type="button" data-png="img/01_anim_kelvin.png" data-anim="img/01_anim_kelvin.webp" aria-pressed="true">cm</button><button type="button" data-png="img/01_anim_kelvin__inches.png" data-anim="img/01_anim_kelvin__inches.webp" aria-pressed="false">inches</button></div><div class="player"><img src="img/01_anim_kelvin.png" data-anim="img/01_anim_kelvin.webp" alt="Animated infographic of Kelvin waves along the equatorial Pacific from October 2025 to 17 October 2026, from daily satellite sea level. 6 Kelvin waves crossed the Pacific: wave 1 left 150°E on 7 December and reached 95°W on 28 January 2026 at 2.8 m/s; wave 2 left 150°E on 24 January and reached 95°W on 14 March 2026 at 3.0 m/s; wave 3 left 150°E on 20 March and reached 95°W on 7 May 2026 at 3.0 m/s; wave 4 left 150°E on 12 April and reached 95°W on 27 May 2026 at 3.2 m/s; wave 5 left 150°E on 13 July and reached 95°W on 29 August 2026 at 3.1 m/s; wave 6 left 150°E on 4 September and reached 95°W on 16 October 2026 at 3.4 m/s. Sea level east of 130°W rose from -5 cm to +46 cm over the period." width="2598" height="2377" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(4 MB)</span></button></div><figcaption><b class="figtitle">Figure 1. Animation: Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Every Kelvin wave since October 2025 traced in daily satellite sea level along the equator: each pulse raises sea level by a few centimetres as it crosses the Pacific.</dd><dt>How it relates to El Niño</dt><dd>Kelvin waves carry warm water from the western to the eastern Pacific. Each one deepens the warm layer in the east and warms the surface there one to two months later, which helps forecasters anticipate further warming.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly (0.25°), averaged over 1°S–1°N, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle.</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><p class="figlinks"><a href="img/01_anim_kelvin.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/01_anim_kelvin.png" target="_blank" rel="noopener">still image of the final frame</a></p><details class="how"><summary>How to read this figure</summary><p>Top: sea level height (SSH) along the equator on the day shown, rising in the east as warm water piles up. Bottom: the Kelvin-wave signal day by day, with time running down the page, so each wave is a red streak slanting down to the right. White dashed lines trace each wave once it has crossed the Pacific. Use the cm and inches buttons above the figure to switch units.</p></details></figcaption></figure>
 <figure id="g2" class="ocean3d" data-src="img/02_interactive_sealevel_data.json?v=20261019">
-  <p class="takeaway">Sea level along the equator in the eastern Pacific has risen by about 40 cm since mid-2025 as warm water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.</p>
+  <p class="takeaway">Sea level along the equator in the eastern Pacific has risen by about 40 cm (16 in) since mid-2025 as warm water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.</p>
   <div class="o3-bar">
+    <div class="o3-group o3-units" role="group" aria-label="Units">
+      <button type="button" data-unit="cm" aria-pressed="true">cm</button>
+      <button type="button" data-unit="in" aria-pressed="false">inches</button>
+    </div>
     <div class="o3-group o3-views" role="group" aria-label="View">
       <button type="button" data-view="total" aria-pressed="true">Sea level height (SSH)</button>
       <button type="button" data-view="wave" aria-pressed="false">Kelvin-wave signal</button>
@@ -293,7 +302,7 @@
     <button type="button" class="o3-reset">Reset view</button>
   </div>
   <p class="o3-note"></p>
-  <figcaption><b class="figtitle">Figure 2. Interactive 3D: sea level and Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave signal alone.</dd><dt>How it relates to El Niño</dt><dd>Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a daily, ocean-wide picture of where <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span>&#x27;s heat is accumulating and of the Kelvin waves that carry it east; higher sea level along the coasts of the Americas is itself one of El Niño&#x27;s effects.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N at 1°, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle; wave signal = anomaly minus its 91-day running mean.</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days play. Sea level height (SSH) shows the full rise; Kelvin-wave signal removes the slow build-up so that the waves stand out as red ridges travelling from left to right along the equator.</p></details></figcaption>
+  <figcaption><b class="figtitle">Figure 2. Interactive 3D: sea level and Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave signal alone.</dd><dt>How it relates to El Niño</dt><dd>Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a daily, ocean-wide picture of where <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span>&#x27;s heat is accumulating and of the Kelvin waves that carry it east; higher sea level along the coasts of the Americas is itself one of El Niño&#x27;s effects.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N at 1°, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle; wave signal = anomaly minus its 91-day running mean.</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days play. Sea level height (SSH) shows the full rise; Kelvin-wave signal removes the slow build-up so that the waves stand out as red ridges travelling from left to right along the equator. The cm and inches buttons switch the units.</p></details></figcaption>
   <noscript><p>The 3D view needs JavaScript.</p></noscript>
 </figure>
 <script>
@@ -316,12 +325,13 @@
   const HOME = {eye: {x: 0.35, y: -1.9, z: 1.25}};
   const plot = root.querySelector(".o3-plot"), slider = root.querySelector(".o3-time input");
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  let D, view = "total", di = 0, timer = null, camera = HOME;
+  let D, view = "total", di = 0, timer = null, camera = HOME, unit = "cm";
+  const K = () => unit === "in" ? 1 / 2.54 : 1;                    // data are in cm
 
   const lonText = v => v <= 180 ? `${+v.toFixed(1)}°E` : `${+(360 - v).toFixed(1)}°W`;
   const latText = v => `${+Math.abs(v).toFixed(1)}°${v < 0 ? "S" : v > 0 ? "N" : ""}`;
   const dayLabel = i => { const [y, m, d] = D.dates[i].split("-").map(Number); return `${d} ${MON[m - 1]} ${y}`; };
-  const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale));
+  const field = () => D[view][di].map(r => r.map(v => v === D.missing ? null : v / D.scale * K()));
 
   function axis(title, extra = {}) {
     return Object.assign({title: {text: title, font: {size: 15, weight: 700}}, color: css("--text-2"), gridcolor: css("--line"),
@@ -335,19 +345,19 @@
             hoverlabel: {font: {size: 14}},
             scene: {xaxis: axis("Longitude", {tickvals: lonTicks, ticktext: lonTicks.map(lonText)}),
                     yaxis: axis("Latitude", {tickvals: [-10, 0, 10], ticktext: ["10°S", "0°", "10°N"]}),
-                    zaxis: axis("cm", {range: v.z}),
+                    zaxis: axis(unit, {range: v.z.map(x => x * K())}),
                     aspectmode: "manual", aspectratio: {x: 3, y: 0.8, z: 0.75}, camera}};
   }
   function trace() {
     const z = field(), v = VIEW[view];
-    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c, cmax: v.c,
+    return [{type: "surface", x: D.lon, y: D.lat, z, surfacecolor: z, colorscale: v.scale, cmin: -v.c * K(), cmax: v.c * K(),
              // Plotly's 3D surfaces read hover text as text[x index][y index], the transpose of z
              text: D.lon.map((_, j) => D.lat.map((_, i) => { const val = z[i][j]; return val == null ? "" :
                `Longitude <b>${lonText(D.lon[j])}</b> · Latitude <b>${latText(D.lat[i])}</b><br>${dayLabel(di)}<br>`
-               + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} cm</b>`
+               + `${view === "total" ? "Sea level height (SSH)" : "Kelvin-wave signal"} <b>${val > 0 ? "+" : ""}${val.toFixed(1)} ${unit}</b>`
                + " compared with normal"; })),
              hovertemplate: "%{text}<extra></extra>", lighting: {ambient: 0.75, diffuse: 0.5, specular: 0.05},
-             colorbar: {title: {text: v.label, side: "right"}, len: 0.6, thickness: 12,
+             colorbar: {title: {text: v.label.replace("(cm)", `(${unit})`), side: "right"}, len: 0.6, thickness: 12,
                         tickfont: {color: css("--text"), size: 13, weight: 600}}}];
   }
   function exaggeration() {
@@ -384,6 +394,11 @@
   root.querySelector(".o3-load").addEventListener("click", start);
   root.querySelectorAll(".o3-views button").forEach(b => b.addEventListener("click", () => {
     view = b.dataset.view;
+    if (D) draw();
+  }));
+  root.querySelectorAll(".o3-units button").forEach(b => b.addEventListener("click", () => {
+    unit = b.dataset.unit;
+    root.querySelectorAll(".o3-units button").forEach(o => o.setAttribute("aria-pressed", o === b));
     if (D) draw();
   }));
   slider.addEventListener("input", () => { di = +slider.value; draw(); });
@@ -437,6 +452,17 @@
   });
   addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
 })();
+// Unit switches (e.g. cm | inches): swap the still and the animation, keeping play state
+document.querySelectorAll(".variant-switch button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const fig = btn.closest("figure"), img = fig.querySelector("img");
+    btn.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn));
+    const playing = !fig.querySelector(".play");
+    img.dataset.anim = btn.dataset.anim;
+    img.src = playing ? btn.dataset.anim : btn.dataset.png;
+    fig.querySelectorAll(".figlinks a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
+  });
+});
 // Animations load only when played
 document.querySelectorAll(".player .play").forEach(btn => {
   btn.addEventListener("click", () => {

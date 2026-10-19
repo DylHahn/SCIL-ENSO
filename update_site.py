@@ -26,7 +26,7 @@ from string import Template
 from PIL import Image
 
 from enso_common import HERE
-from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, GLOSSARY, PAGES,
+from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_VARIANTS, GLOSSARY, PAGES,
                          REPO_URL, SITE_URL)
 
 DOCS = HERE / "docs"
@@ -51,6 +51,10 @@ def is_interactive(script):
     return script.startswith("interactive")
 
 
+def variant_slug(label):
+    return re.sub(r"[^a-z0-9]+", "", label.lower())
+
+
 def renumber(page):
     """Rename existing outputs in figures_public/<key>/ to the current figure order (NN_ prefixes) and
     remove outputs of figures no longer on the page, so reordering needs no rebuild."""
@@ -60,8 +64,9 @@ def renumber(page):
     moves = []
     for f in out.iterdir():
         name, _, ext = f.name[3:].partition(".")
-        if f.is_file() and f.name[:2].isdigit() and name in order:
-            moves.append((f, out / f"{order[name]:02d}_{name}.{ext}"))
+        base = name.split("__")[0]                         # NN_name__variant.ext belongs to its figure
+        if f.is_file() and f.name[:2].isdigit() and base in order:
+            moves.append((f, out / f"{order[base]:02d}_{name}.{ext}"))
         elif f.is_file():
             f.unlink()
     staged = [(src.rename(src.with_name("_tmp_" + src.name)), dst) for src, dst in moves]
@@ -81,12 +86,14 @@ def build_figures(page, refresh, only=None):
         for old in out.glob(f"{stem(i, script)}.*"):
             old.unlink()
         ext = ".json" if is_interactive(script) else ".png"       # interactive charts: data file + template
-        cmd = [sys.executable, str(HERE / script), "--theme", "dark", "--out", str(out / f"{stem(i, script)}{ext}")]
-        if refresh and downloads:
-            cmd.append("--refresh")
-        print(f"\n>> [{page['key']}] {script}", flush=True)
-        if subprocess.call(cmd) != 0:
-            failed.append(script)
+        for v, (label, extra_args) in enumerate(FIGURE_VARIANTS.get(script, [("", [])])):
+            name = stem(i, script) + (f"__{variant_slug(label)}" if v else "")
+            cmd = [sys.executable, str(HERE / script), "--theme", "dark", "--out", str(out / f"{name}{ext}"), *extra_args]
+            if refresh and downloads and v == 0:
+                cmd.append("--refresh")
+            print(f"\n>> [{page['key']}] {script} {label}".rstrip(), flush=True)
+            if subprocess.call(cmd) != 0:
+                failed.append(script)
     return failed
 
 
@@ -236,6 +243,18 @@ def write_page(page):
         animated = (src / f"{s}.webp").exists()          # animations: animated WebP + PNG of the last frame
         if animated:
             shutil.copy2(src / f"{s}.webp", img_dir / f"{s}.webp")
+        switch = ""
+        if script in FIGURE_VARIANTS:                    # e.g. cm | inches: a button per version
+            buttons = []
+            for v, (label, _) in enumerate(FIGURE_VARIANTS[script]):
+                vs = s + (f"__{variant_slug(label)}" if v else "")
+                for e in (".png", ".webp"):
+                    if (src / f"{vs}{e}").exists():
+                        shutil.copy2(src / f"{vs}{e}", img_dir / f"{vs}{e}")
+                buttons.append(f'<button type="button" data-png="img/{vs}.png" data-anim="img/{vs}.webp" '
+                               f'aria-pressed="{str(v == 0).lower()}">{html.escape(label)}</button>')
+            switch = (f'<div class="variant-switch" role="group" aria-label="Units"><span>Units:</span>'
+                      + "".join(buttons) + "</div>")
         alt_file = src / f"{s}.alt.txt"
         alt = html.escape(alt_file.read_text().strip() if alt_file.exists() else caption)
         with Image.open(img_dir / f"{s}.png") as im:
@@ -254,7 +273,7 @@ def write_page(page):
             media = (f'<a href="img/{s}.png" target="_blank" rel="noopener"><img src="img/{s}.png" alt="{alt}" '
                      f'width="{w}" height="{h}" decoding="async"></a>')
             links = ""
-        body.append(f'<figure id="g{n}">{takeaway}{media}<figcaption>{cap}{links}{how}</figcaption></figure>')
+        body.append(f'<figure id="g{n}">{takeaway}{switch}{media}<figcaption>{cap}{links}{how}</figcaption></figure>')
 
     extra = page["extra"]
     if page["key"] == "methods":

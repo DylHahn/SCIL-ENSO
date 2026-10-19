@@ -94,7 +94,7 @@ def main():
     bounds = [0] + ISOTHERMS + [40]
     norm = BoundaryNorm(bounds, cmap.N)
 
-    top_in, row_in, sec_in, bottom_in = 1.95, 2.45, 1.95, 1.75
+    top_in, row_in, sec_in, bottom_in = 2.75, 2.45, 1.95, 0.95       # colour key and units at the top
     H = top_in + row_in * len(rows) + bottom_in
     fig = plt.figure(figsize=(13, H))
     vmax = max(float(v.sum(axis=1).max()) for v in vols) * 1.08
@@ -127,11 +127,7 @@ def main():
         bx.set_ylim(-0.5, 0.5)
         bx.set_yticks([])
         bx.spines[["left", "top", "right"]].set_visible(False)
-        bx.tick_params(axis="x", labelsize=9.5)
-        if k < len(rows) - 1:
-            bx.set_xticklabels([])
-        else:
-            bx.set_xlabel("Volume, 5°S–5°N (10$^{14}$ m³)", fontsize=10)
+        bx.tick_params(axis="x", labelsize=9.5)                    # scale on every row, units in the heading
         bx.xaxis.grid(True, color=COLORS["grid"], lw=0.6)
         bx.set_axisbelow(True)
         bars.append(bx.barh([0] * len(ISOTHERMS), [0] * len(ISOTHERMS), left=[0] * len(ISOTHERMS), height=0.8,
@@ -145,8 +141,12 @@ def main():
                      color=COLORS["text_2"], ha="right")
     handles = ([Patch(color=c, label=nm) for c, nm in zip(colors[1:], LAYER_NAMES)][::-1]
                + [Patch(color=colors[0], label="below 20 °C")])
-    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.42 / H), ncol=6, fontsize=10.5,
-               labelcolor=COLORS["text_2"], handlelength=1.4, columnspacing=1.1, frameon=False)
+    # colour key and units at the top, so they are visible without scrolling
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.02, 1 - 1.35 / H), ncol=6, fontsize=11,
+               labelcolor=COLORS["text"], handlelength=1.6, columnspacing=1.4, frameon=False,
+               title="Temperature layers in the slices:", title_fontsize=11, alignment="left")
+    fig.text(0.73, 1 - (top_in - 0.62) / H, "Volume of water in each layer,\n5°S–5°N, in 10$^{14}$ m³ (warmest on the left)",
+             fontsize=11, color=COLORS["text"], va="bottom", linespacing=1.3)
     add_title(fig, f"Layers of warm water: {event_name(NOW)} compared with "
                    f"{join_and(event_name(y) for y in args.compare)}",
               "January of each El Niño's first year to December of the next. Slices along the equator, coloured by "
@@ -173,7 +173,7 @@ def main():
                 rect.set_x(left)
                 rect.set_width(w)
                 left += w
-            totals[r].set_text(f"total {v.sum():.1f}  ·  above 28 °C {v[3:].sum():.1f}")
+            totals[r].set_text(f"total {v.sum():.1f}  ·  above 28 °C {v[3:].sum():.1f}  (10$^{{14}}$ m³)")
             year = rows[r][0]
             labels[r].set_text(month_label(years[r], kk, haves[r]) if r < len(rows) - 1
                                else calendar.month_name[kk % 12 + 1])

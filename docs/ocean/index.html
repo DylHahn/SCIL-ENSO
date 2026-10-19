@@ -195,6 +195,11 @@
                color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
                font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
   .gloss-tip b { color: var(--text); display: block; }
+  .variant-switch { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 14px; color: var(--text-2); }
+  .variant-switch span { font-weight: 600; margin-right: 4px; }
+  .variant-switch button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text-2); background: transparent;
+                           border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
+  .variant-switch button[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
   .player { position: relative; }
   .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: inherit; font-size: 17px;
           font-weight: 600; color: #fff; background: rgba(13,13,14,.82); border: 1px solid rgba(255,255,255,.35);
@@ -565,6 +570,17 @@
   });
   addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
 })();
+// Unit switches (e.g. cm | inches): swap the still and the animation, keeping play state
+document.querySelectorAll(".variant-switch button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const fig = btn.closest("figure"), img = fig.querySelector("img");
+    btn.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn));
+    const playing = !fig.querySelector(".play");
+    img.dataset.anim = btn.dataset.anim;
+    img.src = playing ? btn.dataset.anim : btn.dataset.png;
+    fig.querySelectorAll(".figlinks a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
+  });
+});
 // Animations load only when played
 document.querySelectorAll(".player .play").forEach(btn => {
   btn.addEventListener("click", () => {
