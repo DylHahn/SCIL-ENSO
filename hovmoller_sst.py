@@ -2,8 +2,8 @@
 Equatorial 1 — Sea surface temperature anomalies along the equator (Hovmöller)
 
 Monthly SST anomalies averaged over 2°S–2°N from 130°E to 80°W, January of each
-onset year to January of the following year, for 1982/1983, 1997/1998, 2015/2016 and
-the current event. Anomalies are relative to the 1991–2020 monthly climatology.
+onset year to January of the following year, for the current event, 2023/2024, 2015/2016,
+1997/1998 and 1982/1983. Anomalies are relative to the 1991–2020 monthly climatology.
 Source: NOAA ERSST v5 (as hosted on iCHARM).
 
     python hovmoller_sst.py
@@ -43,10 +43,10 @@ def main():
         fields[y] = (months, anom["lon"].values, band.sel(time=months).values)   # colours: actual SST
         east = anom["lon"].values >= 210
         peaks[y] = (months[-1], float(np.nanmax(vals[-1][east])))
-    now = args.years[-1]
+    now = args.years[0]
     last = fields[now][0][-1]
     same = {y: float(np.nanmax(anom.sel(time=f"{y}-{last.month:02d}-01").values[anom['lon'].values >= 210]))
-            for y in args.years[:-1]}
+            for y in args.years[1:]}
 
     levels = np.arange(20, 31.01, 0.5)
     hovmoller_figure(

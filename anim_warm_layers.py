@@ -58,7 +58,7 @@ def volumes(temps, lat, lon, depths):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982])
+    ap.add_argument("--compare", type=int, nargs="+", default=[2023, 2015, 1997, 1982])
     ap.add_argument("--steps", type=int, default=2, help="interpolated frames per month")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")

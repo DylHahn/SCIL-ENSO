@@ -1,6 +1,6 @@
 """
 Animation 2 — Equatorial upper-ocean temperature, month by month: 2026, the past very strong
-El Niños (2015, 1997, 1982) and normal
+El Niños (2015, 1997, 1982), 2023 and normal
 
 Depth–longitude sections of GODAS ocean temperature (2°S–2°N, 5–205 m) from
 January to the latest available month of the current year, for the current year,
@@ -29,7 +29,7 @@ from enso_common import (FIG_DIR, GODAS_DIR, COLORS, add_source, add_title, appl
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--year", type=int, default=2026)
-    ap.add_argument("--compare", type=int, nargs="+", default=[2015, 1997, 1982],
+    ap.add_argument("--compare", type=int, nargs="+", default=[2023, 2015, 1997, 1982],
                     help="past onset years to show (GODAS begins in 1980)")
     ap.add_argument("--steps", type=int, default=2)
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")

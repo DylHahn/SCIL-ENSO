@@ -42,16 +42,16 @@ def main():
     apply_style(args.theme)
     fields, east_mean = {}, {}
     for y in args.years:
-        months = available_months(y, args.refresh and y == args.years[-1])
+        months = available_months(y, args.refresh and y == args.years[0])
         depths, lons, anoms, temps = godas_equatorial_section(GODAS_DIR, [m.strftime("%Y-%m-%d") for m in months],
                                                           lon_range=(LON_RANGE[0] - 1, LON_RANGE[1]))
         upper = np.nanmean(anoms, axis=1)                       # equal 10 m layers: plain mean over depth
         fields[y] = (months, lons, np.nanmean(temps, axis=1))      # colours: actual mean temperature
         east = lons >= 180
         east_mean[y] = {m: float(np.nanmean(row[east])) for m, row in zip(months, upper)}
-    now = args.years[-1]
+    now = args.years[0]
     last = fields[now][0][-1]
-    same = {y: east_mean[y][pd.Timestamp(f"{y}-{last.month:02d}-01")] for y in args.years[:-1]}
+    same = {y: east_mean[y][pd.Timestamp(f"{y}-{last.month:02d}-01")] for y in args.years[1:]}
 
     levels = np.arange(17, 28.01, 0.5)
     hovmoller_figure(

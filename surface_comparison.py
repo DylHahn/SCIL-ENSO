@@ -31,8 +31,8 @@ def box_mean(da, lat, lon):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--years", type=int, nargs="+", default=[1982, 1997, 2015, 2026],
-                    help="El Niño years to compare; the last one is highlighted")
+    ap.add_argument("--years", type=int, nargs="+", default=[2026, 2023, 2015, 1997, 1982],
+                    help="El Niño years to compare, most recent first; the first is highlighted")
     ap.add_argument("--month", type=int, help="calendar month (default: latest available)")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
@@ -48,18 +48,20 @@ def main():
     month = args.month or int(pd.Timestamp(temp["time"].values[-1]).month)
     mon = temp.where(temp["time.month"] == month, drop=True)
     normal = mon.sel(time=slice("1991", "2020")).mean("time")
-    now = args.years[-1]
+    now = args.years[0]
     sst = load_gridded("sst", args.refresh)                 # actual SST for the maps (ERSST v5)
 
     proj = ccrs.PlateCarree(central_longitude=190)
-    fig = plt.figure(figsize=(13, 8.0))
+    rows = (len(args.years) + 2) // 2                     # the last cell holds the colour key
+    H = 2.25 + 2.72 * rows
+    fig = plt.figure(figsize=(13, H))
     levels = np.arange(18, 31.01, 0.5)
     cmap, norm = temp_cmap(levels)
     n34 = NINO_BOXES["Niño 3.4"]
     stats = []
     for k, y in enumerate(args.years):
         r, c = divmod(k, 2)
-        ax = fig.add_axes([0.02 + c * 0.49, 0.53 - r * 0.34, 0.47, 0.25], projection=proj)
+        ax = fig.add_axes([0.02 + c * 0.49, 1 - (1.95 + 2.72 * r + 2.0) / H, 0.47, 2.0 / H], projection=proj)
         field = sst.sel(time=f"{y}-{month:02d}").squeeze("time")
         field = field.ffill("lon").bfill("lon").interp(lat=np.arange(-39.5, 40, 1.0), lon=np.arange(0.5, 360, 1.0))
         data, lon = add_cyclic_point(field.values, coord=field["lon"].values)
@@ -84,25 +86,32 @@ def main():
                 transform=ax.transAxes, fontsize=11, color=COLORS["text"] if cur else COLORS["text_2"],
                 va="bottom", ha="right")
 
-    cax = fig.add_axes([0.25, 0.095, 0.5, 0.02])
+    if len(args.years) % 2:                                  # colour key in the empty last cell
+        y_cb = 1 - (1.95 + 2.72 * (rows - 1) + 1.0) / H
+        cax = fig.add_axes([0.55, y_cb, 0.4, 0.16 / H])
+    else:
+        cax = fig.add_axes([0.25, 0.55 / H, 0.5, 0.16 / H])
     cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(18, 32, 2))
     cb.outline.set_visible(False)
     cb.ax.tick_params(labelsize=11, length=0)
-    cb.set_label("Sea surface temperature (°C), ERSST v5   ·   "
-                 "black box: Niño 3.4", fontsize=11.5, color=COLORS["text_2"])
+    cb.set_label("Sea surface temperature (°C), ERSST v5\nblack box: Niño 3.4", fontsize=11.5,
+                 color=COLORS["text_2"])
 
-    cur, past = stats[-1], stats[:-1]
+    cur, past = stats[0], stats[1:]
     rel = {y: a - b for y, a, b in stats}            # Niño 3.4 minus the tropics: NOAA's relative view
-    headline = f"Tropical Pacific sea surface temperature in {calendar.month_name[month]}: {now} and past very strong events"
+    headline = f"Tropical Pacific sea surface temperature in {calendar.month_name[month]}: {now} and past strong events"
     rel_past = ", ".join(f"{y} {rel[y]:+.1f}" for y, _, _ in past)
     add_title(fig, headline,
-              f"Niño 3.4 anomaly {cur[1]:+.1f} °C, the highest of the four years at this stage. The tropical mean "
-              f"(20°S–20°N) is also {cur[2]:+.1f} °C, above any previous event, so relative to\nthe tropics, the "
+              f"Niño 3.4 anomaly {cur[1]:+.1f} °C, "
+              + ("the highest" if cur[1] > max(q[1] for q in past) else "not the highest")
+              + f" of the {len(stats)} years at this stage. The tropical mean (20°S–20°N) is {cur[2]:+.1f} °C, "
+              + ("above" if cur[2] > max(q[2] for q in past) else "compared with")
+              + f" any previous event,\nso relative to the tropics, the "
               f"basis of NOAA's RONI, the anomaly is {rel[now]:+.1f} °C ({rel_past}).")
     add_source(fig, "Maps: NOAA ERSST v5 monthly sea surface temperature (2°, smoothed for display). Anomaly values: "
                "NOAAGlobalTemp v6 relative to the 1991–2020 monthly normal.")
     save(fig, args.out,
-         alt=f"Four maps of tropical Pacific surface temperature in {calendar.month_name[month]} of "
+         alt=f"{len(args.years)} maps of tropical Pacific surface temperature in {calendar.month_name[month]} of "
              + ", ".join(str(y) for y in args.years) + ". " + "; ".join(
                  f"{y}: Niño 3.4 {a:+.1f} °C, whole tropics {b:+.1f} °C" for y, a, b in stats) + ".")
 

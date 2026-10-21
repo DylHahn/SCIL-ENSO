@@ -11,7 +11,7 @@ surface.
 GODAS is the same ocean reanalysis iCHARM hosts.
 
     python subsurface_comparison.py
-    python subsurface_comparison.py --month 7 --years 1982 1997 2015 2026
+    python subsurface_comparison.py --month 7 --years 2026 2023 2015 1997 1982
 """
 import argparse
 import calendar
@@ -37,8 +37,8 @@ def latest_month(year):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--years", type=int, nargs="+", default=[1982, 1997, 2015, 2026],
-                    help="El Niño years to compare (the year the event grew); the last one is highlighted")
+    ap.add_argument("--years", type=int, nargs="+", default=[2026, 2023, 2015, 1997, 1982],
+                    help="El Niño years to compare (the year the event grew), most recent first; the first is highlighted")
     ap.add_argument("--month", type=int, help="calendar month to compare (default: latest available)")
     ap.add_argument("--vmax", type=float, default=10)
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
@@ -47,7 +47,7 @@ def main():
     args = ap.parse_args()
 
     apply_style(args.theme)
-    now = args.years[-1]
+    now = args.years[0]
     download_godas_year(now, args.refresh)
     month = args.month or latest_month(now)
     dates = [f"{y}-{month:02d}-01" for y in args.years]
@@ -95,13 +95,13 @@ def main():
     cb.set_label("Ocean temperature (°C)   ·   black line: 20 °C, the bottom of the "
                  "warm layer", fontsize=11, color=COLORS["text_2"])
 
-    past = max(heat[:-1])
-    ratio = heat[-1] / past if past > 0 else np.nan
+    past = max(heat[1:])
+    ratio = heat[0] / past if past > 0 else np.nan
     add_title(fig, f"Equatorial upper-ocean temperature in {calendar.month_name[month]}: "
                    f"{now} and past events",
               f"Depth–longitude sections, 2°S–2°N. The mean anomaly over 5–205 m between 180° and 80°W "
-              f"is {heat[-1]:+.1f} °C, about {ratio:.1f} times the largest\nprevious value at the same stage "
-              f"({max(heat[:-1]):+.1f} °C), indicating a substantial reservoir of subsurface heat to sustain "
+              f"is {heat[0]:+.1f} °C, about {ratio:.1f} times the largest\nprevious value at the same stage "
+              f"({max(heat[1:]):+.1f} °C), indicating a substantial reservoir of subsurface heat to sustain "
               f"surface warming.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), 2°S–2°N average. Colours: temperature; values on the right: "
                "anomaly relative to the 1991–2020 monthly normal.")

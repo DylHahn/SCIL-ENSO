@@ -16,8 +16,8 @@ AUTHOR = "Dylan Hahn"
 EL_NINO_EXTRA = """<section class="note next">
   <h2>More on this El Niño</h2>
   <ul>
-    <li><a href="surface/">Sea surface temperature</a>: the warm water spreading east, compared with 2015/2016,
-      1997/1998 and 1982/1983.</li>
+    <li><a href="surface/">Sea surface temperature</a>: the warm water spreading east, compared with 2023/2024,
+      2015/2016, 1997/1998 and 1982/1983.</li>
     <li><a href="ocean/">Ocean heat below the surface</a>: the warm water stored in the upper 200 m, in 3D and by
       temperature layer.</li>
     <li><a href="kelvin/">Kelvin waves &amp; sea level</a>: the pulses of warm water that crossed the Pacific.</li>
@@ -71,24 +71,28 @@ PAGES = [
         title='The 2026/2027 El Niño at the sea surface', kicker='El Niño 2026/2027 · Sea surface temperature',
         h1='Sea surface temperature: the 2026/2027 El Niño compared with past events',
         lede="El Niño begins with warm water spreading east along the equator. These figures show the sea surface "
-             "across the tropical Pacific in 2026/2027 and in the very strong El Niños of 2015/2016, 1997/1998 and "
-             "1982/1983.",
+             "across the tropical Pacific in 2026/2027, in 2023/2024 and in the very strong El Niños of 2015/2016, "
+             "1997/1998 and 1982/1983.",
         figures=[
             ("section", 'The warm water spreading east'),
             ('anim_sst.py', True, 'Animation: sea surface temperature, 2026/2027 and past very strong events',
              "Animated month-by-month sea surface temperature across the tropical Pacific (NOAA OISST, 0.25°), "
-             "from January of each El Niño's first year to December of the next, for 2026/2027, 2015/2016, "
-             "1997/1998, 1982/1983 and the 1991–2020 normal, with the Niño 3.4 average for each."),
+             "from January of each El Niño's first year to December of the next, for 2026/2027, 2023/2024, "
+             "2015/2016, 1997/1998, 1982/1983 and the 1991–2020 normal, with the Niño 3.4 average for each."),
             ('surface_comparison.py', True, 'Sea surface temperature by event',
-             "Tropical Pacific sea surface temperature in the same month of each very strong El Niño year, with "
+             "Tropical Pacific sea surface temperature in the same month of 2026 and of each past strong El Niño year, with "
              "Niño 3.4 and tropical-mean anomalies."),
             ("section", 'Along the equator and by region'),
             ('nino_regions.py', True, 'Warming across the Niño regions',
              "Location of the four Niño regions and their monthly anomalies, showing where along the equator the "
              "warming is concentrated."),
+            ('el_nino_type.py', True, 'Eastern Pacific or Central Pacific El Niño?',
+             "Two indices that separate warming near South America (Eastern Pacific type) from warming near the "
+             "date line (Central Pacific type), for 2026/2027 and four past strong events, and every El Niño since "
+             "1950 at its peak."),
             ('hovmoller_sst.py', True, 'Equatorial SST evolution (Hovmöller)',
              "Sea surface temperature along the equator, month by month (rows, top to bottom) and from the "
-             "western Pacific to South America (left to right), for four very strong events."),
+             "western Pacific to South America (left to right), for 2026/2027 and four past strong events."),
         ],
         extra="",
         data=['OISST v2.1 and ERSST v5 sea surface temperature: NOAA NCEI, via NOAA PSL',
@@ -110,34 +114,37 @@ PAGES = [
              "temperature at 5 m and the lower surface the base of the warm layer (the 20 °C isotherm), from "
              "January 2026 to the latest month."),
             ('interactive_3d_data.py', False, 'Interactive 3D: warm layer, temperature layers and hottest water',
-             "Rotate and zoom a 3D model of the tropical Pacific for 2026/2027, 2015/2016, 1997/1998, 1982/1983 "
+             "Rotate and zoom a 3D model of the tropical Pacific for 2026/2027, 2023/2024, 2015/2016, 1997/1998, 1982/1983 "
              "or the 1991–2020 normal, month by month. Warm layer: the sea surface above the base of the warm "
              "layer (20 °C). Temperature layers: the depths of the 20, 24, 26 and 28 °C isotherms. Hottest "
              "water: the volume of water above 28 and 29 °C."),
             ("section", 'Warm water building up',
              "How much warm water is stored in the equatorial Pacific, and how much of it is the hottest "
              "water, above 28 °C."),
+            ('warm_water_before_onset.py', True, 'Warm water stored before each El Niño began',
+             "NOAA PMEL's equatorial warm water volume in the six months before every El Niño since 1980 began, and "
+             "month by month from 18 months before to 12 months after."),
             ('anim_warm_water.py', False, 'Animation: warm water moving across the Pacific',
              "Animated maps of the depth of the 20 °C isotherm (the thickness of the warm upper layer) from "
-             "January of each El Niño's first year to December of the next, for 2026/2027, 2015/2016, 1997/1998, "
-             "1982/1983 and the 1991–2020 normal, with the equatorial warm water volume (5°S–5°N) and its "
+             "January of each El Niño's first year to December of the next, for 2026/2027, 2023/2024, 2015/2016, "
+             "1997/1998, 1982/1983 and the 1991–2020 normal, with the equatorial warm water volume (5°S–5°N) and its "
              "departure from normal."),
             ('anim_warm_layers.py', False, 'Animation: layers of warm water',
              "Equatorial sections coloured by temperature layer (20–24, 24–26, 26–28, 28–29 and above 29 °C) for "
-             "2026/2027, 2015/2016, 1997/1998, 1982/1983 and the 1991–2020 normal, with the volume of water in "
+             "2026/2027, 2023/2024, 2015/2016, 1997/1998, 1982/1983 and the 1991–2020 normal, with the volume of water in "
              "each layer between 5°S and 5°N, from January of each El Niño's first year to December of the next."),
             ("section", 'Along the equator',
              "Vertical slices through the ocean along the equator, from Asia to South America."),
             ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026/2027 and past very strong events',
-             "Animated equatorial upper-ocean temperature sections for 2026/2027, 2015/2016, 1997/1998, "
-             "1982/1983 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 "
+             "Animated equatorial upper-ocean temperature sections for 2026/2027, 2023/2024, 2015/2016, "
+             "1997/1998, 1982/1983 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 "
              "°C line flattens."),
             ('subsurface_comparison.py', True, 'Upper-ocean temperature by event',
              "Equatorial upper-ocean temperature at the same stage of each event; the current event holds "
              "substantially more subsurface heat."),
             ('hovmoller_upper_ocean.py', False, 'Upper-ocean heat content (Hovmöller)',
              "Average temperature of the upper 200 m along the equator, month by month (rows, top to bottom) and "
-             "from the western Pacific to South America (left to right), for four very strong events; warm water "
+             "from the western Pacific to South America (left to right), for 2026/2027 and four past strong events; warm water "
              "spreading east beneath the surface marks Kelvin waves."),
         ],
         extra="",
@@ -151,6 +158,14 @@ PAGES = [
              "few centimetres, so daily satellite sea level shows every wave crossing the Pacific and the warm "
              "water piling up near South America.",
         figures=[
+            ("section", 'The wind bursts',
+             "Short bursts of westerly wind along the equator set off the Kelvin waves."),
+            ('hovmoller_winds.py', True, 'Westerly wind bursts along the equator (Hovmöller)',
+             "Daily surface wind along the equator compared with normal, from October of the year before each El "
+             "Niño to January after its first year, for 2026/2027, 2023/2024, 2015/2016 and 1997/1998: red streaks "
+             "are westerly wind bursts."),
+            ("section", 'The Kelvin waves',
+             "Each burst sends a pulse of warm water east, visible as a rise in sea level."),
             ('anim_kelvin.py', True, 'Animation: Kelvin waves',
              "Every Kelvin wave since October 2025 traced in daily satellite sea level along the equator: each "
              "pulse raises sea level by a few centimetres as it crosses the Pacific."),
@@ -290,13 +305,13 @@ FIGURE_NOTES = {
         takeaway="Pick a measure and a month to see where 2026/2027 ranks among every El Niño since 1950."),
     "anim_sst.py": dict(
         takeaway="Water warmer than 28 °C, normally confined to the western Pacific, now reaches farther east along "
-                 "the equator than in 2015/2016, 1997/1998 or 1982/1983 at the same point in the year.",
+                 "the equator than in 2023/2024, 2015/2016, 1997/1998 or 1982/1983 at the same point in the year.",
         how="Each map shows the actual sea surface temperature for one month. Red and dark red are warmer than about "
             "28 °C (inside the black line), warm enough to fuel heavy tropical rainfall. Compare each year with the "
             "Normal panel at the bottom: during El Niño the warm area spreads east toward South America."),
     "anim_warm_layers.py": dict(
         takeaway="The hottest water has grown the most: the volume warmer than 28 °C is far above normal and above "
-                 "2015/2016, 1997/1998 and 1982/1983 at the same stage.",
+                 "2023/2024, 2015/2016, 1997/1998 and 1982/1983 at the same stage.",
         how="Each slice runs along the equator from Asia (left) to South America (right) and from 5 m down to 200 m. "
             "Colours mark temperature layers, from below 20 °C (dark blue) to above 29 °C (dark red); compare each "
             "year with the Normal panel at the bottom to see how much deeper and farther east the warm layers reach. "
@@ -341,7 +356,8 @@ FIGURE_NOTES = {
             "months play. Choose a view and a year above the model, and use the slider or play button to move "
             "through the months. The opacity sliders below fade or hide each layer, so you can look inside."),
     "anim_warm_water.py": dict(
-        takeaway="More warm water is stored along the equator in 2026/2027 than at the same stage of 2015/2016, 1997/1998 or 1982/1983.",
+        takeaway="More warm water is stored along the equator in 2026/2027 than at the same stage of 2023/2024, 2015/2016, "
+                 "1997/1998 or 1982/1983.",
         how="Each map shows how far below the surface the warm upper layer reaches (the depth of the 20 °C "
             "isotherm). Dark red means warm water extends deep; blue means the warm layer is thin. Watch the band "
             "between the dashed lines: during El Niño the red area spreads east along the equator."),
@@ -357,6 +373,26 @@ FIGURE_NOTES = {
                  "stage.",
         how="Each panel is a vertical slice along the equator, from Asia (left) to South America (right), down to "
             "200 m. Colours show how much warmer (red) or cooler (blue) than normal the water is."),
+    "hovmoller_winds.py": dict(
+        takeaway="From June to September 2026 the wind over the central Pacific was more westerly than normal on "
+                 "almost every day, by 4.5 m/s on average: a larger weakening of the trade winds than in "
+                 "1997 (3.8 m/s), 2015 (2.9 m/s) or 2023 (0.4 m/s) over the same months.",
+        how="Time runs down the page, one row per day, from October of the year before each El Niño; position runs "
+            "left to right from the western Pacific to South America. Red streaks are westerly wind bursts: spells of "
+            "wind blowing toward South America, against the usual trade winds. Each strong burst is followed by a "
+            "Kelvin wave in the figures below."),
+    "el_nino_type.py": dict(
+        takeaway="So far 2026/2027 is a clear Eastern Pacific El Niño, like 1997/1998 and 1982/1983: the warming is "
+                 "centred near South America, while the central Pacific is close to normal.",
+        how="Orange shows warming near South America, blue warming near the date line. In the lower chart each dot "
+            "is one El Niño at its peak: dots high and to the left warmed mostly in the east; dots below the dashed "
+            "line warmed mostly in the central Pacific."),
+    "warm_water_before_onset.py": dict(
+        takeaway="2026/2027 began with more warm water stored along the equator than most El Niños, and the store has "
+                 "kept growing since, to more than any past El Niño at the same stage.",
+        how="Top: one bar per El Niño since 1980, showing how much more warm water than normal was stored in the "
+            "six months before it began. Bottom: the same measure month by month, with every event lined up on the "
+            "month it began (dashed line). Warm water normally drains away once an El Niño is under way."),
     "hovmoller_sst.py": dict(
         takeaway="Surface warming in the eastern Pacific is stronger in 2026/2027 than at the same time in any past very "
                  "strong event.",
@@ -554,7 +590,7 @@ FIGURE_INFO = {
         "from 1991–2020."),
     # Detailed comparisons
     "surface_comparison.py": (
-        "Comparing the same month of each very strong El Niño shows how far the warm water has spread in 2026/2027, and "
+        "Comparing the same month of each strong El Niño shows how far the warm water has spread in 2026/2027, and "
         "that the whole tropical ocean is warmer than in past events, which adds to El Niño's effect on global "
         "temperature.",
         "Maps: NOAA ERSST v5 monthly sea surface temperature (2°). Anomaly values: NOAAGlobalTemp v6, relative to "
@@ -563,6 +599,26 @@ FIGURE_INFO = {
         "Where the warming is strongest matters: El Niños that peak near South America and those that peak in the "
         "central Pacific affect weather in different ways.",
         "NOAA CPC monthly Niño region indices (from OISST v2.1), anomalies from 1991–2020."),
+    "hovmoller_winds.py": (
+        "The trade winds normally pile warm water up in the western Pacific. Westerly wind bursts briefly reverse "
+        "them, sending pulses of warm water east as Kelvin waves; repeated bursts, and the weakening of the trade "
+        "winds as the ocean warms, are what turn a developing El Niño into a strong one.",
+        "NOAA NCEI Blended Sea Winds v2, daily 10 m zonal wind (0.25°), averaged over 5°S–5°N; anomalies from the "
+        "NCEI 1991–2020 monthly climatology; 5-day running means."),
+    "el_nino_type.py": (
+        "El Niños centred near South America and those centred near the date line shift the atmosphere's heating "
+        "to different places, so they affect rainfall and temperature around the world, including California, "
+        "differently. The strongest past El Niños for California rainfall, 1982/1983 and 1997/1998, were Eastern "
+        "Pacific events.",
+        "NOAA ERSST v5 Niño 3 (5°S–5°N, 150°W–90°W) and Niño 4 (5°S–5°N, 160°E–150°W) anomalies from 1991–2020, "
+        "combined as in Ren and Jin (2011): Eastern Pacific = Niño 3 − 0.4 × Niño 4, Central Pacific = Niño 4 − 0.4 "
+        "× Niño 3 when both have the same sign; 3-month means."),
+    "warm_water_before_onset.py": (
+        "Warm water must build up along the equator before an El Niño can grow (the \"recharge\"), and El Niño then "
+        "drains it toward higher latitudes (the \"discharge\"). A large store before and during an event provides "
+        "the heat that sustains warming at the surface.",
+        "NOAA PMEL warm water volume (above the 20 °C isotherm, 5°S–5°N, 120°E–80°W), monthly from 1980; anomalies "
+        "from 1991–2020. Event start: the first month of each El Niño in NOAA CPC's RONI (+0.5 °C or more)."),
     "hovmoller_sst.py": (
         "Following the surface temperature month by month shows how El Niño spread east across the Pacific and how "
         "quickly the eastern Pacific warmed compared with past events.",
@@ -630,6 +686,9 @@ DATASETS = {
     "roni_strengths": ("El Niño strength probabilities (NOAA CPC)",
                        "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/strengths/"),
     "nino_indices": ("Monthly Niño region indices (NOAA CPC)", "https://www.cpc.ncep.noaa.gov/data/indices/sstoi.indices"),
+    "pmel_wwv": ("Warm water volume index (NOAA PMEL)", "https://www.pmel.noaa.gov/tao/wwv/"),
+    "winds": ("Blended Sea Winds v2 (NOAA NCEI)",
+              "https://www.ncei.noaa.gov/products/blended-sea-winds"),
     "altimetry": ("Blended satellite sea level (NOAA CoastWatch ERDDAP)",
                   "https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html"),
     "nclimgrid": ("nClimGrid monthly (NOAA NCEI)",
@@ -655,6 +714,9 @@ FIGURE_DATA = {
     "surface_comparison.py": ["ersst", "globaltemp_grid"],
     "nino_regions.py": ["nino_indices"],
     "hovmoller_sst.py": ["ersst"],
+    "el_nino_type.py": ["ersst", "roni"],
+    "hovmoller_winds.py": ["winds"],
+    "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],
     "socal_summer_anomalies.py": ["nclimgrid"],
     "socal_station_heat.py": ["ghcn", "roni"],

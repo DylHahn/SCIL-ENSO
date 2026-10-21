@@ -2,7 +2,7 @@
 Data for the interactive 3D view of the tropical Pacific on the website (site/ocean3d.html), and
 shared loading for the rotating 3D animation (anim_3d.py).
 
-For 2026/2027, the past very strong El Niños (2015/2016, 1997/1998, 1982/1983) and the 1991–2020
+For 2026/2027, 2023/2024, the past very strong El Niños (2015/2016, 1997/1998, 1982/1983) and the 1991–2020
 normal, monthly from January of each event's first year to December of the next (the current event to
 the latest GODAS month):
 near-surface (5 m) temperature over 20°S–20°N, 130°E–80°W and the depth of the 20 °C isotherm
@@ -23,7 +23,7 @@ from anim_warm_water import d20, load_temps, monthly_normal
 from enso_common import FIG_DIR
 
 NOW = 2026
-COMPARE = [2015, 1997, 1982]
+COMPARE = [2023, 2015, 1997, 1982]
 LAT_STEP, LON_STEP = 3, 2          # GODAS is 1/3° in latitude and 1° in longitude
 EQ = (-2, 2)
 LON_MIN = 130

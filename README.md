@@ -62,8 +62,10 @@ Figures, El Niño tabs             Figures, Southern California tabs
   interactive_data.py               socal_marine_heat.py
   anim_sst.py                       socal_summer_anomalies.py
   anim_upper_ocean.py               socal_station_heat.py
+  warm_water_before_onset.py
   anim_warm_water.py
   anim_warm_layers.py
+  hovmoller_winds.py    (uses enso_winds.py)
   anim_kelvin.py        (uses enso_sealevel.py)
   interactive_sealevel_data.py  (3D sea level view: site/sealevel3d.html)
   anim_sealevel_3d.py   animated version (not on the site; for iCHARM or slides)
@@ -76,6 +78,7 @@ Figures, El Niño tabs             Figures, Southern California tabs
   hovmoller_sst.py
   hovmoller_upper_ocean.py
   nino_regions.py
+  el_nino_type.py
   event_ranking.py
   global_temperature.py
   event_timeseries.py   static version, not on the site; its series feed the two at the top
@@ -89,6 +92,7 @@ Shared modules
   enso_socal.py       GHCN-Daily stations, ENSO categories
   enso_anim.py        animated WebP output
   enso_sealevel.py    daily satellite sea level along the equator (Kelvin waves)
+  enso_winds.py       daily equatorial surface winds (NCEI Blended Sea Winds; read remotely, cached)
 
 archive/                earlier figures no longer on the site (see archive/README.md)
 data/                   downloaded data, not in the repository (see below)

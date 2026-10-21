@@ -18,7 +18,7 @@ from matplotlib.ticker import FuncFormatter
 
 from enso_common import COLORS, add_source, add_title, lon_label, save
 
-EVENTS = [1982, 1997, 2015, 2026]
+EVENTS = [2026, 2023, 2015, 1997, 1982]               # most recent first
 LON_RANGE = (130, 280)
 
 
@@ -46,7 +46,7 @@ def _map_strip(fig, rect):
     ax.text(0.01, 0.06, "New Guinea", transform=ax.transAxes, fontsize=8, color=COLORS["text"], va="bottom")
     ax.text(0.97, 0.94, "S. America", transform=ax.transAxes, fontsize=8, color=COLORS["text"], va="top",
             ha="right")
-    ax.text(0.5, 0.56, "equator", transform=ax.transAxes, fontsize=7.5, color=COLORS["el_nino"], ha="center",
+    ax.text(0.3, 0.56, "equator", transform=ax.transAxes, fontsize=7.5, color=COLORS["el_nino"], ha="center",
             va="bottom")
     return ax
 
@@ -64,7 +64,8 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
     else:
         cmap = plt.get_cmap(cmap_name, len(levels) - 1)
         norm = BoundaryNorm(levels, cmap.N)
-    width, gap, left = 0.194, 0.022, 0.118          # room on the left for bold month labels
+    left, right, gap = 0.118, 0.985, 0.018          # room on the left for bold month labels
+    width = (right - left - gap * (len(years) - 1)) / len(years)
     p_bottom, p_height = 0.19, 0.52
     cf = None
     fig.text(0.02, 1 - 1.30 / 10.4, HOW_TO_READ, ha="left", va="top", fontsize=11.5, color=COLORS["text"],
@@ -74,7 +75,7 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
         x0 = left + k * (width + gap)
         cur = y == highlight
         strip = _map_strip(fig, [x0, p_bottom + p_height + 0.012, width, 0.052])
-        strip.set_title(f"{y}/{y + 1}", fontsize=15, fontweight="bold", loc="left", pad=6,
+        strip.set_title(f"{y}/{y + 1}", fontsize=14, fontweight="bold", loc="left", pad=6,
                         color=COLORS["el_nino"] if cur else COLORS["text"])
         ax = fig.add_axes([x0, p_bottom, width, p_height])
         t = np.arange(len(months))
@@ -89,7 +90,8 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
         labels = [calendar.month_abbr[(m % 12) + 1] for m in range(full)]
         labels[0], labels[-1] = "Jan (onset yr)", "Jan (next yr)"
         ax.set_yticklabels(labels if k == 0 else [], fontsize=9.5)
-        ax.set_xticks([150, 180, 210, 240, 270])
+        ax.set_xticks([150, 210, 270] if len(years) > 4 else [150, 180, 210, 240, 270])
+        ax.set_xticks([180, 240], minor=True)
         ax.xaxis.set_major_formatter(FuncFormatter(lon_label))
         ax.tick_params(axis="x", labelsize=9.5, rotation=0)
         for sp in ax.spines.values():
@@ -103,7 +105,7 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
                     ha="center", va="top", fontsize=10.5, color=COLORS["text_2"])
         if k == 0:
             ax.set_ylabel("Month  (time runs downward ↓)", fontsize=11)
-    fig.text(left + 2 * (width + gap) - gap / 2, 0.14, "Longitude along the equator  (west → east)",
+    fig.text((left + right) / 2, 0.14, "Longitude along the equator  (west → east)",
              ha="center", fontsize=11, color=COLORS["text_2"])
 
     cax = fig.add_axes([0.28, 0.085, 0.44, 0.018])
