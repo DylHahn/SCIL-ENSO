@@ -34,30 +34,39 @@ def figures():
     return out + [e for e in EXTRA if e[1] not in {s for _, s in out}]
 
 
+def clean_name(script, label="", extra=()):
+    """File name (without extension) of a clean export: the script name, plus the variant label."""
+    return Path(script).stem + (f"_{label}" if extra else "")
+
+
+def export_one(tab, script, label="", extra=(), theme="dark"):
+    """Run one figure script in clean mode into figures_clean/<tab>/. Returns True on success."""
+    out = OUT / tab / f"{clean_name(script, label, extra)}{'_light' if theme == 'light' else ''}.png"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    print(f">> clean {tab}/{out.name}", flush=True)
+    t = time.time()
+    r = subprocess.run([sys.executable, script, "--theme", theme, "--out", str(out), *extra], cwd=HERE,
+                       env=dict(os.environ, ENSO_CLEAN="1"), capture_output=True, text=True)
+    if r.returncode:
+        print(r.stderr.strip().splitlines()[-1] if r.stderr.strip() else "failed", flush=True)
+        return False
+    print(f"   done in {time.time() - t:.0f} s", flush=True)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--figures", nargs="+", metavar="SCRIPT", help="only these figure scripts")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     args = ap.parse_args()
 
-    env = dict(os.environ, ENSO_CLEAN="1")
     failed = []
     for tab, script in figures():
         if args.figures and script not in args.figures:
             continue
         for label, extra in FIGURE_VARIANTS.get(script, [("", [])]):
-            name = Path(script).stem + (f"_{label}" if extra else "")
-            out = OUT / tab / f"{name}{'_light' if args.theme == 'light' else ''}.png"
-            out.parent.mkdir(parents=True, exist_ok=True)
-            print(f">> {tab}/{out.name}", flush=True)
-            t = time.time()
-            r = subprocess.run([sys.executable, script, "--theme", args.theme, "--out", str(out), *extra], cwd=HERE,
-                               env=env, capture_output=True, text=True)
-            if r.returncode:
+            if not export_one(tab, script, label, extra, args.theme):
                 failed.append(script)
-                print(r.stderr.strip().splitlines()[-1] if r.stderr.strip() else "failed", flush=True)
-            else:
-                print(f"   done in {time.time() - t:.0f} s", flush=True)
     print(f"\nFigures in {OUT}" + (f"; failed: {', '.join(failed)}" if failed else ""))
 
 

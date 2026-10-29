@@ -83,6 +83,7 @@
   .figinfo { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; font-size: 15.5px; }
   .figinfo dt { color: var(--text); font-weight: 600; }
   .figlinks { margin: 8px 0 0; font-size: 14.5px; }
+  .figlinks.downloads { line-height: 1.7; }
   .figinfo dd { margin: 0; color: var(--text-2); }
   @media (max-width: 640px) { .figinfo { grid-template-columns: 1fr; gap: 0; } .figinfo dd { margin-bottom: 8px; } }
   .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
@@ -310,7 +311,7 @@ document.querySelectorAll(".variant-switch button").forEach(btn => {
     const playing = !fig.querySelector(".play");
     img.dataset.anim = btn.dataset.anim;
     img.src = playing ? btn.dataset.anim : btn.dataset.png;
-    fig.querySelectorAll(".figlinks a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
+    fig.querySelectorAll(".figlinks:not(.downloads) a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
   });
 });
 // Animations load only when played

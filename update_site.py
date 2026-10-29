@@ -7,6 +7,10 @@ Rebuild the SDSU Climate Informatics Lab ENSO Visualizations website in one comm
     python update_site.py --site-only          # rewrite the pages only, reusing existing figures
     python update_site.py --figures anim_3d.py # rebuild only the listed figure scripts
 
+Each figure is also exported clean (no title, subtitle, source line or reading notes; animations also as
+MP4 video) into figures_clean/<tab>/ and published at a fixed address, docs/downloads/<script name>.png and
+.mp4, with download links under the figure; other websites can link to those addresses.
+
 Then publish:
     git add docs && git commit -m "Update for <month>" && git push
 
@@ -26,10 +30,13 @@ from string import Template
 from PIL import Image
 
 from enso_common import HERE
+from export_figures import OUT as CLEAN_DIR, clean_name, export_one
 from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_VARIANTS, GLOSSARY, PAGES,
                          REPO_URL, SITE_URL)
 
 DOCS = HERE / "docs"
+DOWNLOADS = DOCS / "downloads"                     # clean figures at fixed addresses (no position prefix)
+DOWNLOAD_INDEX = []                                # docs/downloads/figures.json: what is there, with current text
 BUILD = HERE / "figures_public"
 SITE = HERE / "site"
 
@@ -94,6 +101,8 @@ def build_figures(page, refresh, only=None):
             print(f"\n>> [{page['key']}] {script} {label}".rstrip(), flush=True)
             if subprocess.call(cmd) != 0:
                 failed.append(script)
+            elif not is_interactive(script) and not export_one(page["slug"] or "el-nino", script, label, extra_args):
+                failed.append(script)                              # clean copy for the download links
     return failed
 
 
@@ -181,6 +190,36 @@ def toc_html(groups):
     parts = [(f'<div class="toc-group"><p>{html.escape(h)}</p>' if h else '<div class="toc-group">')
              + f'<ol>{"".join(items)}</ol></div>' for h, items in groups]
     return f'<nav class="toc" aria-label="Figures on this page">\n' + "\n".join(parts) + "\n</nav>"
+
+
+def downloads_html(page, script, s, animated, up):
+    """Copy the figure's clean exports to docs/downloads/ and return the download links: the figure as shown,
+    the clean figure (no title or notes) and, for animations, the MP4 video, for each version (cm | inches)."""
+    tab = page["slug"] or "el-nino"
+    versions = FIGURE_VARIANTS.get(script, [("", [])])
+    parts = [f'<a href="img/{s}.png" download>Figure as shown (PNG)</a>']
+    files = {}
+    for label, extra in versions:
+        name = clean_name(script, label, extra)
+        tag = f", {label}" if len(versions) > 1 else ""
+        for ext, what in ((".png", "Clean figure, no title (PNG{})"), (".mp4", "Video (MP4{})")):
+            f = CLEAN_DIR / tab / f"{name}{ext}"
+            if f.exists() and (ext == ".png" or animated):
+                DOWNLOADS.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(f, DOWNLOADS / f.name)
+                mb = f.stat().st_size / 1e6
+                size = f" · {mb:.0f} MB" if mb >= 1 else ""
+                parts.append(f'<a href="{up}downloads/{f.name}" download>{what.format(tag)}{size}</a>')
+                files[f"{label or 'default'}{ext}"] = SITE_URL + "downloads/" + f.name
+    entry = next(e for e in page["figures"] if e[0] == script)
+    alt = BUILD / page["key"] / f"{s}.alt.txt"
+    DOWNLOAD_INDEX.append(dict(
+        script=script, title=entry[2], tab=page["tab"], page=SITE_URL + (f"{page['slug']}/" if page["slug"] else ""),
+        caption=entry[3], takeaway=FIGURE_NOTES.get(script, {}).get("takeaway", ""),
+        how_to_read=FIGURE_NOTES.get(script, {}).get("how", ""), relation=FIGURE_INFO[script][0],
+        data=FIGURE_INFO[script][1], description=alt.read_text().strip() if alt.exists() else "",
+        animated=animated, files=files))
+    return '<p class="figlinks downloads"><b>Download:</b> ' + " · ".join(parts) + "</p>"
 
 
 def write_page(page):
@@ -273,6 +312,7 @@ def write_page(page):
             media = (f'<a href="img/{s}.png" target="_blank" rel="noopener"><img src="img/{s}.png" alt="{alt}" '
                      f'width="{w}" height="{h}" decoding="async"></a>')
             links = ""
+        links += downloads_html(page, script, s, animated, up)
         body.append(f'<figure id="g{n}">{takeaway}{switch}{media}<figcaption>{cap}{links}{how}</figcaption></figure>')
 
     extra = page["extra"]
@@ -326,10 +366,19 @@ def main():
         else:
             failed += build_figures(page, args.refresh, args.figures)
     DOCS.mkdir(exist_ok=True)
-    (DOCS / ".nojekyll").write_text("")              # serve files as-is (no Jekyll processing)
+    (DOCS / ".nojekyll").write_text("")
+    if DOWNLOADS.exists():                             # refilled from figures_clean/ as the pages are written
+        shutil.rmtree(DOWNLOADS)              # serve files as-is (no Jekyll processing)
     for page in PAGES:
         write_page(page)
     write_search_index()
+    if DOWNLOAD_INDEX:
+        import json
+        (DOWNLOADS / "figures.json").write_text(json.dumps(
+            dict(updated=f"{dt.date.today():%Y-%m-%d}", site=SITE_URL, author=AUTHOR,
+                 note="Clean figures (no title or notes) at fixed addresses, refreshed at every site update. "
+                      "Text fields describe the current data.", figures=DOWNLOAD_INDEX),
+            ensure_ascii=False, indent=1))
     write_redirects()
     print("\nDone." if not failed else f"\nFinished with errors in: {', '.join(failed)}")
     sys.exit(1 if failed else 0)

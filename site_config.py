@@ -313,8 +313,8 @@ FIGURE_NOTES = {
     "anim_timeseries.py": dict(
         takeaway="At the latest month, 2026/2027 is warmer than every El Niño since 1950 at the same stage, both at the "
                  "surface and in the upper ocean.",
-        how="Each line is one El Niño. The horizontal axis runs from January of the year the event began to June of "
-            "the following year; the vertical axis shows how much warmer than normal the water was. A line above the "
+        how="Each line is one El Niño. The horizontal axis runs from January of the year the event began to December "
+            "of the following year; the vertical axis shows how much warmer than normal the water was. A line above the "
             "others at a given month means that event was further developed at that point in the year."),
     "interactive_data.py": dict(
         takeaway="Pick a measure and a month to see where 2026/2027 ranks among every El Niño since 1950."),

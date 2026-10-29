@@ -83,6 +83,7 @@
   .figinfo { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; font-size: 15.5px; }
   .figinfo dt { color: var(--text); font-weight: 600; }
   .figlinks { margin: 8px 0 0; font-size: 14.5px; }
+  .figlinks.downloads { line-height: 1.7; }
   .figinfo dd { margin: 0; color: var(--text-2); }
   @media (max-width: 640px) { .figinfo { grid-template-columns: 1fr; gap: 0; } .figinfo dd { margin-bottom: 8px; } }
   .note { background: var(--surface); border-radius: 10px; padding: 8px 28px 20px; margin: 0 0 56px;
@@ -496,6 +497,15 @@ downloads the latest data and rebuilds every figure and page.</p>
 
 <h2>Citation</h2>
 <p>Hahn, D. (2026). <i>ENSO Visualizations: The 2026/2027 El Niño in historical context.</i> SDSU Climate Informatics Lab. https://dylhahn.github.io/SCIL-ENSO/</p>
+
+<h2>Downloading and reusing the figures</h2>
+<p>Every figure can be downloaded from the links beneath it: as shown on the site, or as a clean version without the
+title, subtitle, source line or reading notes, for slides, papers and posters; animations are also available as MP4
+video. The clean versions are kept at fixed addresses, <code>https://dylhahn.github.io/SCIL-ENSO/downloads/&lt;figure&gt;.png</code> and
+<code>.mp4</code>, that are refreshed at every update, so other websites can link to them and always show the latest
+version; <a href="https://dylhahn.github.io/SCIL-ENSO/downloads/figures.json">figures.json</a> lists them with their current descriptions. When reusing
+a figure, please credit "Dylan Hahn, SDSU Climate Informatics Lab" and the data sources listed for it, and note that
+the disclaimer above applies.</p>
 </section>
 
 <footer>
@@ -537,7 +547,7 @@ document.querySelectorAll(".variant-switch button").forEach(btn => {
     const playing = !fig.querySelector(".play");
     img.dataset.anim = btn.dataset.anim;
     img.src = playing ? btn.dataset.anim : btn.dataset.png;
-    fig.querySelectorAll(".figlinks a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
+    fig.querySelectorAll(".figlinks:not(.downloads) a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
   });
 });
 // Animations load only when played

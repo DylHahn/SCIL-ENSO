@@ -63,7 +63,7 @@ class AnimationFrames:
         """MP4 (H.264) at a constant frame rate: each frame is repeated to match its duration."""
         import imageio_ffmpeg
         w, h = frames[0].size
-        writer = imageio_ffmpeg.write_frames(str(path), (w, h), fps=fps, quality=8, macro_block_size=2)
+        writer = imageio_ffmpeg.write_frames(str(path), (w, h), fps=fps, quality=6, macro_block_size=2)
         writer.send(None)
         for f, d in zip(frames, self.durations):
             data = np.asarray(f, dtype=np.uint8).tobytes()
