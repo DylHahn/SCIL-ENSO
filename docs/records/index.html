@@ -267,7 +267,7 @@
   <p class="kicker">El Niño 2026/2027 · Records &amp; forecasts</p>
   <h1>Records and forecasts: how the 2026/2027 El Niño ranks, and how well it was predicted</h1>
   <p class="lede">Where this event ranks among every <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span> since 1950, how NOAA&#x27;s forecasts for it have performed, and El Niño&#x27;s influence on global temperature.</p>
-  <p class="meta">Updated October 28, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 29, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 
 
@@ -338,7 +338,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261028";
+  const up = "../", src = up + "search-index.json?v=20261029";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {

@@ -184,7 +184,7 @@ PAGES = [
         ],
         extra="",
         data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP',
-              'Daily surface winds (Blended Sea Winds v2): NOAA NCEI',
+              'Daily surface winds (Blended Sea Winds v2): NOAA NCEI; gaps filled with CCMP v2.1 (Remote Sensing Systems)',
               'Daily tide-gauge sea level: University of Hawaii Sea Level Center',
               'Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center'],
     ),
@@ -641,7 +641,8 @@ FIGURE_INFO = {
         "them, sending pulses of warm water east as Kelvin waves; repeated bursts, and the weakening of the trade "
         "winds as the ocean warms, are what turn a developing El Niño into a strong one.",
         "NOAA NCEI Blended Sea Winds v2, daily 10 m zonal wind (0.25°), averaged over 5°S–5°N; anomalies from the "
-        "NCEI 1991–2020 monthly climatology; 5-day running means."),
+        "NCEI 1991–2020 monthly climatology; 5-day running means. Days missing from NCEI's record (all of May 2026) "
+        "are filled with CCMP v2.1 near-real-time winds (Remote Sensing Systems), adjusted to match NCEI."),
     "kelvin_speeds.py": (
         "The speed of a Kelvin wave sets how long the warm water takes to reach South America, and so how much "
         "warning the ocean gives before the eastern Pacific warms. Speed depends on how the ocean is layered: "
@@ -746,6 +747,8 @@ DATASETS = {
                     "https://uhslc.soest.hawaii.edu/datainfo/"),
     "oisst_daily_psl": ("OISST v2.1 daily (NOAA PSL)",
                         "https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html"),
+    "ccmp": ("CCMP v2.1 near-real-time winds (Remote Sensing Systems, via NOAA PIFSC ERDDAP)",
+             "https://oceanwatch.pifsc.noaa.gov/erddap/griddap/ccmp-daily-v2-1-NRT.html"),
     "winds": ("Blended Sea Winds v2 (NOAA NCEI)",
               "https://www.ncei.noaa.gov/products/blended-sea-winds"),
     "altimetry": ("Blended satellite sea level (NOAA CoastWatch ERDDAP)",
@@ -774,7 +777,7 @@ FIGURE_DATA = {
     "nino_regions.py": ["nino_indices"],
     "hovmoller_sst.py": ["ersst"],
     "el_nino_type.py": ["ersst", "roni"],
-    "hovmoller_winds.py": ["winds"],
+    "hovmoller_winds.py": ["winds", "ccmp"],
     "kelvin_speeds.py": ["altimetry", "roni"],
     "coastal_sea_level.py": ["tide_gauges"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],

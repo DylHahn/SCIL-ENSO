@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "site": "https://dylhahn.github.io/SCIL-ENSO/",
  "author": "Dylan Hahn",
  "note": "Clean figures (no title or notes) at fixed addresses, refreshed at every site update. Text fields describe the current data.",
@@ -243,10 +243,12 @@
    "takeaway": "From June to September 2026 the wind over the central Pacific was more westerly than normal on almost every day, by 4.5 m/s on average: a larger weakening of the trade winds than in 1997 (3.8 m/s), 2015 (2.9 m/s) or 2023 (0.4 m/s) over the same months.",
    "how_to_read": "Time runs down the page, one row per day, from October of the year before each El Niño; position runs left to right from the western Pacific to South America. Red streaks are westerly wind bursts: spells of wind blowing toward South America, against the usual trade winds. Each strong burst is followed by a Kelvin wave in the figures below.",
    "relation": "The trade winds normally pile warm water up in the western Pacific. Westerly wind bursts briefly reverse them, sending pulses of warm water east as Kelvin waves; repeated bursts, and the weakening of the trade winds as the ocean warms, are what turn a developing El Niño into a strong one.",
-   "data": "NOAA NCEI Blended Sea Winds v2, daily 10 m zonal wind (0.25°), averaged over 5°S–5°N; anomalies from the NCEI 1991–2020 monthly climatology; 5-day running means.",
+   "data": "NOAA NCEI Blended Sea Winds v2, daily 10 m zonal wind (0.25°), averaged over 5°S–5°N; anomalies from the NCEI 1991–2020 monthly climatology; 5-day running means. Days missing from NCEI's record (all of May 2026) are filled with CCMP v2.1 near-real-time winds (Remote Sensing Systems), adjusted to match NCEI.",
    "description": "Longitude–time diagrams of daily equatorial east–west wind anomalies from October of the year before to January after the first year of the El Niños of 2026/2027, 2023/2024, 2015/2016 and 1997/1998. Westerly wind bursts from October to 30 September: 2026/2027 7, 2023/2024 6, 2015/2016 10 and 1997/1998 6.",
    "animated": false,
-   "files": {}
+   "files": {
+    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_winds.png"
+   }
   },
   {
    "script": "anim_kelvin.py",

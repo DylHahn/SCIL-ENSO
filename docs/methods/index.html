@@ -267,7 +267,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated October 28, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated October 29, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -398,7 +398,13 @@
   running mean is shown. Bursts are counted as spells of daily anomalies of +5 m/s or more over at least 10° of
   longitude lasting at least 3 days, with spells less than 4 days apart counted once. Definitions of westerly wind
   bursts vary between studies, so the counts are indicative. The satellite record begins in 1987, so 1982/1983 is
-  not shown.</li>
+  not shown. Days missing from NCEI's record (all of May 2026, and a few single days) are filled
+  with CCMP v2.1 near-real-time winds (Remote Sensing Systems; 0.25°, 6-hourly, via the NOAA PIFSC ERDDAP server),
+  averaged in the same way and adjusted at each longitude by the mean difference between the two products over the
+  60 days either side of the gap. Where both exist (March–July 2026), daily values from the two products correlate at
+  0.98 with a mean difference of 0.05 m/s and a typical daily difference of 0.6 m/s. Filled periods are marked on the
+  figure. If NCEI cannot be reached during an update, the figure is not rebuilt, so a temporary outage is never
+  filled.</li>
   <li><b>Sea level in 3D.</b> The same altimetry over 12°S–12°N at 1°, every second day in the interactive view, with the 2017–2024 seasonal cycle removed at each
   point (from every fifth day) and a 5-day running mean, lightly smoothed in space (Gaussian, about one grid cell)
   for display; the height is exaggerated by several million times. The Kelvin-wave signal is the anomaly minus its
@@ -564,7 +570,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261028";
+  const up = "../", src = up + "search-index.json?v=20261029";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {

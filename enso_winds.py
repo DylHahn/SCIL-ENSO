@@ -5,7 +5,8 @@ July 1987 onward), read from NCEI's THREDDS server.
 Only the east–west (zonal) wind at 10 m is used, averaged over 5°S–5°N on a 2° longitude grid
 from 120°E to 80°W. Daily anomalies are relative to NCEI's 1991–2020 monthly climatology,
 interpolated to each day. The daily files are subset over OPeNDAP and cached month by month in
-data/winds/; the climatology file (about 250 MB) is downloaded once.
+data/winds/; the climatology file (about 250 MB) is downloaded once. Days missing from NBS v2 are filled
+from CCMP v2.1 (see below).
 """
 import re
 import subprocess
@@ -85,7 +86,10 @@ def daily_u(month, refresh=False):
     try:
         days = {d: p for d, p in _catalog(month.year).items() if d.month == month.month}
     except OSError:                                          # NCEI unavailable: use the last copy read
-        return xr.open_dataarray(partial).load() if partial.exists() else None
+        if partial.exists():
+            return xr.open_dataarray(partial).load()
+        # never fill a month NCEI holds but could not send: stop, so the last good figure is kept
+        raise RuntimeError(f"NOAA NCEI could not be reached for {month:%B %Y} winds; try again later")
     if not days:
         return None
     with ThreadPoolExecutor(8) as ex:
@@ -118,18 +122,89 @@ def monthly_normal():
     return xr.open_dataarray(band).load()
 
 
-def daily_anomaly(start, end, refresh=False):
+# Days missing from NBS v2 (all of May 2026, for example) are filled from CCMP v2.1 near-real-time winds
+# (Remote Sensing Systems; 0.25°, 6-hourly, 2015 onward, via NOAA PIFSC ERDDAP), a similar blend of satellite
+# winds and a model background. Over March–July 2026 the two agree closely along the equator (daily values
+# correlate at 0.98; mean difference 0.05 m/s); CCMP is adjusted by its mean difference from NBS at each
+# longitude over the 60 days either side of each gap.
+CCMP = ("https://oceanwatch.pifsc.noaa.gov/erddap/griddap/ccmp-daily-v2-1-NRT.nc?uwnd%5B({t0}):1:({t1})%5D"
+        "%5B({la0}):4:({la1})%5D%5B({lo0}):8:({lo1})%5D")
+CCMP_FIRST = pd.Timestamp("2015-01-16")
+FILL_WINDOW = pd.Timedelta(days=60)
+
+
+def ccmp_u(month, refresh=False):
+    """Daily 5°S–5°N zonal wind (m/s) from CCMP for one calendar month, on the NBS longitudes, cached."""
+    import xarray as xr
+    month = pd.Timestamp(month)
+    path = WIND_DIR / f"ccmp_{month:%Y_%m}.nc"
+    if refresh or not path.exists():
+        end = month + pd.offsets.MonthEnd(0)
+        tmp = path.with_suffix(".part")
+        WIND_DIR.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["curl", "-sSL", "-f", "--retry", "4", "-m", "600", "-o", str(tmp),
+                        CCMP.format(t0=f"{month:%Y-%m-%d}", t1=f"{end:%Y-%m-%d}T18:00:00Z", la0=LAT[0], la1=LAT[1],
+                                    lo0=LON[0], lo1=LON[1])], check=True)
+        with xr.open_dataset(tmp) as ds:
+            u = ds["uwnd"].load()
+        tmp.unlink()
+        u = u.weighted(np.cos(np.deg2rad(u["latitude"]))).mean("latitude").resample(time="1D").mean()
+        u = u.assign_coords(longitude=u["longitude"].values - 0.125).rename(longitude="lon")   # NBS grid points
+        u.name = "u_wind"
+        u.to_netcdf(path)
+    return xr.open_dataarray(path).load()
+
+
+def _fill_gaps(u, refresh=False):
+    """Fill days missing from `u` (time, lon) with offset-adjusted CCMP winds. Returns (filled, gap days)."""
+    import xarray as xr
+    t = pd.DatetimeIndex(u["time"].values)
+    gaps = pd.date_range(t[0], t[-1]).difference(t)
+    gaps = gaps[gaps >= CCMP_FIRST]
+    if not len(gaps):
+        return u, gaps
+    need = pd.date_range((gaps[0] - FILL_WINDOW).replace(day=1), gaps[-1] + FILL_WINDOW, freq="MS")
+    recent = pd.Timestamp.today().normalize().replace(day=1) - pd.DateOffset(months=2)
+    parts = []
+    for m in need:
+        if m < CCMP_FIRST.replace(day=1):
+            continue
+        try:
+            parts.append(ccmp_u(m, refresh=refresh and m >= recent))
+        except (subprocess.CalledProcessError, OSError):          # CCMP unavailable for this month: leave its gaps
+            continue
+    if not parts:
+        return u, gaps[:0]
+    c = xr.concat(parts, "time")
+    c = c.reindex(lon=u["lon"].values, method="nearest", tolerance=0.01)
+    fill = []
+    for d in gaps:
+        if d not in set(pd.DatetimeIndex(c["time"].values)):
+            continue
+        near = t[(t >= d - FILL_WINDOW) & (t <= d + FILL_WINDOW)]
+        both = near[np.isin(near, c["time"].values)]
+        offset = (u.sel(time=both) - c.sel(time=both)).mean("time")
+        fill.append(c.sel(time=[d]) + offset)
+    if not fill:
+        return u, gaps[:0]
+    filled = xr.concat([u] + fill, "time").sortby("time")
+    return filled, pd.DatetimeIndex([f["time"].values[0] for f in fill])
+
+
+def daily_anomaly(start, end, refresh=False, filled=False):
     """Daily zonal wind anomaly (m/s) over 5°S–5°N from `start` to `end` (or NCEI's latest day), as a
-    (time, lon) DataArray; the 1991–2020 monthly normal is interpolated to each day (mid-month anchors)."""
+    (time, lon) DataArray; the 1991–2020 monthly normal is interpolated to each day (mid-month anchors).
+    Days missing from NBS v2 are filled from CCMP (see above); with `filled`, also returns those days."""
     import xarray as xr
     months = [m for m in pd.date_range(pd.Timestamp(start).replace(day=1), end, freq="MS") if m >= FIRST]
     recent = pd.Timestamp.today().normalize().replace(day=1) - pd.DateOffset(months=2)
     parts = [daily_u(m, refresh=refresh and m >= recent) for m in months]
     u = xr.concat([p for p in parts if p is not None], "time").sel(time=slice(start, end))
+    u, days = _fill_gaps(u, refresh)
     clim = monthly_normal().values                        # (12, lon)
     mid = np.array([15, 45, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349], dtype=float)
     doy = pd.DatetimeIndex(u["time"].values).dayofyear.values.astype(float)
     xs = np.concatenate([mid - 365, mid, mid + 365])
     cv = np.concatenate([clim] * 3)
     normal = np.stack([np.interp(doy, xs, cv[:, j]) for j in range(cv.shape[1])], axis=1)
-    return u - normal
+    return (u - normal, days) if filled else u - normal

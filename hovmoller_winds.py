@@ -71,11 +71,14 @@ def main():
     args = ap.parse_args()
 
     apply_style(args.theme)
-    fields = {y: daily_anomaly(*window(y), refresh=args.refresh and y == NOW) for y in EVENTS}
+    fields, filled = {}, {}
+    for y in EVENTS:                       # days missing from NCEI's record are filled from CCMP (enso_winds.py)
+        fields[y], filled[y] = daily_anomaly(*window(y), refresh=args.refresh and y == NOW, filled=True)
     latest = pd.Timestamp(fields[NOW]["time"].values[-1])
     # bursts from October of the year before to the same calendar day as the latest data
     t = pd.DatetimeIndex(fields[NOW]["time"].values)
-    missing = len(pd.date_range(t[0], t[-1]).difference(t))         # days absent from NCEI's record
+    missing = len(pd.date_range(t[0], t[-1]).difference(t))         # days still without data
+    n_filled = len(filled[NOW])
     counts = {y: bursts(fields[y], pd.Timestamp(year=y, month=latest.month, day=latest.day)) for y in EVENTS}
 
     levels = np.arange(-8, 8.01, 1)
@@ -86,7 +89,7 @@ def main():
     fig = plt.figure(figsize=(13, 11.2))
     left, right, gap = 0.115, 0.985, 0.022
     width = (right - left - gap * (len(EVENTS) - 1)) / len(EVENTS)
-    p_bottom, p_height = 0.17, 0.58
+    p_bottom, p_height = 0.19, 0.56
     for k, y in enumerate(EVENTS):
         a = fields[y]
         start, end = window(y)
@@ -127,6 +130,17 @@ def main():
                     ax.text(np.mean(LON_RANGE), ((gaps[g0] - start).days + (gaps[g1] - start).days) / 2,
                             f"no data, {gaps[g0]:%-d %b}–{gaps[g1]:%-d %b}", ha="center", va="center", fontsize=10,
                             color=COLORS["text_2"])
+        f = filled[y]
+        if len(f):                                                          # mark the days filled from CCMP
+            breaks = np.flatnonzero(np.diff(f.values).astype("timedelta64[D]").astype(int) > 1)
+            for g0, g1 in zip(np.r_[0, breaks + 1], np.r_[breaks, len(f) - 1]):
+                y0, y1 = (f[g0] - start).days - 0.5, (f[g1] - start).days + 0.5
+                ax.plot([LON_RANGE[1] - 1.5] * 2, [y0, y1], color=COLORS["text"], lw=2.2, solid_capstyle="butt",
+                        clip_on=False, zorder=5)
+                if (f[g1] - f[g0]).days >= 6:
+                    ax.text(LON_RANGE[1] - 4, (y0 + y1) / 2, f"{f[g0]:%b}: CCMP\nwinds*", ha="right", va="center",
+                            fontsize=9.5, color=COLORS["text"], zorder=6,
+                            bbox=dict(facecolor=COLORS["surface"], edgecolor="none", alpha=0.75, pad=2))
         if days[-1] < total - 1:
             ax.axhline(days[-1], color=COLORS["text_2"], lw=1, ls=(0, (3, 2)))
             ax.text(np.mean(LON_RANGE), days[-1] + 12, f"Data through\n{latest:%-d %B %Y}", ha="center",
@@ -136,10 +150,10 @@ def main():
                                                               alpha=0.8, pad=2))
         if k == 0:
             ax.set_ylabel("Date  (time runs downward ↓)", fontsize=11)
-    fig.text((left + right) / 2, 0.125, "Longitude along the equator  (west → east)", ha="center", fontsize=11,
+    fig.text((left + right) / 2, 0.145, "Longitude along the equator  (west → east)", ha="center", fontsize=11,
              color=COLORS["text_2"])
 
-    cax = fig.add_axes([0.25, 0.07, 0.5, 0.017])
+    cax = fig.add_axes([0.25, 0.095, 0.5, 0.017])
     cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(-8, 9, 2))
     cb.outline.set_visible(False)
     cb.ax.tick_params(labelsize=10.5, length=0)
@@ -155,11 +169,14 @@ def main():
     add_title(fig, "Westerly wind bursts along the equator before and during major El Niño events",
               f"Daily surface wind compared with normal, 5°S–5°N. From October {NOW - 1} to {latest:%-d %B %Y}: "
               f"{counts[NOW]} westerly wind bursts"
-              + (f" ({missing} days missing from the record)" if missing else "") + ",\ncompared with "
+              + (f" ({missing} days without data)" if missing else "") + ",\ncompared with "
               + join_and(f"{counts[y]} in {y - 1}/{y}" for y in EVENTS[1:]) + " over the same part of the year.")
     add_source(fig, "Data: NOAA NCEI Blended Sea Winds v2, daily 10 m winds (0.25°, shown on a 2° grid), 5-day "
                "means; anomalies from the 1991–2020 monthly normal. Bursts: ≥ +5 m/s over ≥ 10° of longitude for "
-               "≥ 3 days. Satellite record from 1987.")
+               "≥ 3 days. Satellite record from 1987."
+               + ("\n*Days missing from NCEI's record (" + join_and(sorted({f"{d:%B %Y}" for d in filled[NOW]},
+                  key=lambda m: pd.Timestamp(m))) + ") filled with CCMP v2.1 winds (Remote Sensing Systems, via "
+                  "NOAA PIFSC), adjusted to NCEI over the surrounding 60 days." if n_filled else ""))
     save(fig, args.out,
          alt=f"Longitude–time diagrams of daily equatorial east–west wind anomalies from October of the year before "
              f"to January after the first year of the El Niños of " + join_and(f"{y}/{y + 1}" for y in EVENTS)
