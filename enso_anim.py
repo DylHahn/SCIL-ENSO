@@ -15,12 +15,21 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from enso_common import make_readable, save
+from enso_common import CLEAN, make_readable, save
 
 
 class AnimationFrames:
     def __init__(self, fig, dpi=110):
         self.fig, self.dpi, self.frames, self.durations = fig, dpi, [], []
+        self.boxes = []                                    # content extents, for the clean export's crop
+
+    def _content_box(self):
+        """(left, top, right, bottom) pixels of everything drawn, plus a small margin."""
+        bb = self.fig.get_tightbbox(self.fig.canvas.get_renderer())
+        h = self.fig.get_figheight() * self.dpi
+        m = 0.15 * self.dpi
+        return (max(bb.x0 * self.dpi - m, 0), max(h - bb.y1 * self.dpi - m, 0),
+                min(bb.x1 * self.dpi + m, self.fig.get_figwidth() * self.dpi), min(h - bb.y0 * self.dpi + m, h))
 
     def grab(self, duration_ms=120):
         if not self.frames:
@@ -30,14 +39,38 @@ class AnimationFrames:
         rgba = np.asarray(self.fig.canvas.buffer_rgba())
         self.frames.append(Image.fromarray(rgba[..., :3].copy()))
         self.durations.append(duration_ms)
+        if CLEAN and len(self.frames) in (1, 2) or CLEAN and len(self.frames) % 25 == 0:
+            self.boxes.append(self._content_box())
 
     def save(self, out_png, alt=None, quality=80):
         out_png = Path(out_png)
+        frames = self.frames
+        if CLEAN:                                          # crop every frame to the content of all frames
+            self.boxes.append(self._content_box())
+            box = [int(round(f(v[i] for v in self.boxes))) for i, f in enumerate((min, min, max, max))]
+            box[2] -= (box[2] - box[0]) % 2                # even size, required by H.264 video
+            box[3] -= (box[3] - box[1]) % 2
+            frames = [f.crop(box) for f in frames]
         save(self.fig, out_png, alt=alt)                                 # final frame, full resolution
         webp = out_png.with_suffix(".webp")
-        self.frames[0].save(webp, save_all=True, append_images=self.frames[1:], duration=self.durations,
-                            loop=0, quality=quality, method=4)
-        print(f"Saved {webp} ({len(self.frames)} frames, {webp.stat().st_size / 1e6:.1f} MB)")
+        frames[0].save(webp, save_all=True, append_images=frames[1:], duration=self.durations,
+                       loop=0, quality=quality, method=4)
+        print(f"Saved {webp} ({len(frames)} frames, {webp.stat().st_size / 1e6:.1f} MB)")
+        if CLEAN:
+            self.save_video(out_png.with_suffix(".mp4"), frames)
+
+    def save_video(self, path, frames, fps=25):
+        """MP4 (H.264) at a constant frame rate: each frame is repeated to match its duration."""
+        import imageio_ffmpeg
+        w, h = frames[0].size
+        writer = imageio_ffmpeg.write_frames(str(path), (w, h), fps=fps, quality=8, macro_block_size=2)
+        writer.send(None)
+        for f, d in zip(frames, self.durations):
+            data = np.asarray(f, dtype=np.uint8).tobytes()
+            for _ in range(max(1, round(d / 1000 * fps))):
+                writer.send(data)
+        writer.close()
+        print(f"Saved {path} ({path.stat().st_size / 1e6:.1f} MB)")
 
 
 def interpolate_months(stack, steps):

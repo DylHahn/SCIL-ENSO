@@ -21,7 +21,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, find_events, join_and, load_roni, save
+from enso_common import CLEAN, FIG_DIR, COLORS, add_source, add_title, apply_style, find_events, join_and, load_roni, save
 from enso_stats import load_gridded
 from event_timeseries import N_MONTHS, NOW, aligned, box_series, onset_year
 
@@ -149,8 +149,9 @@ def main():
              f"{NOW}/{NOW + 1} so far: Eastern Pacific {now_pt[1]:+.1f} °C,\nCentral Pacific {now_pt[0]:+.1f} °C "
              f"({kind(*now_pt)} type).\n"
              + "\n".join(f"{y}/{y + 1} at peak: {peak[y][1]:+.1f} and {peak[y][0]:+.1f} °C" for y in EVENTS[1:]))
-    fig.text(0.615, 0.465, notes, va="top", fontsize=11.5, color=COLORS["text"], linespacing=1.45,
-             bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=10))
+    if not CLEAN:
+        fig.text(0.615, 0.465, notes, va="top", fontsize=11.5, color=COLORS["text"], linespacing=1.45,
+                 bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=10))
 
     add_title(fig, "Eastern Pacific or Central Pacific El Niño?",
               "Where along the equator the warming is centred, measured by two indices that separate warming near "

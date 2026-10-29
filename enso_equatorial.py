@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 from matplotlib.ticker import FuncFormatter
 
-from enso_common import COLORS, add_source, add_title, lon_label, save
+from enso_common import CLEAN, COLORS, add_source, add_title, lon_label, save
 
 EVENTS = [2026, 2023, 2015, 1997, 1982]               # most recent first
 LON_RANGE = (130, 280)
@@ -68,8 +68,9 @@ def hovmoller_figure(fields, levels, cmap_name, cbar_label, title, subtitle, sou
     width = (right - left - gap * (len(years) - 1)) / len(years)
     p_bottom, p_height = 0.19, 0.52
     cf = None
-    fig.text(0.02, 1 - 1.30 / 10.4, HOW_TO_READ, ha="left", va="top", fontsize=11.5, color=COLORS["text"],
-             linespacing=1.4, bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=6))
+    if not CLEAN:
+        fig.text(0.02, 1 - 1.30 / 10.4, HOW_TO_READ, ha="left", va="top", fontsize=11.5, color=COLORS["text"],
+                 linespacing=1.4, bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=6))
     for k, y in enumerate(years):
         months, lons, vals = fields[y]
         x0 = left + k * (width + gap)

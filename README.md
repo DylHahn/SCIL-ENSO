@@ -43,6 +43,7 @@ python update_site.py --site-only           # rewrite the pages only (e.g. after
 python update_site.py --pages el-nino --figures anim_3d.py   # rebuild only some figures
 python summary.py                           # print the "What's happening now" summary
 python hovmoller_sst.py                     # build any single figure into figures_public/
+python export_figures.py                    # clean copies (no titles) and MP4 videos in figures_clean/
 ```
 
 ## Repository layout
@@ -60,6 +61,7 @@ docs/                   the published website (GitHub Pages)
 Figures, El Niño tabs             Figures, Southern California tabs
   anim_timeseries.py                socal_warming_since_1895.py
   interactive_data.py               socal_marine_heat.py
+                                    anim_marine_heatwaves.py  (uses enso_mhw.py)
   anim_sst.py                       socal_summer_anomalies.py
   anim_upper_ocean.py               socal_station_heat.py
   warm_water_before_onset.py
@@ -67,6 +69,8 @@ Figures, El Niño tabs             Figures, Southern California tabs
   anim_warm_layers.py
   hovmoller_winds.py    (uses enso_winds.py)
   anim_kelvin.py        (uses enso_sealevel.py)
+  kelvin_speeds.py
+  coastal_sea_level.py  (uses enso_tidegauges.py)
   interactive_sealevel_data.py  (3D sea level view: site/sealevel3d.html)
   anim_sealevel_3d.py   animated version (not on the site; for iCHARM or slides)
   anim_3d.py
@@ -93,6 +97,8 @@ Shared modules
   enso_anim.py        animated WebP output
   enso_sealevel.py    daily satellite sea level along the equator (Kelvin waves)
   enso_winds.py       daily equatorial surface winds (NCEI Blended Sea Winds; read remotely, cached)
+  enso_tidegauges.py  daily tide-gauge sea level, Peru to Washington (UHSLC)
+  enso_mhw.py         marine heatwaves and categories, eastern Pacific (daily OISST via NOAA PSL)
 
 archive/                earlier figures no longer on the site (see archive/README.md)
 data/                   downloaded data, not in the repository (see below)

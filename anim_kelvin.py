@@ -10,7 +10,7 @@ archive/kelvin_schematic.py):
 Data: NOAA blended satellite altimetry (daily, 0.25°). Anomalies are relative to the 2017–2024
 seasonal cycle with a 5-day running mean. The wave signal is the anomaly minus its 91-day running
 mean, which removes the slow El Niño build-up and leaves the eastward pulses. Waves are traced
-automatically as straight eastward paths from 150°E to 95°W at 2.0–3.5 m/s along which the wave
+automatically as straight eastward paths from 150°E to 95°W at 1.8–4.0 m/s along which the wave
 signal averages at least +3 cm, at least 20 days apart at both ends, once they have finished crossing.
 
     python anim_kelvin.py
@@ -32,7 +32,7 @@ NOW = 2026
 LON_RANGE = (130.0, 267.0)               # stop west of the Galápagos, which disturb the altimetry
 X0, X1 = 150.0, 265.0                    # tracking window: 150°E to 95°W
 M_PER_DEG = 111.32e3
-SPEEDS = np.arange(2.0, 3.51, 0.05)      # m/s; first-mode Kelvin waves travel at roughly 2.5–3 m/s
+SPEEDS = np.arange(1.8, 4.01, 0.05)      # m/s; first-mode Kelvin waves travel at roughly 2.5–3 m/s
 MIN_CM = 3.0
 GAP_DAYS = 20
 START = f"{NOW - 1}-10-01"            # first day shown
@@ -68,6 +68,48 @@ def track_waves(sig):
     return [(sig.index[i0], c, s, d0 + pd.Timedelta(days=te)) for s, i0, c, te in waves]
 
 
+def refine(sig, waves, half_window=12):
+    """Measure each traced wave's speed from the data: at every longitude, the day on which the wave signal
+    peaks within `half_window` days of the traced path; a straight line through those (day, distance)
+    points gives the speed, its standard error and the fit's r². Returns [(start, speed m/s, mean cm,
+    arrival, standard error m/s, r²)], with start and arrival from the fitted line."""
+    lons = np.array(sig.columns, float)
+    sel = (lons >= X0) & (lons <= X1)
+    xs, A = lons[sel], sig.values[:, sel]
+    d0, n_days = sig.index[0], len(sig)
+    out = []
+    for t0, c, amp, t1 in waves:
+        ti = (t0 - d0).days + (xs - X0) * M_PER_DEG / c / 86400.0
+        pts = []
+        for j, x in enumerate(xs):
+            lo, hi = int(ti[j] - half_window), int(ti[j] + half_window)
+            if lo < 0 or hi >= n_days or np.isnan(A[lo:hi + 1, j]).all():
+                continue
+            pts.append((lo + int(np.nanargmax(A[lo:hi + 1, j])), (x - X0) * M_PER_DEG))
+        day, dist = np.array(pts, float).T
+        slope, icpt = np.polyfit(day, dist, 1)                        # m per day
+        resid = dist - (icpt + slope * day)
+        r2 = 1 - (resid ** 2).sum() / ((dist - dist.mean()) ** 2).sum()
+        se = np.sqrt((resid ** 2).sum() / (len(day) - 2) / ((day - day.mean()) ** 2).sum())
+        start = d0 + pd.Timedelta(days=float(-icpt / slope))
+        end = d0 + pd.Timedelta(days=float(((X1 - X0) * M_PER_DEG - icpt) / slope))
+        out.append((start, slope / 86400.0, amp, end, se / 86400.0, r2))
+    return out
+
+
+def kelvin_waves(refresh=False, first="2017-01-01"):
+    """Sea level anomaly and Kelvin-wave signal (cm, date × longitude) over the whole satellite record, and
+    every wave traced and measured in it. The Kelvin wave animation and the speed chart both use this, so
+    each wave has the same dates and speed in both."""
+    raw = daily(first, refresh=refresh)
+    anom = anomalies(raw).dropna(how="all")
+    lons = np.array(anom.columns, float)
+    anom = anom.loc[:, (lons >= LON_RANGE[0]) & (lons <= LON_RANGE[1])]
+    sig = wave_signal(anom)
+    sig = sig.loc[sig.index[0] + pd.Timedelta(days=90):]          # the 91-day filter needs data on both sides
+    return anom, sig, refine(sig, track_waves(sig))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--every", type=int, default=4, help="days per animation frame")
@@ -78,14 +120,11 @@ def main():
     args = ap.parse_args()
 
     apply_style(args.theme)
-    raw = daily(f"{NOW - 1}-07-01", refresh=args.refresh)        # extra months so the 91-day filter is complete
-    anom = anomalies(raw).dropna(how="all")
+    anom, sig, waves = kelvin_waves(args.refresh)
     lons = np.array(anom.columns, float)
-    keep = (lons >= LON_RANGE[0]) & (lons <= LON_RANGE[1])
-    anom, lons = anom.loc[:, keep], lons[keep]
-    sig = wave_signal(anom)
     anom, sig = anom.loc[START:], sig.loc[START:]                 # shown from October of the year before onset
-    waves = track_waves(sig)
+    # waves that crossed during the period shown, with speeds measured from each wave's peaks
+    waves = [w[:4] for w in waves if w[0] + (w[3] - w[0]) / 2 >= pd.Timestamp(START)]
     dates = anom.index
     # waves are traced in centimetres; values are shown in the chosen units
     k, U = (1.0, "cm") if args.units == "cm" else (1 / 2.54, "in")
@@ -173,7 +212,7 @@ def main():
               + " as it passes, so satellites can follow it across the Pacific.")
     add_source(fig, "Data: NOAA blended satellite altimetry (daily, 0.25°, 1°S–1°N), anomalies from the 2017–2024 "
                "seasonal cycle. Wave signal: anomaly minus its 91-day running mean.\nWaves traced automatically "
-               "(150°E–95°W, 2.0–3.5 m/s, wave signal ≥ +3 cm, 1.2 in). Top panel: sea surface height (SSH) anomaly.")
+               "(150°E–95°W, 1.8–4.0 m/s, wave signal ≥ +3 cm, 1.2 in). Top panel: sea surface height (SSH) anomaly.")
 
     frames = AnimationFrames(fig, dpi=105)
     idx = list(range(0, len(dates), args.every))

@@ -266,7 +266,7 @@
   <p class="kicker">Southern California Precipitation</p>
   <h1>Southern California precipitation and El Niño</h1>
   <p class="lede">NOAA&#x27;s seasonal precipitation outlook for the coming winter, and the precipitation Southern California received during past strong <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span> winters, region-wide and at individual stations.</p>
-  <p class="meta">Updated October 21, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 28, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 
 
@@ -300,6 +300,11 @@
   </ul>
   <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and methods:
   <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
+  <p class="disclaimer"><strong>Disclaimer.</strong> These visualizations are provided for education and general
+  information only, without warranty of any kind. They are not official forecasts, outlooks or warnings, and they
+  may contain errors or change as NOAA updates its data. Use them at your own risk; for decisions, rely on official
+  sources such as the <a href="https://www.cpc.ncep.noaa.gov/">NOAA Climate Prediction Center</a> and the
+  <a href="https://www.weather.gov/">National Weather Service</a>.</p>
 </footer>
 </main>
 <script>
@@ -347,7 +352,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261021";
+  const up = "../", src = up + "search-index.json?v=20261028";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {

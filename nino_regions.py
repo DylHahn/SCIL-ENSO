@@ -26,8 +26,9 @@ REGIONS = {
     "Niño 3": "150°W–90°W, 5°S–5°N",
     "Niño 1+2": "90°W–80°W, 10°S–0°",
 }
-# past events: fixed categorical slots (blue, aqua, yellow); the current event uses the El Niño red
-PAST_COLORS = {"dark": ["#3987e5", "#199e70", "#c98500"], "light": ["#2a78d6", "#1baf7a", "#eda100"]}
+# past events: fixed categorical slots per event; the current event uses the El Niño red
+PAST_COLORS = {"dark": {2023: "#9085e9", 2015: "#c98500", 1997: "#199e70", 1982: "#3987e5"},
+               "light": {2023: "#6250d6", 2015: "#eda100", 1997: "#1baf7a", 1982: "#2a78d6"}}
 N_MONTHS = 18
 # box outlines for the locator map: (lon0, lon1, lat0, lat1) in 0–360 longitude, label side
 BOXES = {"Niño 4": (160, 210, -5, 5, "top"), "Niño 3.4": (190, 240, -5, 5, "bottom"),
@@ -67,8 +68,8 @@ def main():
 
     apply_style(args.theme)
     df = load_nino_regions(args.refresh)
-    now, past = args.years[-1], args.years[:-1]
-    colors = dict(zip(past, PAST_COLORS[args.theme])) | {now: COLORS["el_nino"]}
+    now, past = args.years[0], args.years[1:]          # most recent first
+    colors = {y: PAST_COLORS[args.theme].get(y, COLORS["neutral"]) for y in past} | {now: COLORS["el_nino"]}
 
     series = {}
     for y in args.years:

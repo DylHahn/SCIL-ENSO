@@ -81,7 +81,11 @@ def daily_u(month, refresh=False):
     path = WIND_DIR / f"u10_{month:%Y_%m}.nc"
     if path.exists() and not refresh:
         return xr.open_dataarray(path).load()
-    days = {d: p for d, p in _catalog(month.year).items() if d.month == month.month}
+    partial = WIND_DIR / f"u10_{month:%Y_%m}_partial.nc"
+    try:
+        days = {d: p for d, p in _catalog(month.year).items() if d.month == month.month}
+    except OSError:                                          # NCEI unavailable: use the last copy read
+        return xr.open_dataarray(partial).load() if partial.exists() else None
     if not days:
         return None
     with ThreadPoolExecutor(8) as ex:
@@ -89,8 +93,11 @@ def daily_u(month, refresh=False):
     u = xr.DataArray(np.stack(parts), dims=("time", "lon"), coords=dict(time=list(days), lon=SUB_LON),
                      name="u_wind").sortby("time")
     WIND_DIR.mkdir(parents=True, exist_ok=True)
-    if len(days) == month.days_in_month:                      # cache only complete months
+    if len(days) == month.days_in_month:                      # cache complete months for good
         u.to_netcdf(path)
+        partial.unlink(missing_ok=True)
+    else:                                                     # and keep the latest copy of the rest
+        u.to_netcdf(partial)
     return u
 
 

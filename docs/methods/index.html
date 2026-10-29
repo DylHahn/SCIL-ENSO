@@ -266,7 +266,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated October 21, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated October 28, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -283,6 +283,7 @@
     <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present</td><td>Kelvin wave animation; sea level in 3D</td></tr>
     <tr><td>Warm water volume index</td><td>NOAA Pacific Marine Environmental Laboratory (PMEL)</td><td>Monthly, 1980–present</td><td>Warm water stored before each El Niño</td></tr>
     <tr><td>Blended Sea Winds (NBS) v2, 10 m winds</td><td>NOAA NCEI</td><td>0.25°, daily, 1987–present</td><td>Westerly wind bursts along the equator</td></tr>
+    <tr><td>Fast-delivery daily tide-gauge sea level</td><td>University of Hawaii Sea Level Center (UHSLC)</td><td>Individual stations, daily, about two months behind real time</td><td>Coastal sea level from Ecuador to Washington</td></tr>
     <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
     <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series and interactive explorer, tropical Pacific maps</td></tr>
     <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
@@ -414,8 +415,32 @@
   longitude. The 2017–2024 mean seasonal cycle (monthly means interpolated to days) is removed, which also removes
   the long-term offset of the record, and a 5-day running mean is applied. Because only eight years are available,
   this baseline differs from the 1991–2020 normals used elsewhere. Waves are traced automatically as straight
-  eastward paths from 150°E to 90°W, at speeds between 1.8 and 3.2 m/s, along which the mean anomaly is at least
-  +3 cm, at least 25 days apart; a wave is shown once it has crossed.</li>
+  eastward paths from 150°E to 95°W, at speeds between 1.8 and 4.0 m/s (in steps of 0.05 m/s), along which the
+  mean of the Kelvin-wave signal (the anomaly minus its 91-day running mean) is at least +3 cm; paths must start and
+  end at least 20 days apart, and a wave is shown once it has crossed. A wave's speed is the slope of its best-fitting
+  straight path, so it is an average over the crossing.</li>
+  <li><b>Kelvin wave speeds.</b> Waves traced as above over the whole record from 2017 are measured again from the
+  data: at each longitude between 150°E and 95°W, the day on which the Kelvin-wave signal peaks within 12 days of the
+  traced path is found, and a straight line through those days and distances gives the speed, its standard error
+  (bars show ±1.96 standard errors) and the fit's r²; waves with r² below 0.7 are drawn faintly. The Kelvin wave
+  animation reports the same measured speeds. The 2.5–3 m/s band is the typical speed of first-baroclinic-mode
+  Kelvin waves in the equatorial Pacific.</li>
+  <li><b>Coastal sea level from Ecuador to Washington.</b> UHSLC fast-delivery daily sea level at tide gauges from
+  Talara, Peru, to Neah Bay, Washington (the open-coast gauge nearest Seattle; Seattle's own gauge lies inside Puget
+  Sound). Anomalies are departures from each station's 1991–2020 mean seasonal cycle (smoothed with a 31-day running
+  mean; stations without five years in that period use their whole record), shown as 10-day running means, and are
+  not corrected for air pressure or vertical land motion. Acajutla, El Salvador, is excluded from 2024 onward,
+  when its record drops by about 18 cm, a change of instrument or datum. Several Mexican gauges no longer report, so
+  coverage differs between events. Coastal sea level also responds to local winds and storms, especially north of
+  Mexico, so not every rise is a Kelvin wave.</li>
+  <li><b>Marine heatwaves from California to Peru.</b> NOAA OISST v2.1 daily sea surface temperature (via NOAA PSL)
+  on every fourth 0.25° grid point (1°) over 25°S–45°N, 150°W–70°W. Following Hobday et al. (2016), the
+  climatological mean and 90th percentile for each day of the year are computed from 1991–2020 with an 11-day window
+  and smoothed with a 31-day running mean; a marine heatwave is at least five consecutive days above the 90th
+  percentile, with gaps of two days or less joined. Categories follow Hobday et al. (2018): the excess over the mean
+  in multiples of the difference between the 90th percentile and the mean (I Moderate 1–2×, II Strong 2–3×,
+  III Severe 3–4×, IV Extreme ≥ 4×). There is no category above IV. Box A covers 30–35°N from 125°W to the coast;
+  box B is the Niño 1+2 region (10°S–0°, 90°W–80°W).</li>
   <li><b>Event development and ranking.</b> RONI for every event since 1950. The current event is completed with
   NOAA's median forecast and its 5–95% range. Accumulated intensity is the sum of monthly RONI values above
   +0.5 °C over the event.</li>
@@ -438,6 +463,17 @@
   inland heat (USW00023119; no data 1971–2011) and Lake Elsinore for inland rainfall (USC00042805). Summers need at
   least 110 of 122 days of data; rainy seasons need at least 145 of 151 days in November–March.</li>
 </ul>
+
+<h2>Disclaimer</h2>
+<p>This website is an educational and research-communication project of the SDSU Climate Informatics Lab. Its
+figures, statements and comparisons are provided as is, without warranty of any kind, and are not official
+forecasts, outlooks, advisories or warnings. They are computed automatically from public NOAA and university data,
+may contain errors, and can change when the underlying data are revised. Anyone using this material to learn about
+El Niño or to inform a decision does so at their own risk. For decisions affecting safety, property, water,
+agriculture, fisheries or emergency planning, consult official sources: the
+<a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/">NOAA Climate Prediction Center's
+ENSO diagnostic discussion</a>, the <a href="https://www.weather.gov/">National Weather Service</a> and state and
+local agencies.</p>
 
 <h2>Limitations</h2>
 <ul>
@@ -466,6 +502,11 @@ downloads the latest data and rebuilds every figure and page.</p>
 
   <p>Explore NOAA datasets yourself on <a href="https://icharm.sdsu.edu/">iCHARM</a>. Code and methods:
   <a href="https://github.com/DylHahn/SCIL-ENSO">GitHub repository</a> · <a href="../methods/">Methods &amp; data</a>.</p>
+  <p class="disclaimer"><strong>Disclaimer.</strong> These visualizations are provided for education and general
+  information only, without warranty of any kind. They are not official forecasts, outlooks or warnings, and they
+  may contain errors or change as NOAA updates its data. Use them at your own risk; for decisions, rely on official
+  sources such as the <a href="https://www.cpc.ncep.noaa.gov/">NOAA Climate Prediction Center</a> and the
+  <a href="https://www.weather.gov/">National Weather Service</a>.</p>
 </footer>
 </main>
 <script>
@@ -513,7 +554,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261021";
+  const up = "../", src = up + "search-index.json?v=20261028";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {

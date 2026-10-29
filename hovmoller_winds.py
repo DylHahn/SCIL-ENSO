@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, ListedColormap
 from matplotlib.ticker import FuncFormatter
 
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, join_and, lon_label, save
+from enso_common import CLEAN, FIG_DIR, COLORS, add_source, add_title, apply_style, join_and, lon_label, save
 from enso_equatorial import LON_RANGE, _map_strip
 from enso_winds import daily_anomaly
 
@@ -145,12 +145,13 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("East–west wind anomaly (m/s), 5°S–5°N   ·   red: westerly (toward South America), "
                  "blue: stronger trade winds", fontsize=11, color=COLORS["text_2"])
-    fig.text(0.02, 1 - 1.15 / 11.2, "How to read: each panel is one El Niño. Each row is one day, from October of "
-             "the year before (top) to the following January; position runs from the western Pacific (left) to\n"
-             "South America (right). Red streaks are westerly wind bursts: short spells of wind blowing toward South "
-             "America that push warm water east. The dashed line marks 1 January of the El Niño's first year.",
-             ha="left", va="top", fontsize=11.5, color=COLORS["text"], linespacing=1.4,
-             bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=6))
+    if not CLEAN:
+        fig.text(0.02, 1 - 1.15 / 11.2, "How to read: each panel is one El Niño. Each row is one day, from October "
+                 "of the year before (top) to the following January; position runs from the western Pacific (left) "
+                 "to\nSouth America (right). Red streaks are westerly wind bursts: short spells of wind blowing toward "
+                 "South America that push warm water east. The dashed line marks 1 January of the El Niño's first year.",
+                 ha="left", va="top", fontsize=11.5, color=COLORS["text"], linespacing=1.4,
+                 bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=6))
     add_title(fig, "Westerly wind bursts along the equator before and during major El Niño events",
               f"Daily surface wind compared with normal, 5°S–5°N. From October {NOW - 1} to {latest:%-d %B %Y}: "
               f"{counts[NOW]} westerly wind bursts"

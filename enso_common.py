@@ -52,6 +52,10 @@ CACHE_NAMES = {
     "cpc_strengths": "cpc_roni_strengths.html",
 }
 
+# Clean figures for slides and papers (export_figures.py): no title, subtitle, source line or reading notes,
+# cropped to the content; animations are also written as MP4 video
+CLEAN = os.environ.get("ENSO_CLEAN") == "1"
+
 # All paths are relative to this folder, so the scripts work from anywhere
 HERE = Path(__file__).resolve().parent
 CACHE_DIR = Path(os.environ.get("ENSO_VIZ_CACHE", HERE / "data" / "noaa_cache"))
@@ -184,6 +188,8 @@ def apply_style(theme="light"):
 def add_title(fig, title, subtitle=None, y=None):
     """Big plain-language headline + one-line explanation, left aligned.
     Positions are fixed in inches so spacing is the same at any figure height."""
+    if CLEAN:
+        return
     h = fig.get_figheight()
     y = 1 - 0.1 / h if y is None else y
     fig.text(0.02, y, title, ha="left", va="top", fontsize=19, fontweight="bold",
@@ -195,6 +201,8 @@ def add_title(fig, title, subtitle=None, y=None):
 
 def add_source(fig, text):
     """Source credit at the bottom left."""
+    if CLEAN:
+        return
     fig.text(0.02, 0.012, text, ha="left", va="bottom", fontsize=10, color=COLORS["muted"])
 
 
@@ -259,7 +267,10 @@ def save(fig, out_path, alt=None):
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     make_readable(fig)
-    fig.savefig(out_path, dpi=200)
+    if CLEAN:
+        fig.savefig(out_path, dpi=200, bbox_inches="tight", pad_inches=0.15)
+    else:
+        fig.savefig(out_path, dpi=200)
     if alt:
         out_path.with_suffix(".alt.txt").write_text(alt.strip() + "\n")
     print(f"Saved {out_path}")

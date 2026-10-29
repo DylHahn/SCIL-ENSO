@@ -113,11 +113,17 @@ def pacific_monthly(months, refresh=False):
     missing = want.difference(got) if not refresh else want
     if len(missing):
         print(f"Reading {len(missing)} months of OISST for the tropical Pacific from NOAA PSL ...")
-        with xr.open_dataset(PSL_OISST.format(name="sst.mon.mean.nc") + "#mode=bytes") as ds:
-            avail = set(pd.to_datetime(ds["time"].values))
-            pick = [t for t in missing if t in avail]
-            new = (ds["sst"].sel(time=pick, lat=slice(*PACIFIC["lat"]), lon=slice(*PACIFIC["lon"])).load()
-                   if pick else None)
+        try:
+            with xr.open_dataset(PSL_OISST.format(name="sst.mon.mean.nc") + "#mode=bytes") as ds:
+                avail = set(pd.to_datetime(ds["time"].values))
+                pick = [t for t in missing if t in avail]
+                new = (ds["sst"].sel(time=pick, lat=slice(*PACIFIC["lat"]), lon=slice(*PACIFIC["lon"])).load()
+                       if pick else None)
+        except OSError:                                    # NOAA PSL unavailable: use the months already saved
+            if have is None:
+                raise
+            print("NOAA PSL could not be reached; using the saved months")
+            new = None
         if new is None:                                    # requested months not published yet
             return have.sel(time=have["time"].isin(want.values))
         if have is not None:

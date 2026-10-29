@@ -156,7 +156,7 @@ PAGES = [
         h1='Kelvin waves and sea level: the pulses that carried the warm water east',
         lede="Bursts of westerly wind send pulses of warm water east along the equator. Each raises sea level by a "
              "few centimetres, so daily satellite sea level shows every wave crossing the Pacific and the warm "
-             "water piling up near South America.",
+             "water piling up near South America; tide gauges then follow the waves up the coast to Washington.",
         figures=[
             ("section", 'The wind bursts',
              "Short bursts of westerly wind along the equator set off the Kelvin waves."),
@@ -169,13 +169,24 @@ PAGES = [
             ('anim_kelvin.py', True, 'Animation: Kelvin waves',
              "Every Kelvin wave since October 2025 traced in daily satellite sea level along the equator: each "
              "pulse raises sea level by a few centimetres as it crosses the Pacific."),
+            ('kelvin_speeds.py', True, 'How fast the Kelvin waves crossed the Pacific',
+             "The speed of every Kelvin wave traced in satellite sea level since 2017, and the days each took to "
+             "cross from 150°E to 95°W, against the ENSO state at the time."),
             ('interactive_sealevel_data.py', True, 'Interactive 3D: sea level and Kelvin waves',
              "Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can "
              "rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave "
              "signal alone."),
+            ("section", 'Along the coast from Ecuador to Washington',
+             "When a Kelvin wave reaches South America, part of it turns north and south along the coast."),
+            ('coastal_sea_level.py', True, 'Coastal sea level from Ecuador to Washington',
+             "Daily tide-gauge sea level along the Pacific coast of the Americas, from Peru and Ecuador to Neah Bay, "
+             "Washington, for 2026/2027, 2023/2024, 2015/2016 and 1997/1998."),
         ],
         extra="",
-        data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP'],
+        data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP',
+              'Daily surface winds (Blended Sea Winds v2): NOAA NCEI',
+              'Daily tide-gauge sea level: University of Hawaii Sea Level Center',
+              'Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center'],
     ),
     dict(
         key='records', slug='records', tab='Records & Forecasts', group='El Niño 2026/2027',
@@ -214,6 +225,10 @@ PAGES = [
             ('socal_marine_heat.py', True, 'Marine heat in the Southern California Bight',
              "Daily sea surface temperature and marine heatwave days in the Southern California Bight since 1982 "
              "(NOAA OISST), with 2026 compared with 1997 and 2015."),
+            ('anim_marine_heatwaves.py', True, 'Animation: marine heatwaves from California to Peru',
+             "Daily marine heatwave category (I Moderate to IV Extreme) across the eastern Pacific from 25°S to "
+             "45°N since January 2026 (NOAA OISST), with the share of the coastal waters off Southern California "
+             "and off Ecuador and Peru in each category."),
             ('socal_warming_since_1895.py', True, 'Long-term increase in summer heat',
              "Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and "
              "the regional summer temperature record since 1895 (NOAA nClimGrid)."),
@@ -238,7 +253,7 @@ PAGES = [
   </ul>
 </section>""",
         data=["Gridded monthly temperature (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI",
-              "Daily sea surface temperature (OISST v2.1): NOAA NCEI, via NOAA CoastWatch ERDDAP",
+              "Daily sea surface temperature (OISST v2.1): NOAA NCEI, via NOAA CoastWatch ERDDAP and NOAA PSL",
               "Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center"],
     ),
     dict(
@@ -381,6 +396,28 @@ FIGURE_NOTES = {
             "left to right from the western Pacific to South America. Red streaks are westerly wind bursts: spells of "
             "wind blowing toward South America, against the usual trade winds. Each strong burst is followed by a "
             "Kelvin wave in the figures below."),
+    "kelvin_speeds.py": dict(
+        takeaway="The 2026 Kelvin waves were not unusually fast: they crossed at a median of 2.8 m/s, about 53 days "
+                 "from 150°E to 95°W, the same as the median of all clear waves since 2017.",
+        how="Each dot is one Kelvin wave, placed at the date it was halfway across and at its speed; the right-hand "
+            "axis gives the same speed as days to cross. Bigger dots raised sea level more; the bars show how "
+            "precisely each speed is known. The grey band is the speed theory predicts for the fastest type of "
+            "Kelvin wave; red and blue shading mark El Niño and La Niña."),
+    "coastal_sea_level.py": dict(
+        takeaway="By August 2026 coastal sea level had risen about 25 cm in Ecuador and 14 cm at San Diego, but not "
+                 "yet in Oregon and Washington; in 1997 the northern coast rose from the middle of the year.",
+        how="Each row is one tide gauge, from Peru at the bottom to Washington at the top (numbered on the map); "
+            "time runs from left to right. Red is higher sea level than normal. A rise that appears first in the "
+            "lower rows and later in the upper rows is a wave travelling north along the coast. Grey rows had no "
+            "working gauge at the time."),
+    "anim_marine_heatwaves.py": dict(
+        takeaway="On 20 October 2026 the whole coastal ocean off Ecuador and Peru was in a marine heatwave, 70% of "
+                 "it Severe or Extreme, and half the coastal waters off Southern California and northern Baja were in "
+                 "a Strong or Severe heatwave.",
+        how="Colours show the category of marine heatwave on each day: the more times the water exceeds its usual "
+            "range for that time of year, the higher the category. Light grey-blue is ocean with no heatwave. The "
+            "charts on the right show how much of each coastal box (A and B on the map) was in each category as "
+            "the year went on."),
     "el_nino_type.py": dict(
         takeaway="So far 2026/2027 is a clear Eastern Pacific El Niño, like 1997/1998 and 1982/1983: the warming is "
                  "centred near South America, while the central Pacific is close to normal.",
@@ -605,6 +642,24 @@ FIGURE_INFO = {
         "winds as the ocean warms, are what turn a developing El Niño into a strong one.",
         "NOAA NCEI Blended Sea Winds v2, daily 10 m zonal wind (0.25°), averaged over 5°S–5°N; anomalies from the "
         "NCEI 1991–2020 monthly climatology; 5-day running means."),
+    "kelvin_speeds.py": (
+        "The speed of a Kelvin wave sets how long the warm water takes to reach South America, and so how much "
+        "warning the ocean gives before the eastern Pacific warms. Speed depends on how the ocean is layered: "
+        "a thicker warm layer and eastward currents make waves faster.",
+        "NOAA blended near-real-time altimetry (sea surface height anomaly, 0.25°, daily, from 2017), 1°S–1°N, via "
+        "NOAA CoastWatch ERDDAP; ENSO state from NOAA CPC's RONI."),
+    "coastal_sea_level.py": (
+        "Coastal-trapped Kelvin waves carry El Niño's warm water poleward along the coasts of the Americas, raising "
+        "sea level and warming coastal waters as far as California and the Pacific Northwest. Higher coastal sea "
+        "level adds to flooding and erosion during winter storms and high tides.",
+        "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's "
+        "1991–2020 seasonal cycle, 10-day means, not corrected for air pressure."),
+    "anim_marine_heatwaves.py": (
+        "El Niño warms the coastal ocean of the Americas through coastal Kelvin waves and weaker winds. Prolonged "
+        "marine heatwaves stress fisheries, kelp forests and coral, and can bring toxic algal blooms and unusual "
+        "marine species to Southern California.",
+        "NOAA OISST v2.1 daily sea surface temperature (0.25°, used every 1°), via NOAA PSL; marine heatwaves and "
+        "categories after Hobday et al. (2016, 2018), with a 1991–2020 baseline."),
     "el_nino_type.py": (
         "El Niños centred near South America and those centred near the date line shift the atmosphere's heating "
         "to different places, so they affect rainfall and temperature around the world, including California, "
@@ -687,6 +742,10 @@ DATASETS = {
                        "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/strengths/"),
     "nino_indices": ("Monthly Niño region indices (NOAA CPC)", "https://www.cpc.ncep.noaa.gov/data/indices/sstoi.indices"),
     "pmel_wwv": ("Warm water volume index (NOAA PMEL)", "https://www.pmel.noaa.gov/tao/wwv/"),
+    "tide_gauges": ("Daily tide-gauge sea level (University of Hawaii Sea Level Center)",
+                    "https://uhslc.soest.hawaii.edu/datainfo/"),
+    "oisst_daily_psl": ("OISST v2.1 daily (NOAA PSL)",
+                        "https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html"),
     "winds": ("Blended Sea Winds v2 (NOAA NCEI)",
               "https://www.ncei.noaa.gov/products/blended-sea-winds"),
     "altimetry": ("Blended satellite sea level (NOAA CoastWatch ERDDAP)",
@@ -716,6 +775,9 @@ FIGURE_DATA = {
     "hovmoller_sst.py": ["ersst"],
     "el_nino_type.py": ["ersst", "roni"],
     "hovmoller_winds.py": ["winds"],
+    "kelvin_speeds.py": ["altimetry", "roni"],
+    "coastal_sea_level.py": ["tide_gauges"],
+    "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],
     "socal_summer_anomalies.py": ["nclimgrid"],
