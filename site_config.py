@@ -181,6 +181,9 @@ PAGES = [
             ('coastal_sea_level.py', True, 'Coastal sea level from Ecuador to Washington',
              "Daily tide-gauge sea level along the Pacific coast of the Americas, from Peru and Ecuador to Neah Bay, "
              "Washington, for 2026/2027, 2023/2024, 2015/2016 and 1997/1998."),
+            ('anim_coastal_sea_level.py', True, 'Animation: coastal sea level, day by day',
+             "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up "
+             "day by day: a rise that travels north shows as a streak slanting down to the right."),
         ],
         extra="",
         data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP',
@@ -410,6 +413,13 @@ FIGURE_NOTES = {
             "time runs from left to right. Red is higher sea level than normal. A rise that appears first in the "
             "lower rows and later in the upper rows is a wave travelling north along the coast. Grey rows had no "
             "working gauge at the time."),
+    "anim_coastal_sea_level.py": dict(
+        takeaway="Sea level along the coast rose first near the equator, in Ecuador and Costa Rica from May 2026, "
+                 "and later and less in California; Oregon and Washington have barely risen so far.",
+        how="Top: sea level at each tide gauge on the day shown, from Ecuador (left) to Washington (right). Bottom: "
+            "the same day by day, with time running down the page, so a rise that travels north along the coast is "
+            "a streak slanting down to the right. The map colours each gauge by its sea level on the day shown; "
+            "the numbers match the columns."),
     "anim_marine_heatwaves.py": dict(
         takeaway="On 20 October 2026 the whole coastal ocean off Ecuador and Peru was in a marine heatwave, 70% of "
                  "it Severe or Extreme, and half the coastal waters off Southern California and northern Baja were in "
@@ -655,6 +665,11 @@ FIGURE_INFO = {
         "level adds to flooding and erosion during winter storms and high tides.",
         "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's "
         "1991–2020 seasonal cycle, 10-day means, not corrected for air pressure."),
+    "anim_coastal_sea_level.py": (
+        "Coastal-trapped Kelvin waves carry El Niño's warm water poleward along the coasts of the Americas. Watching "
+        "the rise move from gauge to gauge shows how far north the waves have reached and how quickly.",
+        "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's "
+        "1991–2020 seasonal cycle, 10-day means, not corrected for air pressure."),
     "anim_marine_heatwaves.py": (
         "El Niño warms the coastal ocean of the Americas through coastal Kelvin waves and weaker winds. Prolonged "
         "marine heatwaves stress fisheries, kelp forests and coral, and can bring toxic algal blooms and unusual "
@@ -780,6 +795,7 @@ FIGURE_DATA = {
     "hovmoller_winds.py": ["winds", "ccmp"],
     "kelvin_speeds.py": ["altimetry", "roni"],
     "coastal_sea_level.py": ["tide_gauges"],
+    "anim_coastal_sea_level.py": ["tide_gauges"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],

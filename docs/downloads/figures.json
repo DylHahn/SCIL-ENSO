@@ -302,6 +302,23 @@
    }
   },
   {
+   "script": "anim_coastal_sea_level.py",
+   "title": "Animation: coastal sea level, day by day",
+   "tab": "Kelvin Waves & Sea Level",
+   "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
+   "caption": "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up day by day: a rise that travels north shows as a streak slanting down to the right.",
+   "takeaway": "Sea level along the coast rose first near the equator, in Ecuador and Costa Rica from May 2026, and later and less in California; Oregon and Washington have barely risen so far.",
+   "how_to_read": "Top: sea level at each tide gauge on the day shown, from Ecuador (left) to Washington (right). Bottom: the same day by day, with time running down the page, so a rise that travels north along the coast is a streak slanting down to the right. The map colours each gauge by its sea level on the day shown; the numbers match the columns.",
+   "relation": "Coastal-trapped Kelvin waves carry El Niño's warm water poleward along the coasts of the Americas. Watching the rise move from gauge to gauge shows how far north the waves have reached and how quickly.",
+   "data": "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's 1991–2020 seasonal cycle, 10-day means, not corrected for air pressure.",
+   "description": "Animated chart of coastal sea level at 7 tide gauges from Peru to Washington, from October 2025 to 31 August 2026. Over the last 30 days of data: La Libertad, Ecuador +26 cm, San Diego, CA +15 cm and Neah Bay, WA +2 cm compared with normal.",
+   "animated": true,
+   "files": {
+    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_coastal_sea_level.png",
+    "default.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_coastal_sea_level.mp4"
+   }
+  },
+  {
    "script": "event_ranking.py",
    "title": "Ranking of El Niño events since 1950",
    "tab": "Records & Forecasts",

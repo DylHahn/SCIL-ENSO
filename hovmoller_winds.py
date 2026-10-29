@@ -130,17 +130,6 @@ def main():
                     ax.text(np.mean(LON_RANGE), ((gaps[g0] - start).days + (gaps[g1] - start).days) / 2,
                             f"no data, {gaps[g0]:%-d %b}–{gaps[g1]:%-d %b}", ha="center", va="center", fontsize=10,
                             color=COLORS["text_2"])
-        f = filled[y]
-        if len(f):                                                          # mark the days filled from CCMP
-            breaks = np.flatnonzero(np.diff(f.values).astype("timedelta64[D]").astype(int) > 1)
-            for g0, g1 in zip(np.r_[0, breaks + 1], np.r_[breaks, len(f) - 1]):
-                y0, y1 = (f[g0] - start).days - 0.5, (f[g1] - start).days + 0.5
-                ax.plot([LON_RANGE[1] - 1.5] * 2, [y0, y1], color=COLORS["text"], lw=2.2, solid_capstyle="butt",
-                        clip_on=False, zorder=5)
-                if (f[g1] - f[g0]).days >= 6:
-                    ax.text(LON_RANGE[1] - 4, (y0 + y1) / 2, f"{f[g0]:%b}: CCMP\nwinds*", ha="right", va="center",
-                            fontsize=9.5, color=COLORS["text"], zorder=6,
-                            bbox=dict(facecolor=COLORS["surface"], edgecolor="none", alpha=0.75, pad=2))
         if days[-1] < total - 1:
             ax.axhline(days[-1], color=COLORS["text_2"], lw=1, ls=(0, (3, 2)))
             ax.text(np.mean(LON_RANGE), days[-1] + 12, f"Data through\n{latest:%-d %B %Y}", ha="center",
