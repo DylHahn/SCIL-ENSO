@@ -184,10 +184,10 @@ PAGES = [
             ('anim_coastal_sea_level.py', True, 'Animation: coastal sea level, day by day',
              "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up "
              "day by day: a rise that travels north shows as a streak slanting down to the right."),
-            ('coastal_kelvin_signal.py', True, 'Animation: from the equator to each tide gauge',
-             "The equatorial Kelvin waves travelling toward South America, played alongside sea level and its "
-             "Kelvin-wave signal at one tide gauge from Ecuador to Washington, since October 2025; one button per "
-             "gauge."),
+            ('coastal_kelvin_signal.py', True, 'Animation: satellite sea level at each tide gauge',
+             "Daily satellite sea level height (SSH) around each tide gauge from Ecuador to Washington since October "
+             "2025, as an animated map, with the SSH near the gauge and its Kelvin-wave signal drawn day by day; one "
+             "button per gauge."),
         ],
         extra="",
         data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP',
@@ -425,14 +425,14 @@ FIGURE_NOTES = {
             "a streak slanting down to the right. The map colours each gauge by its sea level on the day shown; "
             "the numbers match the columns."),
     "coastal_kelvin_signal.py": dict(
-        takeaway="In Ecuador, the rises of March, May and late August 2026 followed the arrival of equatorial Kelvin "
-                 "waves; at Neah Bay the largest swings came from winter storms, not from the waves.",
-        how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. Top: the "
-            "Kelvin-wave signal along the equator on the day shown, as in Figure 2, so you can watch each wave head "
-            "for South America. Middle: sea level at the gauge compared with normal. Bottom: its Kelvin-wave signal, "
-            "the same sea level minus its 91-day average, so that each passing wave stands out as a separate peak. "
-            "A dashed line appears when a numbered equatorial wave reaches 95°W; a coastal peak soon after may be "
-            "that wave arriving at the gauge."),
+        takeaway="By late October 2026 the whole sea off Ecuador stood 30–40 cm above normal; off San Diego the rise "
+                 "was a band of high water hugging the coast, and off Washington sea level was close to normal.",
+        how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. The map "
+            "shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave "
+            "appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out "
+            "at sea (black circles), and its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave "
+            "stands out as a peak. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach "
+            "95°W; a coastal peak soon after may be that wave arriving."),
     "anim_marine_heatwaves.py": dict(
         takeaway="On 20 October 2026 the whole coastal ocean off Ecuador and Peru was in a marine heatwave, 70% of "
                  "it Severe or Extreme, and half the coastal waters off Southern California and northern Baja were in "
@@ -684,11 +684,11 @@ FIGURE_INFO = {
         "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's "
         "1991–2020 seasonal cycle, 10-day means, not corrected for air pressure."),
     "coastal_kelvin_signal.py": (
-        "Following the same wave from the equator to each gauge shows how far along the coast El Niño's Kelvin "
-        "waves reach. Each one that arrives raises coastal sea level for a few weeks, adding to flooding risk at "
-        "high tide.",
-        "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data, anomalies from each station's "
-        "1991–2020 seasonal cycle, 10-day means; equatorial Kelvin waves from NOAA blended satellite altimetry."),
+        "Following the same waves from the equator to each stretch of coast shows how far along the Americas El "
+        "Niño's Kelvin waves reach. Each one that arrives raises coastal sea level for a few weeks, adding to "
+        "flooding risk at high tide, and warms the coastal ocean.",
+        "NOAA blended near-real-time altimetry (sea surface height anomaly, 0.25°, daily), via NOAA CoastWatch "
+        "ERDDAP; anomalies from the 2017–2024 seasonal cycle at each point."),
     "anim_marine_heatwaves.py": (
         "El Niño warms the coastal ocean of the Americas through coastal Kelvin waves and weaker winds. Prolonged "
         "marine heatwaves stress fisheries, kelp forests and coral, and can bring toxic algal blooms and unusual "
@@ -815,7 +815,7 @@ FIGURE_DATA = {
     "kelvin_speeds.py": ["altimetry", "roni"],
     "coastal_sea_level.py": ["tide_gauges"],
     "anim_coastal_sea_level.py": ["tide_gauges"],
-    "coastal_kelvin_signal.py": ["tide_gauges", "altimetry"],
+    "coastal_kelvin_signal.py": ["altimetry"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],
