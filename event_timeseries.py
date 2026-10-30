@@ -128,9 +128,8 @@ def main():
 
     short = ["Niño 3.4", "Niño 1+2", "the upper ocean"]
     top = [f"{sh} ({v:+.1f} °C)" for sh, (name, v, n_above, n, _, _) in zip(short, summary) if n_above == 0]
-    add_title(fig, "Anomaly time series across El Niño events since 1950",
-              "Each line is one El Niño event, aligned on January of the year it developed. At the latest month "
-              "available, the current event\nexceeds every past event at the same stage in "
+    add_title(fig, "Monthly anomalies of El Niño events since 1950",
+              "Each line is one event, aligned on January of its first year. Current event highest at this stage in: "
               + (join_and(top) if top else "none of the three measures") + ".")
     add_source(fig, "Data: NOAA ERSST v5 and NCEP GODAS; events from NOAA CPC RONI (≥ 5 overlapping seasons at "
                "+0.5 °C or more). Anomalies relative to the 1991–2020 monthly climatology.")

@@ -114,9 +114,7 @@ def main():
     lead = (f"By {last:%-d %B}, {args.year} had accumulated {to_date[args.year]} marine heatwave days, "
             + (f"the most on record for this date (previous: {to_date[prev]} in {prev})."
                if record else f"second only to {prev} ({to_date[prev]}) for this date."))
-    add_title(fig, "Marine heat in the Southern California Bight",
-              lead + "\nWarm coastal water raises overnight temperatures and humidity on land and stresses kelp "
-              "forests and fisheries.")
+    add_title(fig, "Marine heat in the Southern California Bight", lead)
     add_source(fig, f"Data: NOAA OISST v2.1 daily (0.25°) via NOAA CoastWatch ERDDAP, area mean "
                f"{BOX['lat'][0]}–{BOX['lat'][1]}°N, {abs(BOX['lon'][1])}–{abs(BOX['lon'][0])}°W. Marine heatwave: "
                f"> 90th percentile of {CLIM[0]}–{CLIM[1]} for ≥ 5 days (Hobday et al. 2016).")

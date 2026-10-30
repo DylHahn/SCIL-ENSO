@@ -137,11 +137,10 @@ def main():
              fontsize=10.5, fontweight="bold", color=COLORS["text_2"], va="top", linespacing=1.35)
 
     mon = a.iloc[-30:].mean()
-    add_title(fig, f"Coastal sea level from Peru to Washington during the {NOW}/{NOW + 1} El Niño",
-              "When a Kelvin wave reaches South America, part of it turns north along the coast and raises sea level "
-              "at each tide gauge in turn.\nOver the last 30 days of data: "
+    add_title(fig, f"Coastal sea level from Peru to Washington, October {NOW - 1} to {dates[-1]:%B %Y}",
+              "Daily tide-gauge sea level compared with normal. Last 30 days of data: "
               + join_and(f"{mon[n]:+.0f} cm at {short(n).split(',')[0]}" for n in SHOW if n in mon and np.isfinite(mon[n]))
-              + " compared with normal.")
+              + ".")
     add_source(fig, "Data: University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from "
                "each station's 1991–2020 seasonal cycle" + (" (whole record for " + join_and(
                    short(n).split(",")[0] for n in sorted(short_base & set(names))) + ")"

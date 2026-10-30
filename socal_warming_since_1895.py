@@ -132,14 +132,11 @@ def main():
     tx.legend(loc="upper left", fontsize=10.5, labelcolor=COLORS["text_2"], ncol=3)
     tx.set_ylim(None, max(series["tmax"].max(), series["tmin"].max()) + 0.9)
 
-    rank = lambda v: int((series[v] > series[v].get(args.year, np.inf)).sum()) + 1
     trend = {v: np.polyfit(series[v].loc[1950:].index, series[v].loc[1950:].values, 1)[0] * 10 for v in series}
     hottest = series["tmax"].sort_values(ascending=False).head(5).index
-    add_title(fig, f"Summer heat in Southern California has increased since {START}",
-              f"June–September overnight lows have warmed by about {trend['tmin']:.1f} °C per decade since 1950 and "
-              f"daytime highs by {trend['tmax']:.1f} °C per decade. The five hottest\nsummers on record all occurred "
-              f"in {min(hottest)}–{max(hottest)}; {args.year} ranks {rank('tmin')}"
-              f"{'th' if rank('tmin') > 3 else ['st', 'nd', 'rd'][rank('tmin') - 1]} warmest for overnight lows.")
+    add_title(fig, f"Summer temperatures in Southern California since {START}",
+              f"June–September overnight lows and daytime highs. Trend since 1950: {trend['tmin']:.1f} °C per decade "
+              f"(lows), {trend['tmax']:.1f} °C per decade (highs).")
     add_source(fig, "Data: NOAA NCEI nClimGrid monthly (~5 km), June–September mean daily maximum and minimum "
                f"temperature, {LAT[0]:.1f}–{LAT[1]:.1f}°N, {abs(LON[1]):.1f}–{abs(LON[0]):.1f}°W; El Niño winters "
                "from NOAA CPC RONI.")

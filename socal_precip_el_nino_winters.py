@@ -138,12 +138,9 @@ def main():
     bx.legend(handles=[Patch(color=cols[c], label=c.replace("\n", " ")) for c, _, _ in CATEGORIES],
               loc="upper right", ncol=4, fontsize=10, labelcolor=COLORS["text_2"])
 
-    driest = min(years, key=lambda y: reg[y])
-    add_title(fig, "Southern California winter precipitation during strong El Niño events",
-              f"November–March precipitation in the {n} winters since 1951 with a strong El Niño (RONI ≥ "
-              f"+{args.threshold:.1f} °C) averaged {reg_pct:.0f}% of normal; {reg_wet} of {n} were\nwetter than "
-              f"normal region-wide. Outcomes vary widely between events: {driest - 1}/{driest} received "
-              f"{reg[driest]:.0f}% of normal.")
+    add_title(fig, "Southern California precipitation in strong El Niño winters",
+              f"November–March precipitation in the {n} strong El Niño winters since 1951 (RONI ≥ "
+              f"+{args.threshold:.1f} °C): {reg_pct:.0f}% of normal on average, region-wide.")
     add_source(fig, "Data: NOAA NCEI nClimGrid monthly precipitation (~5 km), Nov–Mar totals; normal = "
                f"{NORMAL[0]}–{NORMAL[1]}; El Niño strength from NOAA CPC RONI (Dec–Feb). Very dry areas left blank.")
     save(fig, args.out,

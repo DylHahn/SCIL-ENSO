@@ -56,6 +56,20 @@ def nearest_points(da, lat, lon, n=3):
     return la.ravel()[idx], lo.ravel()[idx]
 
 
+def smooth(a, lat, lon, k=5):
+    """Fill gaps next to the coast from the nearest ocean point (the land drawn on top covers them), then
+    interpolate to a k times finer grid, so the map can be drawn with smooth contours."""
+    from scipy import ndimage
+    bad = ~np.isfinite(a)
+    if bad.all():
+        return None
+    if bad.any():
+        idx = ndimage.distance_transform_edt(bad, return_distances=False, return_indices=True)
+        a = a[tuple(idx)]
+    return (np.linspace(lat[0], lat[-1], len(lat) * k), np.linspace(lon[0], lon[-1], len(lon) * k),
+            ndimage.zoom(a, k, order=1, mode="nearest", grid_mode=False))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--station", type=int, default=GAUGES[0], help="UHSLC station id")
@@ -91,15 +105,22 @@ def main():
     L = 0.075
     mw = 4.6                                                           # map width and height, inches
     mp = fig.add_axes([L, 5.15 / H, mw / 13, mw / H], projection=pc)
-    mp.set_extent([box[1][0], box[1][1], box[0][0], box[0][1]], crs=pc)
     levels = np.arange(-40, 40.1, 5)
     cmap = ListedColormap(plt.get_cmap("RdBu_r")(np.linspace(0.04, 0.96, len(levels) + 1)))
     norm = BoundaryNorm(levels, cmap.N, extend="both")
-    mesh = mp.pcolormesh(da["longitude"].values, da["latitude"].values, np.ma.masked_invalid(da.values[0]),
-                         cmap=cmap, norm=norm, shading="nearest", transform=pc, rasterized=True, zorder=1)
-    mp.add_feature(cfeature.LAND.with_scale("50m"), facecolor=COLORS["land"], edgecolor="none", zorder=2)
-    mp.add_feature(cfeature.COASTLINE.with_scale("50m"), edgecolor=COLORS["text_2"], linewidth=0.7, zorder=3)
-    mp.add_feature(cfeature.BORDERS.with_scale("50m"), edgecolor=COLORS["muted"], linewidth=0.4, zorder=3)
+    glat, glon = da["latitude"].values, da["longitude"].values
+
+    def draw(i):
+        f = smooth(da.values[i], glat, glon)
+        if f is None:
+            return None
+        return mp.contourf(f[1], f[0], f[2], levels=levels, cmap=cmap, norm=norm, extend="both", transform=pc,
+                           zorder=1)
+    mesh = draw(0)
+    mp.set_extent([glon[0], glon[-1], glat[0], glat[-1]], crs=pc)       # the data's own edges: no empty strip
+    mp.add_feature(cfeature.LAND.with_scale("10m"), facecolor=COLORS["land"], edgecolor="none", zorder=2)
+    mp.add_feature(cfeature.COASTLINE.with_scale("10m"), edgecolor=COLORS["text_2"], linewidth=0.45, zorder=3)
+    mp.add_feature(cfeature.BORDERS.with_scale("10m"), edgecolor=COLORS["muted"], linewidth=0.4, zorder=3)
     mp.plot(plon, plat, "o", ms=4, mfc="none", mec="black", mew=1.2, transform=pc, zorder=4)
     mp.plot(lon, lat, "*", ms=17, color="white", mec="black", mew=1, transform=pc, zorder=5)
     gl = mp.gridlines(draw_labels=True, color=COLORS["grid"], lw=0.4, alpha=0.5)
@@ -110,7 +131,7 @@ def main():
     mp.set_title(f"Satellite sea level around {short(name)}", fontsize=13.5, fontweight="bold", loc="left", pad=8,
                  color=COLORS["text"])
     cax = fig.add_axes([L + mw / 13 + 0.012, 5.15 / H, 0.012, mw / H])
-    cb = fig.colorbar(mesh, cax=cax, ticks=levels[::2])
+    cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, ticks=levels[::2], extend="both")
     mp.set_facecolor(COLORS["surface_2"])                           # no satellite data
     cb.outline.set_visible(False)
     cb.ax.tick_params(labelsize=10.5, length=0)
@@ -179,10 +200,9 @@ def main():
     fills = {top: [], bot: []}
 
     last30 = np.nanmean(s.values[-30:])
-    add_title(fig, f"Kelvin waves along the coast: satellite sea level at {short(name)}",
-              f"Daily satellite sea level height (SSH) around the tide gauge, compared with normal. Over the last 30 "
-              f"days, SSH at the satellite points nearest the gauge was {last30:+.0f} cm.\nWhen an equatorial Kelvin "
-              "wave reaches South America, part of it travels along the coast, raising sea level near the shore.")
+    add_title(fig, f"Satellite sea level around {short(name)}, October {NOW - 1} to {dates[-1]:%B %Y}",
+              f"Daily satellite sea level height (SSH) compared with normal. Last 30 days near the gauge: "
+              f"{last30:+.0f} cm.")
     add_source(fig, "Data: NOAA blended satellite altimetry (sea level anomaly, daily, 0.25°, via NOAA CoastWatch "
                "ERDDAP), anomalies from the 2017–2024 seasonal cycle, 5-day means; points within about 25 km of the "
                "coast\nare less reliable. Kelvin-wave signal: anomaly minus its 91-day running mean (the last 45 days "
@@ -194,7 +214,9 @@ def main():
         idx.append(len(dates) - 1)
     for i in idx:
         d = dates[i]
-        mesh.set_array(np.ma.masked_invalid(da.values[i]).ravel())
+        if mesh is not None:
+            mesh.remove()
+        mesh = draw(i)
         date.set_text(f"{d:%-d %B %Y}")
         for ax, series, ln in ((top, s, lines[0]), (bot, sig, lines[1])):
             y = series.values[:i + 1]

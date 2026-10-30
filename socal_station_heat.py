@@ -124,10 +124,8 @@ def main():
 
     best = max(notes, key=lambda n: n[1] / max(n[4], 1))
     add_title(fig, f"Summer warm nights and hot days at Southern California stations, {args.start}–{args.year}",
-              f"In {args.year}, {best[0]} recorded {best[1]} warm nights, {most_phrase(best[2])} since {args.start} "
-              f"(1991–2020 mean: {best[4]:.0f}). Warm nights have increased at all stations;\nelevated coastal sea "
-              "surface temperatures during developing El Niño events can add to this trend. Warm nights limit "
-              "overnight relief from heat.")
+              f"Counts for each June–September. {args.year}: {best[1]} warm nights at {best[0]} (1991–2020 mean: "
+              f"{best[4]:.0f}).")
     add_source(fig, f"Data: NOAA NCEI GHCN-Daily station records, Jun–Sep {args.start}–{args.year}; summers with "
                "large data gaps left out. Line: 10-year running average. El Niño strength: NOAA CPC RONI.")
     save(fig, args.out,

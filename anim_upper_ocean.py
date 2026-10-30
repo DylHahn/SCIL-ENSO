@@ -108,12 +108,9 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("Ocean temperature (°C), 2°S–2°N · black line: 20 °C isotherm (base of the warm layer)",
                  fontsize=11, color=COLORS["text_2"])
-    add_title(fig, f"Upper-ocean temperature along the equator: {event_name(args.year)} compared "
-                   f"with {join_and(event_name(y) for y in args.compare)}",
-              "Each El Niño runs from January of its first year to December of the next; the "
-              f"{event_name(args.year)} panel holds at the latest month.\nDuring El Niño the warm layer deepens in the "
-              "east and the 20 °C line flattens. The value at right of each panel is the upper-200 m anomaly, "
-              "180°–80°W.")
+    add_title(fig, f"Upper-ocean temperature along the equator: {event_name(args.year)} and past strong events",
+              "Monthly, January of each event's first year to December of the next. Right of each panel: upper-200 m "
+              "anomaly, 180°–80°W.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), monthly, 1° × 10 m, resampled for display; normal = "
                "1991–2020. Frames are interpolated between months.")
 

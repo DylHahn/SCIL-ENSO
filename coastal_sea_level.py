@@ -131,12 +131,9 @@ def main():
     m = (latest + pd.Timedelta(days=1)).replace(day=1) - pd.DateOffset(months=1)
     mon = anom.loc[f"{m:%Y-%m}"].mean()
     then = anom.loc[f"1997-{m.month:02d}"].mean()
-    add_title(fig, "Coastal sea level from Ecuador to Washington during major El Niño events",
-              f"Tide gauges along the Pacific coast of the Americas. In {m:%B %Y}, sea level was "
-              + join_and(f"{mon[n]:+.0f} cm at {short(n).split(',')[0]}" for n in SHOW if np.isfinite(mon[n]))
-              + f" compared with normal\n(in {m:%B} 1997: "
-              + join_and(f"{then[n]:+.0f} cm" for n in SHOW if np.isfinite(then[n]))
-              + "). Rises that appear first near the equator and later farther north are coastal-trapped Kelvin waves.")
+    add_title(fig, "Coastal sea level from Ecuador to Washington during four El Niño events",
+              f"Daily tide-gauge sea level compared with normal, 10-day means. {m:%B %Y}: "
+              + join_and(f"{mon[n]:+.0f} cm at {short(n).split(',')[0]}" for n in SHOW if np.isfinite(mon[n])) + ".")
     add_source(fig, "Data: University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from "
                "each station's 1991–2020 seasonal cycle" + (" (whole record for " + join_and(
                    short(n).split(",")[0] for n in sorted(short_base & {u[1] for u in used})) + ")"

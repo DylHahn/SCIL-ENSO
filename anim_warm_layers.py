@@ -147,11 +147,9 @@ def main():
                title="Temperature layers in the slices:", title_fontsize=11, alignment="left")
     fig.text(0.73, 1 - (top_in - 0.62) / H, "Volume of water in each layer,\n5°S–5°N, in 10$^{14}$ m³ (warmest on the left)",
              fontsize=11, color=COLORS["text"], va="bottom", linespacing=1.3)
-    add_title(fig, f"Layers of warm water: {event_name(NOW)} compared with "
-                   f"{join_and(event_name(y) for y in args.compare)}",
-              "January of each El Niño's first year to December of the next. Slices along the equator, coloured by "
-              "temperature layer; water above\nabout 28 °C drives heavy tropical rainfall. Bars: the volume of water in "
-              "each layer between 5°S and 5°N.")
+    add_title(fig, f"Layers of warm water along the equator: {event_name(NOW)} and past strong events",
+              "Temperature layers, January of each event's first year to December of the next. Bars: volume in each "
+              "layer, 5°S–5°N.")
     add_source(fig, "Data: NCEP GODAS (NOAA), monthly, 1° × 10 m to 205 m. Sections: 2°S–2°N; volumes: 5°S–5°N, "
                "120°E–80°W. Normal: 1991–2020 mean temperature. Frames interpolated.")
 

@@ -97,9 +97,8 @@ def main():
         cb.outline.set_visible(False)
         cb.ax.tick_params(labelsize=10, length=0)
         cb.set_label(text, fontsize=10.5, color=COLORS["text_2"])
-    add_title(fig, f"The tropical Pacific in 3D: the warm upper layer in a normal year and in {event_name(NOW)}",
-              "The lower surface is the base of the warm layer (20 °C). Normally it is deep in the west and rises "
-              "toward South America;\nduring El Niño warm water spreads east and the layer flattens. Depth is "
+    add_title(fig, f"The tropical Pacific in 3D: a normal year and {event_name(NOW)}",
+              "Lower surface: base of the warm layer (20 °C); upper surface: sea surface temperature. Depth "
               f"exaggerated about {round(exag, -3):,.0f} times.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), monthly, 15°S–15°N, sampled every ⅔° latitude × 2° "
                "longitude and lightly smoothed; coastal cells omitted; normal from the 1991–2020 mean temperature.")

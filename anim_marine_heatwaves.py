@@ -114,10 +114,8 @@ def main():
     now = {n: s[-1] for n, s in sh.items()}
     worst = {n: CATEGORIES[int(np.flatnonzero(s[-1] > 0)[-1])] if s[-1].sum() > 0 else "none" for n, s in sh.items()}
     add_title(fig, f"Marine heatwaves along the Pacific coast of the Americas, {args.year}",
-              "Sea surface temperature far above normal for the time of year, by category: I Moderate to IV Extreme "
-              "(Hobday et al. 2018).\n" + f"On {latest:%-d %B %Y}: " + "; ".join(
-                  f"{n.split(' (')[0]} {now[n].sum():.0f}% in a heatwave ({now[n][1:].sum():.0f}% Strong or above)"
-                  for n in REGIONS) + ".")
+              "Daily marine heatwave category, I Moderate to IV Extreme (Hobday et al. 2018). " + f"On {latest:%-d %B}: "
+              + "; ".join(f"{n.split(' (')[0]} {now[n].sum():.0f}% in a heatwave" for n in REGIONS) + ".")
     add_source(fig, "Data: NOAA OISST v2.1 daily sea surface temperature (0.25°, shown every 1°), via NOAA PSL. "
                "Heatwave: above the 1991–2020 day-of-year 90th percentile for ≥ 5 days (Hobday et al. 2016).")
 

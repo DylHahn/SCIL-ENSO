@@ -84,13 +84,10 @@ def main():
             t.set_color(COLORS["text"])
 
     cur = df[df["forecast"]]
-    rank = int((df["peak"] > cur["peak"].iloc[0]).sum()) + 1 if len(cur) else None
-    headline = "El Niño events since 1950: peak strength, duration and accumulated intensity"
+    headline = "Strongest El Niño events since 1950"
     add_title(fig, headline,
-              f"The {len(df)} strongest events by peak RONI. {cur['name'].iloc[0]} (hatched) combines observations "
-              f"with NOAA's median forecast" + (", which would rank first" if rank == 1 else "")
-              + ";\nthe line marks its 5–95% forecast range. Accumulated intensity is the sum of monthly RONI "
-              "above +0.5 °C.")
+              f"Peak RONI, duration and accumulated intensity of the {len(df)} strongest events. "
+              f"{cur['name'].iloc[0]} (hatched) includes NOAA's median forecast.")
     add_source(fig, f"Data: NOAA CPC Relative Oceanic Niño Index (RONI) and official RONI outlook "
                f"({fc.attrs['issued']}). Event = 5+ overlapping seasons at +0.5 °C or more.")
     save(fig, args.out,

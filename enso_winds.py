@@ -83,15 +83,21 @@ def daily_u(month, refresh=False):
     if path.exists() and not refresh:
         return xr.open_dataarray(path).load()
     partial = WIND_DIR / f"u10_{month:%Y_%m}_partial.nc"
+    none = WIND_DIR / f"u10_{month:%Y_%m}_none.txt"            # NCEI listed no files for this month
     try:
         days = {d: p for d, p in _catalog(month.year).items() if d.month == month.month}
     except OSError:                                          # NCEI unavailable: use the last copy read
         if partial.exists():
             return xr.open_dataarray(partial).load()
+        if none.exists():
+            return None
         # never fill a month NCEI holds but could not send: stop, so the last good figure is kept
         raise RuntimeError(f"NOAA NCEI could not be reached for {month:%B %Y} winds; try again later")
     if not days:
+        WIND_DIR.mkdir(parents=True, exist_ok=True)
+        none.write_text(f"NCEI catalog listed no files for {month:%B %Y} on {pd.Timestamp.today():%Y-%m-%d}\n")
         return None
+    none.unlink(missing_ok=True)
     with ThreadPoolExecutor(8) as ex:
         parts = list(ex.map(_day, days.values()))
     u = xr.DataArray(np.stack(parts), dims=("time", "lon"), coords=dict(time=list(days), lon=SUB_LON),
@@ -198,7 +204,19 @@ def daily_anomaly(start, end, refresh=False, filled=False):
     import xarray as xr
     months = [m for m in pd.date_range(pd.Timestamp(start).replace(day=1), end, freq="MS") if m >= FIRST]
     recent = pd.Timestamp.today().normalize().replace(day=1) - pd.DateOffset(months=2)
-    parts = [daily_u(m, refresh=refresh and m >= recent) for m in months]
+    parts = []
+    for m in months:
+        try:
+            parts.append(daily_u(m, refresh=refresh and m >= recent))
+        except RuntimeError:
+            # NCEI unreachable: the record may end at the last month already read, but a gap inside it is
+            # never filled, so stop only if no later month has been read before
+            if any((WIND_DIR / f"u10_{later:%Y_%m}{x}").exists() for later in months if later > m
+                   for x in (".nc", "_partial.nc")):
+                raise
+            print(f"NOAA NCEI unreachable: winds shown to the end of {(m - pd.Timedelta(days=1)):%B %Y}",
+                  flush=True)
+            break
     u = xr.concat([p for p in parts if p is not None], "time").sel(time=slice(start, end))
     u, days = _fill_gaps(u, refresh)
     clim = monthly_normal().values                        # (12, lon)

@@ -119,11 +119,9 @@ def main():
 
     rmax = int((series["tmax"] > series["tmax"][args.year]).sum()) + 1
     rmin = int((series["tmin"] > s[args.year]).sum()) + 1
-    add_title(fig, f"Summer {args.year} temperatures in Southern California relative to 1991–2020",
-              f"June–September mean overnight lows were {s[args.year]:+.1f} °C above normal across the region, the "
-              f"{ordinal(rmin)} warmest since {args.start}; daytime highs were {series['tmax'][args.year]:+.1f} °C "
-              f"({ordinal(rmax)}).\nMost earlier summers preceding strong El Niño winters were near or below normal; "
-              "recent warmth reflects the long-term warming trend as well as ENSO.")
+    add_title(fig, f"Summer {args.year} temperatures in Southern California",
+              f"June–September, compared with 1991–2020: overnight lows {s[args.year]:+.1f} °C ({ordinal(rmin)} "
+              f"warmest since {args.start}), daytime highs {series['tmax'][args.year]:+.1f} °C.")
     add_source(fig, f"Data: NOAA NCEI nClimGrid monthly (~5 km), mean daily maximum and minimum temperature; "
                f"region {LAT[0]:.1f}–{LAT[1]:.1f}°N, {abs(LON[1]):.1f}–{abs(LON[0]):.1f}°W (land only).")
     save(fig, args.out,

@@ -202,9 +202,8 @@ def main():
 
     what = {"prcp": "precipitation ", "temp": "temperature "}.get(args.only, "")
     add_title(fig, f"NOAA seasonal {what}outlook for Southern California",
-              f"NOAA Climate Prediction Center outlook issued {issued:%B %-d, %Y}: probability of above-, near- "
-              f"or below-normal conditions by season.\n“Equal chances” indicates no preferred category. For daily "
-              "forecasts and warnings, consult the local National Weather Service office.")
+              f"Probability of above-, near- or below-normal conditions by season; NOAA Climate Prediction Center, "
+              f"issued {issued:%B %-d, %Y}.")
     add_source(fig, "Data: NOAA Climate Prediction Center official 3-month outlooks (GIS files, "
                "seasprcp/seastemp_latest). Normal = 1991–2020.")
     la = {var: [(data[var][l][0], *odds_at(data[var][l][3], *CITIES["Los Angeles"])) for l in leads if l in data[var]]

@@ -98,12 +98,9 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("Monthly mean sea surface temperature (°C) · black line: 28 °C, the edge of the warm pool",
                  fontsize=11, color=COLORS["text_2"])
-    add_title(fig, f"Sea surface temperature: {event_name(args.year)} compared "
-                   f"with {join_and(event_name(y) for y in args.compare)}",
-              "Each El Niño runs from January of its first year to December of the next; the "
-              f"{event_name(args.year)} panel holds at the latest month.\nDuring El Niño the warm pool (red) spreads "
-              "east and the cool tongue off South America weakens. The value at right of each panel is the Niño 3.4 "
-              "average.")
+    add_title(fig, f"Sea surface temperature: {event_name(args.year)} and past strong El Niño events",
+              "Monthly, January of each event's first year to December of the next. Right of each panel: Niño 3.4 "
+              "anomaly.")
     add_source(fig, "Data: NOAA OISST v2.1 monthly mean (0.25°), via NOAA PSL; normal = 1991–2020 monthly mean. "
                "Frames are interpolated between months for display.")
 

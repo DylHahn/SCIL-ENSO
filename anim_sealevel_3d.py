@@ -71,10 +71,9 @@ def main():
     fig.text(0.04, 0.765, "Ridges along the equator moving east (left to right) are Kelvin waves;\n"
              "the eastern Pacific rises as warm water piles up against South America.",
              fontsize=11, color=COLORS["text_2"], va="top", linespacing=1.35)
-    add_title(fig, "Sea level across the tropical Pacific in 3D, day by day",
-              "Satellites measure sea level to within a few centimetres. Warm water expands, so where the warm "
-              "layer thickens the sea surface\nrises: the landscape shows where warm water is piling up. Height is "
-              f"exaggerated about {exag / 1e6:.0f} million times.")
+    add_title(fig, "Sea level across the tropical Pacific in 3D",
+              "Daily satellite sea level height (SSH) compared with normal. Height exaggerated about "
+              f"{exag / 1e6:.0f} million times.")
     add_source(fig, "Data: NOAA blended satellite altimetry (daily, sampled at 1°, 12°S–12°N), anomalies relative to the "
                "2017–2024 seasonal cycle, 5-day running mean, lightly smoothed. South America is at the right.")
 

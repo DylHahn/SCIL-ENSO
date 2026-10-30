@@ -51,10 +51,8 @@ def main():
     levels = np.arange(20, 31.01, 0.5)
     hovmoller_figure(
         fields, levels, "turbo", "Sea surface temperature (°C), 2°S–2°N",
-        title="Equatorial Pacific sea surface temperature during major El Niño events",
-        subtitle=f"Monthly sea surface temperature along the equator (2°S–2°N). By {last:%B} {now}, the maximum anomaly in "
-                 f"the eastern Pacific reached {peaks[now][1]:+.1f} °C,\ncompared with "
-                 + join_and(f"{v:+.1f} °C in {y}" for y, v in same.items()) + " at the same stage of those events.",
+        title="Sea surface temperature along the equator during major El Niño events",
+        subtitle=f"Monthly, 2°S–2°N. Maximum eastern Pacific anomaly in {last:%B} {now}: {peaks[now][1]:+.1f} °C.",
         source="Data: NOAA Extended Reconstructed SST v5 (ERSST), monthly, 2° grid. Values in the text are anomalies "
                "relative to the 1991–2020 monthly climatology.",
         out=args.out, highlight=now, cbar_ticks=np.arange(20, 32, 2),

@@ -56,11 +56,9 @@ def main():
     levels = np.arange(17, 28.01, 0.5)
     hovmoller_figure(
         fields, levels, "turbo", "Mean ocean temperature, 5–205 m (°C), 2°S–2°N",
-        title="Equatorial Pacific upper-ocean heat content during major El Niño events",
-        subtitle=f"Mean temperature of the upper 200 m. Warm water spreading east (eastward-sloping bands) marks "
-                 f"Kelvin waves carrying heat toward South America.\nIn {last:%B} {now}, the "
-                 f"central–eastern Pacific (180°–80°W) was {east_mean[now][last]:+.1f} °C above normal, compared with "
-                 + join_and(f"{v:+.1f} °C in {y}" for y, v in same.items()) + ".",
+        title="Upper-ocean temperature along the equator during major El Niño events",
+        subtitle=f"Mean temperature of the upper 200 m, monthly. {last:%B} {now}: {east_mean[now][last]:+.1f} °C "
+                 f"compared with normal, 180°–80°W.",
         source="Data: NCEP Global Ocean Data Assimilation System (GODAS), monthly. Values in the text are anomalies "
                "relative to the 1991–2020 monthly climatology.",
         out=args.out, highlight=now, cbar_ticks=np.arange(17, 29, 2),

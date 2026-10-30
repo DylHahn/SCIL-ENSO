@@ -188,11 +188,9 @@ def main():
     cb.ax.tick_params(labelsize=10.5, length=0)
     cb.set_label("Depth of the 20 °C isotherm (m): thickness of the warm upper layer · dashed lines: 5°S and 5°N",
                  fontsize=11, color=COLORS["text_2"])
-    add_title(fig, f"Warm water across the tropical Pacific: {event_name(args.year)} compared with "
-                   f"{join_and(event_name(y) for y in args.compare)}",
-              "January of each El Niño's first year to December of the next. Red shows where the warm upper layer is "
-              "thickest: it surges east along\nthe equator as El Niño develops and drains away as it ends. WWV: warm "
-              "water volume between 5°S and 5°N (10$^{14}$ m³), departure from normal in brackets.")
+    add_title(fig, f"Warm water across the tropical Pacific: {event_name(args.year)} and past strong events",
+              "Thickness of the warm upper layer compared with normal, January of each event's first year to December "
+              "of the next.\nWWV: warm water volume, 5°S–5°N (10$^{14}$ m³), departure from normal in brackets.")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), monthly, 1° × ⅓°, 10 m levels to 205 m, resampled for "
                "display; normal from the 1991–2020 mean temperature. Frames are interpolated between months.")
 

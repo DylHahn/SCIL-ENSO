@@ -118,13 +118,9 @@ def main():
     dist = {y: float(np.sqrt(np.nanmean((series[y].iloc[k_last].values - cur_vec) ** 2))) for y in past}
     analog = min(dist, key=dist.get)
     east, west = cur_vec[3], cur_vec[0]
-    larger = bool(np.all(cur_vec > series[analog].iloc[k_last].values))
-    tail = " but larger in every region." if larger else "."
-    add_title(fig, "Distribution of sea surface warming across the Niño regions",
-              f"Monthly anomalies in four regions, from the western–central Pacific (left) to the coast of Peru and "
-              f"Ecuador (right). In {last:%B %Y} the warming\nwas concentrated in the east ({east:+.1f} °C in Niño 1+2 "
-              f"versus {west:+.1f} °C in Niño 4), an eastern-Pacific pattern closest to {analog}/{analog + 1}"
-              + tail)
+    add_title(fig, "Sea surface warming in the four Niño regions",
+              f"Monthly anomalies from the western–central Pacific (Niño 4) to Peru and Ecuador (Niño 1+2). "
+              f"{last:%B %Y}: {east:+.1f} °C in Niño 1+2, {west:+.1f} °C in Niño 4.")
     add_source(fig, "Data: NOAA Climate Prediction Center monthly Niño indices (OISST v2.1), anomalies relative "
                "to the 1991–2020 climatology.")
     save(fig, args.out,

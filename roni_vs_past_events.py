@@ -19,7 +19,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
 from enso_common import (FIG_DIR, COLORS, add_source, add_title, apply_style, load_cpc_outlook,
-                         load_cpc_strengths, load_roni, save, season_words)
+                         load_roni, save, season_words)
 
 PAST_EVENTS = [1972, 1982, 1997, 2015]        # the "super" El Niños before 2026 (year the event began)
 STRENGTHS = [(0.5, "Weak"), (1.0, "Moderate"), (1.5, "Strong"), (2.0, "Very strong")]
@@ -36,7 +36,6 @@ def main():
     apply_style(args.theme)
     roni = load_roni(refresh=args.refresh)
     outlook = load_cpc_outlook(args.refresh)
-    strengths = load_cpc_strengths(args.refresh)
 
     y0 = args.year
     start, end = pd.Timestamp(f"{y0}-01-01"), pd.Timestamp(f"{y0 + 1}-06-01")
@@ -106,12 +105,9 @@ def main():
     ax.legend(handles=handles, loc="lower right", ncol=2, fontsize=11.5, labelcolor=COLORS["text_2"],
               bbox_to_anchor=(1.0, 0.0))
 
-    vs = strengths["en_vstrong"]
-    add_title(fig, f"The {y0}/{y0 + 1} El Niño compared with the strongest events since 1950",
-              f"Relative Oceanic Niño Index (RONI), 3-month means. NOAA's {outlook.attrs['issued']} outlook gives a "
-              f"{vs.max():.0f}% probability of a very strong event (≥ +2.0 °C)\nby "
-              f"{season_words(strengths.loc[vs.idxmax(), 'season'])}; its median forecast peak of {fc['p50'].max():+.1f} °C "
-              f"would exceed the 1950–present record of {record_val:+.1f} °C ({record_lbl}).")
+    add_title(fig, f"The {y0}/{y0 + 1} El Niño and the strongest events since 1950",
+              f"Relative Oceanic Niño Index (RONI), 3-month means, with NOAA's {outlook.attrs['issued']} forecast "
+              f"(median peak {fc['p50'].max():+.1f} °C).")
     add_source(fig, "Data: NOAA Climate Prediction Center — Relative Oceanic Niño Index (RONI) and official "
                "RONI outlook. Values are 3-month averages, plotted on the middle month.")
     save(fig, args.out,

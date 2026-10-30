@@ -97,17 +97,12 @@ def main():
     cb.set_label("Sea surface temperature (°C), ERSST v5\nblack box: Niño 3.4", fontsize=11.5,
                  color=COLORS["text_2"])
 
-    cur, past = stats[0], stats[1:]
+    cur = stats[0]
     rel = {y: a - b for y, a, b in stats}            # Niño 3.4 minus the tropics: NOAA's relative view
     headline = f"Tropical Pacific sea surface temperature in {calendar.month_name[month]}: {now} and past strong events"
-    rel_past = ", ".join(f"{y} {rel[y]:+.1f}" for y, _, _ in past)
     add_title(fig, headline,
-              f"Niño 3.4 anomaly {cur[1]:+.1f} °C, "
-              + ("the highest" if cur[1] > max(q[1] for q in past) else "not the highest")
-              + f" of the {len(stats)} years at this stage. The tropical mean (20°S–20°N) is {cur[2]:+.1f} °C, "
-              + ("above" if cur[2] > max(q[2] for q in past) else "compared with")
-              + f" any previous event,\nso relative to the tropics, the "
-              f"basis of NOAA's RONI, the anomaly is {rel[now]:+.1f} °C ({rel_past}).")
+              f"Niño 3.4 anomaly {cur[1]:+.1f} °C; relative to the tropical mean (20°S–20°N), the basis of NOAA's "
+              f"RONI: {rel[now]:+.1f} °C.")
     add_source(fig, "Maps: NOAA ERSST v5 monthly sea surface temperature (2°, smoothed for display). Anomaly values: "
                "NOAAGlobalTemp v6 relative to the 1991–2020 monthly normal.")
     save(fig, args.out,

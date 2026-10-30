@@ -206,10 +206,9 @@ def main():
                     "A wave is listed once it\nhas crossed the Pacific;\nwaves still travelling\nappear in later "
                     "updates.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
 
-    add_title(fig, f"Kelvin waves: the pulses of warm water that built the {NOW}/{NOW + 1} El Niño",
-              "Bursts of westerly wind in the western Pacific send pulses of warm water east along the equator. Each "
-              "raises sea level by a few\n" + ("centimetres" if U == "cm" else "centimetres (about an inch)")
-              + " as it passes, so satellites can follow it across the Pacific.")
+    add_title(fig, f"Kelvin waves along the equatorial Pacific, October {NOW - 1} to {dates[-1]:%B %Y}",
+              "Daily satellite sea level height (SSH), 1°S–1°N: SSH along the equator on each day (top) and the "
+              "Kelvin-wave signal over time (bottom).")
     add_source(fig, "Data: NOAA blended satellite altimetry (daily, 0.25°, 1°S–1°N), anomalies from the 2017–2024 "
                "seasonal cycle. Wave signal: anomaly minus its 91-day running mean.\nWaves traced automatically "
                "(150°E–95°W, 1.8–4.0 m/s, wave signal ≥ +3 cm, 1.2 in). Top panel: sea surface height (SSH) anomaly.")
@@ -228,8 +227,7 @@ def main():
             f.remove()
         fills = [prof.fill_between(lons, 0, v, where=v > 0, color="#e8574a", alpha=0.7, lw=0, interpolate=True),
                  prof.fill_between(lons, 0, v, where=v < 0, color="#3987e5", alpha=0.7, lw=0, interpolate=True)]
-        prof_title.set_text(f"Sea level height (SSH) along the equator, {d:%-d %B %Y}: The warm water piling up in "
-                            "the east")
+        prof_title.set_text(f"Sea level height (SSH) along the equator, {d:%-d %B %Y}")
         for t1, ln, ln2, num in tracks:
             on = 1.0 if d >= t1 else 0.0
             ln.set_alpha(0.55 * on); ln2.set_alpha(on); num.set_alpha(on); num.get_bbox_patch().set_alpha(0.7 * on)

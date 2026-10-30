@@ -136,20 +136,10 @@ def main():
                labelcolor=COLORS["text_2"], handlelength=1.8, columnspacing=1.2, frameon=False)
 
     rank = sorted(pre.values(), reverse=True).index(pre[NOW]) + 1
-    # the latest month of the current event, against every past event the same number of months after it began
-    lag = (vol.index[-1].year - starts[NOW].year) * 12 + vol.index[-1].month - starts[NOW].month
-    now_val = float(anom.iloc[-1])
-    then = [float(anom.get(t + pd.DateOffset(months=lag), np.nan)) for y, t in starts.items() if y != NOW]
-    then_max = np.nanmax(then)
-    big = max(past)
-    big_y = [y for y, v in pre.items() if v == big][0]
-    add_title(fig, "Warm water stored in the equatorial Pacific before each El Niño began",
-              f"Volume of water warmer than 20 °C between 5°S and 5°N compared with normal. Before the {NOW}/{NOW + 1} "
-              f"El Niño began ({starts[NOW]:%B %Y}), it was\n{pre[NOW]:+.1f} × 10$^{{14}}$ m³, "
-              f"{'the largest' if rank == 1 else f'the {ordinal(rank)} largest'} of {len(pre)} El Niños since 1980 (the largest "
-              f"was {big:+.1f} before {big_y}/{big_y + 1}).\nBy {vol.index[-1]:%B %Y} it had reached {now_val:+.1f}, "
-              + (f"more than any past El Niño {lag} months after it began (previous highest {then_max:+.1f})."
-                 if now_val > then_max else f"against a previous highest of {then_max:+.1f} at that stage."))
+    add_title(fig, "Warm water in the equatorial Pacific before each El Niño",
+              f"Volume of water warmer than 20 °C, 5°S–5°N, compared with normal. Before {NOW}/{NOW + 1}: "
+              f"{pre[NOW]:+.1f} × 10$^{{14}}$ m³, {'the largest' if rank == 1 else f'the {ordinal(rank)} largest'} "
+              f"of {len(pre)} since 1980.")
     add_source(fig, "Data: NOAA PMEL warm water volume (5°S–5°N, 120°E–80°W, above the 20 °C isotherm); event "
                "start: first month of NOAA CPC RONI at +0.5 °C or more. Anomalies relative to 1991–2020.")
     save(fig, args.out,

@@ -109,10 +109,8 @@ def main():
     la = next(s for s in summary if s[0] == "Los Angeles")
     sd = next(s for s in summary if s[0] == "San Diego")
     add_title(fig, "Southern California water-year precipitation by ENSO phase, 1951–present",
-              f"Strong El Niño winters have favoured above-normal precipitation: {la[1]} of {la[2]} in Los Angeles "
-              f"(median {la[3]:.0f}% of normal) and {sd[1]} of {sd[2]} in San Diego.\nThe relationship is "
-              "probabilistic: the very strong 2015/2016 event produced roughly half of normal precipitation in "
-              "Los Angeles.")
+              f"Percent of normal. Strong El Niño years above normal: {la[1]} of {la[2]} in Los Angeles, {sd[1]} of "
+              f"{sd[2]} in San Diego.")
     add_source(fig, f"Data: NOAA NCEI GHCN-Daily station records (rain season Oct–Sep, normal = "
                f"{NORMAL[0]}–{NORMAL[1]}); El Niño strength: NOAA CPC RONI, Dec–Feb. Seasons with large data gaps left out.")
     save(fig, args.out,

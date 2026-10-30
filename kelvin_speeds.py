@@ -94,12 +94,10 @@ def main():
     others = [w for w in waves if w not in cur and w[5] >= MIN_R2]
     v_now = np.array([w[1] for w in cur])
     v_all = np.array([w[1] for w in others])
-    add_title(fig, "How fast the Kelvin waves crossed the Pacific, 2017–2026",
-              f"Each dot is one Kelvin wave, measured from daily satellite sea level (size: how much it raised sea "
-              f"level; bars: 95% range of the speed). The {len(cur)} waves since\nOctober {NOW - 1} crossed at "
-              f"{v_now.min():.1f}–{v_now.max():.1f} m/s (median {np.median(v_now):.1f} m/s, about "
-              f"{days_to_cross(np.median(v_now)):.0f} days to cross), against a median of "
-              f"{np.median(v_all):.1f} m/s for the other clear waves since 2017.")
+    add_title(fig, "Speed of Kelvin waves across the Pacific, 2017–2026",
+              f"Each dot is one wave traced in daily satellite sea level. Median since October {NOW - 1}: "
+              f"{np.median(v_now):.1f} m/s (about {days_to_cross(np.median(v_now)):.0f} days to cross); other clear "
+              f"waves: {np.median(v_all):.1f} m/s.")
     add_source(fig, "Data: NOAA blended satellite altimetry (CoastWatch ERDDAP), 1°S–1°N; ENSO state: NOAA CPC RONI "
                "(±0.5 °C). Waves traced as eastward paths of +3 cm or more, then fitted to each longitude's peak.")
     save(fig, args.out,

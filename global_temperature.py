@@ -75,10 +75,9 @@ def main():
                        Patch(color=COLORS["neutral"], label="Other years")],
               loc="upper left", fontsize=12, labelcolor=COLORS["text_2"])
 
-    add_title(fig, "Global mean surface temperature anomalies and El Niño, 1950–present",
-              "Annual global land and ocean temperature relative to the 1901–2000 mean. El Niño releases heat "
-              "from the tropical Pacific to the\natmosphere, adding to the long-term warming trend; most recent "
-              "record years, including 1998, 2016 and 2024, coincided with El Niño events.")
+    add_title(fig, "Global surface temperature and El Niño, 1950–present",
+              "Annual global land and ocean temperature compared with the 1901–2000 mean; red: record years "
+              "coinciding with an El Niño winter.")
     add_source(fig, "Data: NOAA NCEI global land & ocean surface temperature (vs. 1901–2000); "
                "El Niño strength from NOAA CPC RONI (Dec–Feb).")
     names = ", ".join(str(y) for y in highlight)

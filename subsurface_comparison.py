@@ -95,14 +95,10 @@ def main():
     cb.set_label("Ocean temperature (°C)   ·   black line: 20 °C, the bottom of the "
                  "warm layer", fontsize=11, color=COLORS["text_2"])
 
-    past = max(heat[1:])
-    ratio = heat[0] / past if past > 0 else np.nan
     add_title(fig, f"Equatorial upper-ocean temperature in {calendar.month_name[month]}: "
                    f"{now} and past events",
-              f"Depth–longitude sections, 2°S–2°N. The mean anomaly over 5–205 m between 180° and 80°W "
-              f"is {heat[0]:+.1f} °C, about {ratio:.1f} times the largest\nprevious value at the same stage "
-              f"({max(heat[1:]):+.1f} °C), indicating a substantial reservoir of subsurface heat to sustain "
-              f"surface warming.")
+              f"Depth–longitude sections, 2°S–2°N. Mean anomaly, 5–205 m, 180°–80°W: {heat[0]:+.1f} °C (previous "
+              f"largest at this stage: {max(heat[1:]):+.1f} °C).")
     add_source(fig, "Data: NCEP GODAS ocean reanalysis (NOAA), 2°S–2°N average. Colours: temperature; values on the right: "
                "anomaly relative to the 1991–2020 monthly normal.")
     save(fig, args.out,

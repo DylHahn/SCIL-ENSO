@@ -155,11 +155,11 @@ def main():
                  "South America that push warm water east. The dashed line marks 1 January of the El Niño's first year.",
                  ha="left", va="top", fontsize=11.5, color=COLORS["text"], linespacing=1.4,
                  bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=6))
-    add_title(fig, "Westerly wind bursts along the equator before and during major El Niño events",
-              f"Daily surface wind compared with normal, 5°S–5°N. From October {NOW - 1} to {latest:%-d %B %Y}: "
-              f"{counts[NOW]} westerly wind bursts"
-              + (f" ({missing} days without data)" if missing else "") + ",\ncompared with "
-              + join_and(f"{counts[y]} in {y - 1}/{y}" for y in EVENTS[1:]) + " over the same part of the year.")
+    add_title(fig, "Surface wind along the equator during four El Niño events",
+              f"Daily east–west wind compared with normal, 5°S–5°N. Westerly wind bursts, October to "
+              f"{latest:%-d %B}: {counts[NOW]} in {NOW - 1}/{NOW}"
+              + (f" ({missing} days without data)" if missing else "") + ", "
+              + join_and(f"{counts[y]} in {y - 1}/{y}" for y in EVENTS[1:]) + ".")
     add_source(fig, "Data: NOAA NCEI Blended Sea Winds v2, daily 10 m winds (0.25°, shown on a 2° grid), 5-day "
                "means; anomalies from the 1991–2020 monthly normal. Bursts: ≥ +5 m/s over ≥ 10° of longitude for "
                "≥ 3 days. Satellite record from 1987."

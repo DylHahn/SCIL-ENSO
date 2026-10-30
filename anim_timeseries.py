@@ -145,9 +145,8 @@ def main():
                labelcolor=COLORS["text_2"], handlelength=1.8, columnspacing=1.2)
     status = fig.text(0.965, 0.775 + 0.012, "", ha="right", va="bottom", fontsize=11.5, fontweight="bold",
                       color=COLORS["text"])
-    add_title(fig, f"How the {NOW}/{NOW + 1} El Niño has developed compared with every El Niño since 1950",
-              "Each line is one El Niño, aligned on January of the year it developed, so all events advance through "
-              "the calendar together.\nThe box in each panel ranks the current event against every past event at "
+    add_title(fig, f"The {NOW}/{NOW + 1} El Niño and every El Niño since 1950",
+              "Monthly indices, each event aligned on January of its first year. Box: rank of the current event at "
               "the same stage.")
     add_source(fig, "Data: NOAA ERSST v5 and NCEP GODAS; events from NOAA CPC RONI (≥ 5 overlapping seasons at "
                "+0.5 °C or more). Anomalies relative to the 1991–2020 monthly climatology.")

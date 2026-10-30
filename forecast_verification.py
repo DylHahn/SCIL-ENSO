@@ -178,12 +178,9 @@ def main():
             color=COLORS["text_2"], va="bottom")
     cx.legend(fontsize=9.5, labelcolor=COLORS["text_2"], loc="lower right")
 
-    first_hit = use[0][1][COLS[obs_cat]] if use else np.nan
-    add_title(fig, "Verification of NOAA's 2026 El Niño forecasts",
-              f"Official NOAA strength probabilities from each monthly issue since {FIRST_ISSUE:%B %Y}, compared with "
-              f"the observed RONI. Spring forecasts favoured a weak-to-\nmoderate event: the {use[0][0]:%B} issue gave "
-              f"{first_hit:.0f}% to the strength observed in {season_label(target)}. The probability of a very strong "
-              f"peak rose from {ev[0][1]:.0f}% to {ev[-1][1]:.0f}%.")
+    add_title(fig, "NOAA's 2026 El Niño forecasts compared with observations",
+              f"Strength probabilities in each monthly NOAA outlook since {FIRST_ISSUE:%B %Y}, against the observed "
+              f"RONI. Very strong peak: {ev[0][1]:.0f}% at first, {ev[-1][1]:.0f}% in the latest issue.")
     add_source(fig, "Data: NOAA Climate Prediction Center official ENSO strength probabilities (monthly archive) and "
                "Relative Oceanic Niño Index (RONI). Seasons are 3-month means.")
     save(fig, args.out,

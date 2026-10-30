@@ -153,10 +153,9 @@ def main():
         fig.text(0.615, 0.465, notes, va="top", fontsize=11.5, color=COLORS["text"], linespacing=1.45,
                  bbox=dict(facecolor=COLORS["surface_2"], edgecolor="none", pad=10))
 
-    add_title(fig, "Eastern Pacific or Central Pacific El Niño?",
-              "Where along the equator the warming is centred, measured by two indices that separate warming near "
-              "South America (Eastern Pacific)\nfrom warming near the date line (Central Pacific). Strong Eastern "
-              "Pacific events bring the largest changes to rainfall in the Americas.")
+    add_title(fig, "Eastern Pacific and Central Pacific El Niño indices",
+              "Warming centred near South America (Eastern Pacific) or near the date line (Central Pacific), "
+              "3-month means (Ren and Jin 2011).")
     add_source(fig, "Data: NOAA ERSST v5 Niño 3 and Niño 4 anomalies (1991–2020 climatology), 3-month means. "
                "Indices: Ren and Jin (2011), Geophys. Res. Lett. 38, L04704; see also Kao and Yu (2009).")
     save(fig, args.out,
