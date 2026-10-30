@@ -320,24 +320,31 @@
   },
   {
    "script": "coastal_kelvin_signal.py",
-   "title": "The Kelvin-wave signal at each tide gauge",
+   "title": "Animation: from the equator to each tide gauge",
    "tab": "Kelvin Waves & Sea Level",
    "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
-   "caption": "Coastal sea level and its Kelvin-wave signal at each tide gauge from Ecuador to Washington since October 2025, against the days the equatorial Kelvin waves reached South America; one button per gauge.",
+   "caption": "The equatorial Kelvin waves travelling toward South America, played alongside sea level and its Kelvin-wave signal at one tide gauge from Ecuador to Washington, since October 2025; one button per gauge.",
    "takeaway": "In Ecuador, the rises of March, May and late August 2026 followed the arrival of equatorial Kelvin waves; at Neah Bay the largest swings came from winter storms, not from the waves.",
-   "how_to_read": "Choose a tide gauge with the buttons above the figure; the numbers match the animation above. Top: sea level compared with normal. Bottom: the Kelvin-wave signal, the same sea level minus its 91-day average, so that each passing wave stands out as a separate peak. Dashed lines mark the days the numbered equatorial Kelvin waves of Figure 2 reached 95°W, near South America; a peak shortly after a dashed line may be that wave arriving at the gauge.",
+   "how_to_read": "Choose a tide gauge with the buttons above the figure; the numbers match the animation above. Top: the Kelvin-wave signal along the equator on the day shown, as in Figure 2, so you can watch each wave head for South America. Middle: sea level at the gauge compared with normal. Bottom: its Kelvin-wave signal, the same sea level minus its 91-day average, so that each passing wave stands out as a separate peak. A dashed line appears when a numbered equatorial wave reaches 95°W; a coastal peak soon after may be that wave arriving at the gauge.",
    "relation": "Following the same wave from the equator to each gauge shows how far along the coast El Niño's Kelvin waves reach. Each one that arrives raises coastal sea level for a few weeks, adding to flooding risk at high tide.",
    "data": "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data, anomalies from each station's 1991–2020 seasonal cycle, 10-day means; equatorial Kelvin waves from NOAA blended satellite altimetry.",
-   "description": "Time series of coastal sea level and its Kelvin-wave signal at La Libertad, Ecuador from October 2025 to 31 August 2026, with the arrival dates of 6 equatorial Kelvin waves at 95°W. Last 30 days: +26 cm compared with normal.",
-   "animated": false,
+   "description": "Animation from October 2025 to 29 October 2026: the equatorial Kelvin-wave signal along the equator, and coastal sea level and its Kelvin-wave signal at the La Libertad, Ecuador tide gauge (data through 31 August 2026), with the arrival at 95°W of 5 equatorial Kelvin waves in that time. Over the last 30 days of tide-gauge data, sea level there was +26 cm compared with normal.",
+   "animated": true,
    "files": {
     "1 La Libertad.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_1lalibertad.png",
+    "1 La Libertad.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_1lalibertad.mp4",
     "2 Quepos.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_2quepos.png",
+    "2 Quepos.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_2quepos.mp4",
     "3 San Diego.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_3sandiego.png",
+    "3 San Diego.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_3sandiego.mp4",
     "4 San Francisco.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_4sanfrancisco.png",
+    "4 San Francisco.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_4sanfrancisco.mp4",
     "5 Crescent City.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_5crescentcity.png",
+    "5 Crescent City.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_5crescentcity.mp4",
     "6 South Beach.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_6southbeach.png",
-    "7 Neah Bay.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_7neahbay.png"
+    "6 South Beach.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_6southbeach.mp4",
+    "7 Neah Bay.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_7neahbay.png",
+    "7 Neah Bay.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/coastal_kelvin_signal_7neahbay.mp4"
    }
   },
   {

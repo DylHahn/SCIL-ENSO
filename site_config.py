@@ -184,9 +184,10 @@ PAGES = [
             ('anim_coastal_sea_level.py', True, 'Animation: coastal sea level, day by day',
              "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up "
              "day by day: a rise that travels north shows as a streak slanting down to the right."),
-            ('coastal_kelvin_signal.py', True, 'The Kelvin-wave signal at each tide gauge',
-             "Coastal sea level and its Kelvin-wave signal at each tide gauge from Ecuador to Washington since "
-             "October 2025, against the days the equatorial Kelvin waves reached South America; one button per gauge."),
+            ('coastal_kelvin_signal.py', True, 'Animation: from the equator to each tide gauge',
+             "The equatorial Kelvin waves travelling toward South America, played alongside sea level and its "
+             "Kelvin-wave signal at one tide gauge from Ecuador to Washington, since October 2025; one button per "
+             "gauge."),
         ],
         extra="",
         data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP',
@@ -426,11 +427,12 @@ FIGURE_NOTES = {
     "coastal_kelvin_signal.py": dict(
         takeaway="In Ecuador, the rises of March, May and late August 2026 followed the arrival of equatorial Kelvin "
                  "waves; at Neah Bay the largest swings came from winter storms, not from the waves.",
-        how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. Top: sea "
-            "level compared with normal. Bottom: the Kelvin-wave signal, the same sea level minus its 91-day average, "
-            "so that each passing wave stands out as a separate peak. Dashed lines mark the days the numbered "
-            "equatorial Kelvin waves of Figure 2 reached 95°W, near South America; a peak shortly after a dashed "
-            "line may be that wave arriving at the gauge."),
+        how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. Top: the "
+            "Kelvin-wave signal along the equator on the day shown, as in Figure 2, so you can watch each wave head "
+            "for South America. Middle: sea level at the gauge compared with normal. Bottom: its Kelvin-wave signal, "
+            "the same sea level minus its 91-day average, so that each passing wave stands out as a separate peak. "
+            "A dashed line appears when a numbered equatorial wave reaches 95°W; a coastal peak soon after may be "
+            "that wave arriving at the gauge."),
     "anim_marine_heatwaves.py": dict(
         takeaway="On 20 October 2026 the whole coastal ocean off Ecuador and Peru was in a marine heatwave, 70% of "
                  "it Severe or Extreme, and half the coastal waters off Southern California and northern Baja were in "
