@@ -7,3 +7,4 @@ __pycache__/
 .DS_Store
 # Clean exports for slides and papers (export_figures.py)
 figures_clean/
+.claude/

@@ -184,6 +184,9 @@ PAGES = [
             ('anim_coastal_sea_level.py', True, 'Animation: coastal sea level, day by day',
              "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up "
              "day by day: a rise that travels north shows as a streak slanting down to the right."),
+            ('coastal_kelvin_signal.py', True, 'The Kelvin-wave signal at each tide gauge',
+             "Coastal sea level and its Kelvin-wave signal at each tide gauge from Ecuador to Washington since "
+             "October 2025, against the days the equatorial Kelvin waves reached South America; one button per gauge."),
         ],
         extra="",
         data=['Daily satellite sea level (blended altimetry): NOAA NESDIS, via NOAA CoastWatch ERDDAP',
@@ -420,6 +423,14 @@ FIGURE_NOTES = {
             "the same day by day, with time running down the page, so a rise that travels north along the coast is "
             "a streak slanting down to the right. The map colours each gauge by its sea level on the day shown; "
             "the numbers match the columns."),
+    "coastal_kelvin_signal.py": dict(
+        takeaway="In Ecuador, the rises of March, May and late August 2026 followed the arrival of equatorial Kelvin "
+                 "waves; at Neah Bay the largest swings came from winter storms, not from the waves.",
+        how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. Top: sea "
+            "level compared with normal. Bottom: the Kelvin-wave signal, the same sea level minus its 91-day average, "
+            "so that each passing wave stands out as a separate peak. Dashed lines mark the days the numbered "
+            "equatorial Kelvin waves of Figure 2 reached 95°W, near South America; a peak shortly after a dashed "
+            "line may be that wave arriving at the gauge."),
     "anim_marine_heatwaves.py": dict(
         takeaway="On 20 October 2026 the whole coastal ocean off Ecuador and Peru was in a marine heatwave, 70% of "
                  "it Severe or Extreme, and half the coastal waters off Southern California and northern Baja were in "
@@ -670,6 +681,12 @@ FIGURE_INFO = {
         "the rise move from gauge to gauge shows how far north the waves have reached and how quickly.",
         "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's "
         "1991–2020 seasonal cycle, 10-day means, not corrected for air pressure."),
+    "coastal_kelvin_signal.py": (
+        "Following the same wave from the equator to each gauge shows how far along the coast El Niño's Kelvin "
+        "waves reach. Each one that arrives raises coastal sea level for a few weeks, adding to flooding risk at "
+        "high tide.",
+        "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data, anomalies from each station's "
+        "1991–2020 seasonal cycle, 10-day means; equatorial Kelvin waves from NOAA blended satellite altimetry."),
     "anim_marine_heatwaves.py": (
         "El Niño warms the coastal ocean of the Americas through coastal Kelvin waves and weaker winds. Prolonged "
         "marine heatwaves stress fisheries, kelp forests and coral, and can bring toxic algal blooms and unusual "
@@ -796,6 +813,7 @@ FIGURE_DATA = {
     "kelvin_speeds.py": ["altimetry", "roni"],
     "coastal_sea_level.py": ["tide_gauges"],
     "anim_coastal_sea_level.py": ["tide_gauges"],
+    "coastal_kelvin_signal.py": ["tide_gauges", "altimetry"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],
@@ -813,4 +831,9 @@ FIGURE_DATA = {
 # script -> [(button label, extra command-line arguments)], the first being the default.
 FIGURE_VARIANTS = {
     "anim_kelvin.py": [("cm", []), ("inches", ["--units", "in"])],
+    "coastal_kelvin_signal.py": [(f"{n} {town}", ["--station", str(uid)]) for n, (uid, town) in enumerate(
+        [(91, "La Libertad"), (87, "Quepos"), (569, "San Diego"), (551, "San Francisco"), (556, "Crescent City"),
+         (592, "South Beach"), (558, "Neah Bay")], 1)],
 }
+# Label in front of a figure's version buttons (default "Units")
+FIGURE_SWITCH_LABEL = {"coastal_kelvin_signal.py": "Tide gauge"}

@@ -196,7 +196,7 @@
                color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
                font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
   .gloss-tip b { color: var(--text); display: block; }
-  .variant-switch { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 14px; color: var(--text-2); }
+  .variant-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 14px; color: var(--text-2); }
   .variant-switch span { font-weight: 600; margin-right: 4px; }
   .variant-switch button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text-2); background: transparent;
                            border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
@@ -267,7 +267,7 @@
   <p class="kicker">Southern California Heat</p>
   <h1>Southern California heat</h1>
   <p class="lede">How the summer of 2026 compared with past summers across Southern California, on land and in coastal waters, and how summer heat in the region has increased since 1895.</p>
-  <p class="meta">Updated October 29, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 30, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 
 
@@ -334,15 +334,15 @@
   });
   addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
 })();
-// Unit switches (e.g. cm | inches): swap the still and the animation, keeping play state
+// Version switches (e.g. cm | inches, or one tide gauge per button): swap the still and the animation, keeping play state
 document.querySelectorAll(".variant-switch button").forEach(btn => {
   btn.addEventListener("click", () => {
     const fig = btn.closest("figure"), img = fig.querySelector("img");
     btn.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn));
-    const playing = !fig.querySelector(".play");
-    img.dataset.anim = btn.dataset.anim;
-    img.src = playing ? btn.dataset.anim : btn.dataset.png;
-    fig.querySelectorAll(".figlinks:not(.downloads) a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
+    const anim = btn.dataset.anim, png = btn.dataset.png;
+    if (anim) img.dataset.anim = anim;
+    img.src = anim && !fig.querySelector(".play") ? anim : png;
+    fig.querySelectorAll(".figlinks:not(.downloads) a").forEach((a, i) => { a.href = anim && i === 0 ? anim : png; });
   });
 });
 // Animations load only when played
@@ -359,7 +359,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261029";
+  const up = "../", src = up + "search-index.json?v=20261030";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {

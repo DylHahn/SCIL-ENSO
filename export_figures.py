@@ -13,6 +13,7 @@ listed on the site's Methods page when using these figures.
 """
 import argparse
 import os
+import re
 import subprocess
 import sys
 import time
@@ -36,7 +37,7 @@ def figures():
 
 def clean_name(script, label="", extra=()):
     """File name (without extension) of a clean export: the script name, plus the variant label."""
-    return Path(script).stem + (f"_{label}" if extra else "")
+    return Path(script).stem + (f"_{re.sub(r'[^a-z0-9]+', '', label.lower())}" if extra else "")
 
 
 def export_one(tab, script, label="", extra=(), theme="dark"):

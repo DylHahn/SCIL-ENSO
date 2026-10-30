@@ -31,8 +31,8 @@ from PIL import Image
 
 from enso_common import HERE
 from export_figures import OUT as CLEAN_DIR, clean_name, export_one
-from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_VARIANTS, GLOSSARY, PAGES,
-                         REPO_URL, SITE_URL)
+from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_SWITCH_LABEL,
+                         FIGURE_VARIANTS, GLOSSARY, PAGES, REPO_URL, SITE_URL)
 
 DOCS = HERE / "docs"
 DOWNLOADS = DOCS / "downloads"                     # clean figures at fixed addresses (no position prefix)
@@ -290,9 +290,11 @@ def write_page(page):
                 for e in (".png", ".webp"):
                     if (src / f"{vs}{e}").exists():
                         shutil.copy2(src / f"{vs}{e}", img_dir / f"{vs}{e}")
-                buttons.append(f'<button type="button" data-png="img/{vs}.png" data-anim="img/{vs}.webp" '
+                anim = f' data-anim="img/{vs}.webp"' if animated else ""
+                buttons.append(f'<button type="button" data-png="img/{vs}.png"{anim} '
                                f'aria-pressed="{str(v == 0).lower()}">{html.escape(label)}</button>')
-            switch = (f'<div class="variant-switch" role="group" aria-label="Units"><span>Units:</span>'
+            what = FIGURE_SWITCH_LABEL.get(script, "Units")
+            switch = (f'<div class="variant-switch" role="group" aria-label="{what}"><span>{what}:</span>'
                       + "".join(buttons) + "</div>")
         alt_file = src / f"{s}.alt.txt"
         alt = html.escape(alt_file.read_text().strip() if alt_file.exists() else caption)

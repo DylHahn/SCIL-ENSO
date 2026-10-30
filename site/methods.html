@@ -9,7 +9,7 @@
     <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present</td><td>Kelvin wave animation; sea level in 3D</td></tr>
     <tr><td>Warm water volume index</td><td>NOAA Pacific Marine Environmental Laboratory (PMEL)</td><td>Monthly, 1980–present</td><td>Warm water stored before each El Niño</td></tr>
     <tr><td>Blended Sea Winds (NBS) v2, 10 m winds</td><td>NOAA NCEI</td><td>0.25°, daily, 1987–present</td><td>Westerly wind bursts along the equator</td></tr>
-    <tr><td>Fast-delivery daily tide-gauge sea level</td><td>University of Hawaii Sea Level Center (UHSLC)</td><td>Individual stations, daily, about two months behind real time</td><td>Coastal sea level from Ecuador to Washington; animation of coastal sea level</td></tr>
+    <tr><td>Fast-delivery daily tide-gauge sea level</td><td>University of Hawaii Sea Level Center (UHSLC)</td><td>Individual stations, daily, about two months behind real time</td><td>Coastal sea level from Ecuador to Washington; animation of coastal sea level; Kelvin-wave signal at each tide gauge</td></tr>
     <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
     <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series and interactive explorer, tropical Pacific maps</td></tr>
     <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
@@ -140,6 +140,12 @@
   coverage differs between events. Coastal sea level also responds to local winds and storms, especially north of
   Mexico, so not every rise is a Kelvin wave. The animation uses the same data for the gauges reporting since
   October 2025, one frame every two days.</li>
+  <li><b>The Kelvin-wave signal at each tide gauge.</b> The same tide-gauge anomalies, for each gauge reporting since
+  October 2025, with the Kelvin-wave signal computed as for the equatorial waves: the anomaly minus its centred 91-day
+  running mean, which removes the slow, season-long rise and leaves the shorter pulses. Near the end of the record the
+  running mean uses fewer days, so the last 45 days may change as new data arrive. The dashed lines are the days the
+  equatorial Kelvin waves traced in satellite altimetry reached 95°W; a coastal peak that follows one is consistent
+  with that wave arriving, but local winds and storms also raise coastal sea level, especially north of Mexico.</li>
   <li><b>Marine heatwaves from California to Peru.</b> NOAA OISST v2.1 daily sea surface temperature (via NOAA PSL)
   on every fourth 0.25° grid point (1°) over 25°S–45°N, 150°W–70°W. Following Hobday et al. (2016), the
   climatological mean and 90th percentile for each day of the year are computed from 1991–2020 with an 11-day window

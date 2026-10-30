@@ -196,7 +196,7 @@
                color: var(--text-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px;
                font-size: 14px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none; }
   .gloss-tip b { color: var(--text); display: block; }
-  .variant-switch { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 14px; color: var(--text-2); }
+  .variant-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 14px; color: var(--text-2); }
   .variant-switch span { font-weight: 600; margin-right: 4px; }
   .variant-switch button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text-2); background: transparent;
                            border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
@@ -267,7 +267,7 @@
   <p class="kicker">El Niño 2026/2027 · Ocean heat below the surface</p>
   <h1>Ocean heat below the surface: the warm water behind the 2026/2027 El Niño</h1>
   <p class="lede">Most of an <span class="term" tabindex="0" data-def="A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.">El Niño<span class="vh"> (A periodic warming of the central and eastern equatorial Pacific Ocean, with related changes in winds and rainfall, recurring every two to seven years.)</span></span>&#x27;s heat is stored below the sea surface. These figures follow the warm water in the upper 200 metres of the equatorial Pacific, in 3D, by temperature layer and along the equator, using NOAA&#x27;s ocean <span class="term" tabindex="0" data-def="A best estimate of past ocean or weather conditions, made by combining observations with a numerical model.">reanalysis<span class="vh"> (A best estimate of past ocean or weather conditions, made by combining observations with a numerical model.)</span></span>.</p>
-  <p class="meta">Updated October 29, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
+  <p class="meta">Updated October 30, 2026. Data: NOAA observations, reanalysis and official forecasts. Select a figure to view it at full resolution.</p>
 </header>
 
 
@@ -278,7 +278,7 @@
 </nav>
 <h2 class="section">The warm layer in 3D</h2><p class="intro">Rotatable and animated 3D views of the upper ocean.</p>
 <figure id="g1"><p class="takeaway">In a normal year the warm layer is thin near South America; in 2026/2027 it has thickened there, so the cold water that normally cools the eastern Pacific stays far below the surface.</p><div class="player"><img src="img/01_anim_3d.png" data-anim="img/01_anim_3d.webp" alt="Rotating 3D animation of the tropical Pacific comparing a normal year with 2026 from January 2026 to September 2026. In September, the base of the warm layer on the equator east of 130°W lay at about 130 m in 2026, against 51 m normally." width="2600" height="1520" decoding="async"><button type="button" class="play"><span aria-hidden="true">▶</span> Play animation <span class="size">(2 MB)</span></button></div><figcaption><b class="figtitle">Figure 1. Animation: the tropical Pacific in 3D</b><dl class="figinfo"><dt>What it shows</dt><dd>Rotating 3D view of the tropical Pacific in a normal year and in 2026/2027: the top surface is the temperature at 5 m and the lower surface the base of the warm layer (the <span class="term" tabindex="0" data-def="The depth at which the ocean is 20 °C, used to mark the base of the warm upper layer.">20 °C isotherm<span class="vh"> (The depth at which the ocean is 20 °C, used to mark the base of the warm upper layer.)</span></span>), from January 2026 to the latest month.</dd><dt>How it relates to El Niño</dt><dd>The <span class="term" tabindex="0" data-def="Steady easterly winds over the tropical Pacific that push warm surface water toward the west.">trade winds<span class="vh"> (Steady easterly winds over the tropical Pacific that push warm surface water toward the west.)</span></span> normally hold the warm layer deep in the west and shallow in the east. When the winds weaken during El Niño, the warm layer flattens, so cold water no longer reaches the surface near South America and the eastern Pacific warms from below.</dd><dt>Data</dt><dd>NCEP GODAS ocean reanalysis, monthly temperature in 10 m levels to 205 m, via NOAA PSL; normal = 1991–2020 mean temperature.</dd><dt>Get the data</dt><dd><a href="https://psl.noaa.gov/data/gridded/data.godas.html" target="_blank" rel="noopener">NCEP GODAS ocean reanalysis (NOAA PSL)</a></dd></dl><p class="figlinks"><a href="img/01_anim_3d.webp" target="_blank" rel="noopener">Open the animation in a new tab</a> · <a href="img/01_anim_3d.png" target="_blank" rel="noopener">still image of the final frame</a></p><p class="figlinks downloads"><b>Download:</b> <a href="img/01_anim_3d.png" download>Figure as shown (PNG)</a> · <a href="../downloads/anim_3d.png" download>Clean figure, no title (PNG)</a> · <a href="../downloads/anim_3d.mp4" download>Video (MP4) · 1 MB</a></p><details class="how"><summary>How to read this figure</summary><p>Each block is the tropical Pacific seen from the south-east, with Asia at the far left and South America at the right. The coloured lower surface is the base of the warm layer: red where it lies deep, blue where it is close to the surface. The thin top sheet is the sea surface temperature.</p></details></figcaption></figure>
-<figure id="g2" class="ocean3d" data-src="img/02_interactive_3d_data.json?v=20261029">
+<figure id="g2" class="ocean3d" data-src="img/02_interactive_3d_data.json?v=20261030">
   <p class="takeaway">Switch to Hottest water and compare 2026/2027 with Normal: the body of water above 28 °C is far larger in 2026/2027 and reaches much farther east.</p>
   <div class="o3-bar">
     <div class="o3-group o3-views" role="group" aria-label="View">
@@ -577,15 +577,15 @@
   });
   addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
 })();
-// Unit switches (e.g. cm | inches): swap the still and the animation, keeping play state
+// Version switches (e.g. cm | inches, or one tide gauge per button): swap the still and the animation, keeping play state
 document.querySelectorAll(".variant-switch button").forEach(btn => {
   btn.addEventListener("click", () => {
     const fig = btn.closest("figure"), img = fig.querySelector("img");
     btn.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn));
-    const playing = !fig.querySelector(".play");
-    img.dataset.anim = btn.dataset.anim;
-    img.src = playing ? btn.dataset.anim : btn.dataset.png;
-    fig.querySelectorAll(".figlinks:not(.downloads) a").forEach((a, i) => { a.href = i === 0 ? btn.dataset.anim : btn.dataset.png; });
+    const anim = btn.dataset.anim, png = btn.dataset.png;
+    if (anim) img.dataset.anim = anim;
+    img.src = anim && !fig.querySelector(".play") ? anim : png;
+    fig.querySelectorAll(".figlinks:not(.downloads) a").forEach((a, i) => { a.href = anim && i === 0 ? anim : png; });
   });
 });
 // Animations load only when played
@@ -602,7 +602,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261029";
+  const up = "../", src = up + "search-index.json?v=20261030";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {
