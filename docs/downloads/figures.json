@@ -290,18 +290,20 @@
    "title": "Kelvin waves in four El Niños (horizontal Hovmöller)",
    "tab": "Kelvin Waves & Sea Level",
    "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
-   "caption": "Daily buoy measurements along the equator for 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with time running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between warm-layer depth and surface height, and between the Kelvin-wave signal and its rate of change.",
+   "caption": "Daily buoy measurements along the equator for 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with time running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between warm-layer depth, buoy surface height and satellite sea level, and between the Kelvin-wave signal and its rate of change.",
    "takeaway": "The Kelvin waves of 1997 were the largest of these four events: from January to October the signal in the depth of the warm layer reached 31 m, against 25 m in 2015, 23 m in 2026 and 20 m in 2023, when several eastern buoys were missing. At its fastest, the warm layer deepened by about 5–6 m per day in every event.",
-   "how_to_read": "Each row is one El Niño. Time runs left to right and longitude runs up the page, so a Kelvin wave moving east is a streak rising to the right; a steeper streak is a faster wave. In the signal views, red means deeper or higher than the 91-day average and blue means shallower or lower. In the rate-of-change views, red means rising or deepening and blue means falling or shoaling, with stronger colours for faster changes, so a wave's front is red and the water behind its peak is blue. Dark blocks are periods without buoy data.",
+   "how_to_read": "Each row is one El Niño. Time runs left to right and longitude runs up the page, so a Kelvin wave moving east is a streak rising to the right; a steeper streak is a faster wave. In the signal views, red means deeper or higher than the 91-day average and blue means shallower or lower. In the rate-of-change views, red means rising or deepening and blue means falling or shoaling, with stronger colours for faster changes, so a wave's front is red and the water behind its peak is blue. Dark blocks are periods without buoy data. The satellite views have no such gaps from 2015 onward; their 1997/1998 row uses buoy surface height, because there is no daily satellite record for it here, and looks smoother because it has only 8 points across the Pacific.",
    "relation": "Kelvin waves carry warm water east before and during an El Niño. Comparing the same months in each event shows how many waves there were, how large they were and how fast the ocean changed as each one arrived.",
-   "data": "TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm and dynamic height (0/500 dbar), at 8 moorings on the equator; anomalies from each mooring's 1991–2020 seasonal cycle.",
+   "data": "TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm and dynamic height (0/500 dbar), at 8 moorings on the equator; anomalies from each mooring's 1991–2020 seasonal cycle. Satellite views: NOAA blended altimetry (2026/2027, 2023/2024) and NOAA delayed-time altimetry (2015/2016).",
    "description": "Longitude–time diagrams of the kelvin-wave signal in warm-layer depth (20 °C isotherm) along the equator from TAO buoys for the El Niños of 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with data through 1 November 2026.",
    "animated": false,
    "files": {
     "Warm-layer depth.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_warmlayerdepth.png",
     "Warm-layer depth: rate of change.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_warmlayerdepthrateofchange.png",
     "Surface height.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_surfaceheight.png",
-    "Surface height: rate of change.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_surfaceheightrateofchange.png"
+    "Surface height: rate of change.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_surfaceheightrateofchange.png",
+    "Satellite sea level.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_satellitesealevel.png",
+    "Satellite sea level: rate of change.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_satellitesealevelrateofchange.png"
    }
   },
   {

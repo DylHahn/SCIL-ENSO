@@ -175,7 +175,8 @@ PAGES = [
             ('hovmoller_kelvin_events.py', True, 'Kelvin waves in four El Niños (horizontal Hovmöller)',
              "Daily buoy measurements along the equator for 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with time "
              "running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between "
-             "warm-layer depth and surface height, and between the Kelvin-wave signal and its rate of change."),
+             "warm-layer depth, buoy surface height and satellite sea level, and between the Kelvin-wave signal and "
+             "its rate of change."),
             ('kelvin_variables.py', True, 'The 2026 Kelvin waves in four variables',
              "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature and east–west "
              "wind along the equator since October 2025, with the traced Kelvin waves drawn over each."),
@@ -419,7 +420,10 @@ FIGURE_NOTES = {
             "is a streak rising to the right; a steeper streak is a faster wave. In the signal views, red means deeper "
             "or higher than the 91-day average and blue means shallower or lower. In the rate-of-change views, red means "
             "rising or deepening and blue means falling or shoaling, with stronger colours for faster changes, so a "
-            "wave's front is red and the water behind its peak is blue. Dark blocks are periods without buoy data."),
+            "wave's front is red and the water behind its peak is blue. Dark blocks are periods without buoy data. The "
+            "satellite views have no such gaps from 2015 onward; their 1997/1998 row uses buoy surface height, because "
+            "there is no daily satellite record for it here, and looks smoother because it has only 8 points across "
+            "the Pacific."),
     "kelvin_variables.py": dict(
         takeaway="The 2026 waves are clearest in sea level and the depth of the warm layer. Bursts of westerly wind near "
                  "165°E line up with the start of waves 1 to 3, while the waves leave only a weak mark on sea surface "
@@ -696,7 +700,8 @@ FIGURE_INFO = {
         "Kelvin waves carry warm water east before and during an El Niño. Comparing the same months in each event shows "
         "how many waves there were, how large they were and how fast the ocean changed as each one arrived.",
         "TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm and dynamic "
-        "height (0/500 dbar), at 8 moorings on the equator; anomalies from each mooring's 1991–2020 seasonal cycle."),
+        "height (0/500 dbar), at 8 moorings on the equator; anomalies from each mooring's 1991–2020 seasonal cycle. "
+        "Satellite views: NOAA blended altimetry (2026/2027, 2023/2024) and NOAA delayed-time altimetry (2015/2016)."),
     "kelvin_variables.py": (
         "Wind starts a Kelvin wave, the wave moves the warm layer and raises sea level, and the surface temperature "
         "responds later and more weakly. Seeing them together shows which measurements carry each wave most clearly.",
@@ -815,6 +820,7 @@ DATASET_RESOLUTION = {
     "ccmp": "CCMP v2.1: 0.25° grid, 6-hourly (daily means used)",
     "winds": "Blended Sea Winds v2: 0.25° grid, daily",
     "altimetry": "Blended altimetry: 0.25° grid, daily",
+    "altimetry_dt": "Delayed-time altimetry: 0.25° grid, daily, 2012–2019",
     "tao": "TAO/TRITON buoys: 8 moorings on the equator, 10–15° of longitude apart, daily",
     "nclimgrid": "nClimGrid: about 5 km (1/24°) grid, monthly",
     "ghcn": "GHCN-Daily: individual stations, daily",
@@ -822,6 +828,8 @@ DATASET_RESOLUTION = {
     "cpc_gis": "NOAA CPC outlook maps: 3-month seasons, mapped as probability categories",
 }
 DATASETS = {
+    "altimetry_dt": ("Delayed-time satellite sea level, 2012–2019 (NOAA PIFSC ERDDAP)",
+                     "https://oceanwatch.pifsc.noaa.gov/erddap/griddap/noaa_sla_dt.html"),
     "tao": ("TAO/TRITON daily moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP)",
             "https://www.pmel.noaa.gov/tao/drupal/disdel/"),
     "godas": ("NCEP GODAS ocean reanalysis (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.godas.html"),
@@ -878,7 +886,7 @@ FIGURE_DATA = {
     "coastal_sea_level.py": ["tide_gauges"],
     "anim_coastal_sea_level.py": ["tide_gauges"],
     "coastal_kelvin_signal.py": ["altimetry"],
-    "hovmoller_kelvin_events.py": ["tao"],
+    "hovmoller_kelvin_events.py": ["tao", "altimetry", "altimetry_dt"],
     "kelvin_variables.py": ["altimetry", "tao"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
@@ -900,7 +908,9 @@ FIGURE_VARIANTS = {
     "hovmoller_kelvin_events.py": [("Warm-layer depth", ["--var", "d20"]),
                                    ("Warm-layer depth: rate of change", ["--var", "d20", "--kind", "rate"]),
                                    ("Surface height", ["--var", "dyn"]),
-                                   ("Surface height: rate of change", ["--var", "dyn", "--kind", "rate"])],
+                                   ("Surface height: rate of change", ["--var", "dyn", "--kind", "rate"]),
+                                   ("Satellite sea level", ["--var", "ssh"]),
+                                   ("Satellite sea level: rate of change", ["--var", "ssh", "--kind", "rate"])],
     "coastal_kelvin_signal.py": [(f"{n} {town}", ["--station", str(uid)]) for n, (uid, town) in enumerate(
         [(91, "La Libertad"), (87, "Quepos"), (569, "San Diego"), (551, "San Francisco"), (556, "Crescent City"),
          (592, "South Beach"), (558, "Neah Bay")], 1)],

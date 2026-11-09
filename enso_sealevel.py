@@ -91,17 +91,59 @@ def baseline():
     return pd.concat(out)
 
 
-def anomalies(df):
+def anomalies(df, base=None):
     """Remove each longitude's 2017–2024 mean seasonal cycle (monthly means, interpolated to days),
     which also removes the long-term offset of the sea level record, then smooth with a 5-day running
-    mean."""
-    base = baseline()
+    mean. `base` replaces the baseline for another record."""
+    base = baseline() if base is None else base
     monthly = base.groupby(base.index.month).mean()
     doy = df.index.dayofyear.values
     centres = np.array([15, 45, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349])
     x = np.concatenate([centres - 365, centres, centres + 365])
     clim = np.stack([np.interp(doy, x, np.tile(monthly[c].values, 3)) for c in df.columns], axis=1)
     return (df - clim).rolling(5, center=True, min_periods=3).mean()
+
+
+# ---------------------------------------------------------------------------------------------
+# NOAA's delayed-time product (0.25°, daily, 2012–2019; via NOAA PIFSC ERDDAP) for events before 2017, on the
+# same equatorial band. Its seasonal cycle comes from its own complete years, 2012–2018.
+# ---------------------------------------------------------------------------------------------
+ERDDAP_DT = "https://oceanwatch.pifsc.noaa.gov/erddap/griddap/noaa_sla_dt.nc"
+
+
+def _get_dt(path, t0, t1, stride):
+    q = f"sla[({t0}):{stride}:({t1})][({LAT[0]}):1:({LAT[1]})][(120.125):4:(279.875)]"
+    tmp = path.with_suffix(".part")
+    for attempt in range(1, 6):
+        try:
+            urllib.request.urlretrieve(ERDDAP_DT + "?" + urllib.parse.quote(q, safe=""), tmp)
+            break
+        except OSError:
+            if attempt == 5:
+                raise
+            time.sleep(20 * attempt)
+    tmp.replace(path)
+
+
+def delayed_time_anomalies(start, end):
+    """Daily equatorial sea level anomaly (cm) from the delayed-time product, DataFrame (date × longitude 0–360)."""
+    CACHE.mkdir(parents=True, exist_ok=True)
+    path = CACHE / f"dt_{pd.Timestamp(start):%Y%m%d}_{pd.Timestamp(end):%Y%m%d}.nc"
+    if not path.exists():
+        print(f"Reading NOAA delayed-time altimetry, {start} to {end} ...", flush=True)
+        _get_dt(path, f"{start}T00:00:00Z", f"{end}T00:00:00Z", 1)
+    years = []
+    for y in range(2012, 2019):
+        p = CACHE / f"dtclim_{y}.nc"
+        if not p.exists():
+            print(f"Reading NOAA delayed-time altimetry baseline, {y} ...", flush=True)
+            _get_dt(p, f"{y}-01-01T00:00:00Z", f"{y}-12-31T00:00:00Z", 5)
+        years.append(p)
+    return anomalies(_read([path]), base=_read_years(years))
+
+
+def _read_years(paths):
+    return pd.concat([_read([p]) for p in paths])
 
 
 # ---------------------------------------------------------------------------------------------

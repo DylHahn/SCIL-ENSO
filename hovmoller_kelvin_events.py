@@ -3,8 +3,9 @@ Kelvin waves 4 — Horizontal Hovmöller diagrams of Kelvin waves in four El Ni�
 
 Daily TAO/TRITON buoy data along the equator (see enso_tao.py) from October of the year before each El Niño to
 January after its first year, with time running left to right and longitude running up the page, so a wave
-travelling east is a streak rising to the right. --var chooses the depth of the 20 °C isotherm or dynamic height
-(surface height); --kind chooses the Kelvin-wave signal or its rate of change.
+travelling east is a streak rising to the right. --var chooses the depth of the 20 °C isotherm, dynamic height
+(surface height) or satellite sea level (the blended record from 2017 and the delayed-time record of 2012–2019,
+with dynamic height for 1997/1998, before those records); --kind chooses the Kelvin-wave signal or its rate of change.
 
     python hovmoller_kelvin_events.py --var d20 --kind signal
 """
@@ -17,16 +18,26 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, ListedColormap
 
 from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, join_and, lon_label, save
+from anim_kelvin import kelvin_waves
+from enso_sealevel import delayed_time_anomalies
 from enso_tao import LONS, anomalies, infill_across, rate_of_change, wave_signal
 
 NOW = 2026
 EVENTS = [NOW, 2023, 2015, 1997]
 SETTINGS = {"d20": dict(name="warm-layer depth (20 °C isotherm)", unit="m", signal=32, rate=4.8, step=(4, 0.6)),
-            "dyn": dict(name="surface height (dynamic height)", unit="cm", signal=10, rate=1.4, step=(1.25, 0.175))}
+            "dyn": dict(name="surface height (dynamic height)", unit="cm", signal=10, rate=1.4, step=(1.25, 0.175)),
+            "ssh": dict(name="satellite sea level", unit="cm", signal=10, rate=1.6, step=(1.25, 0.2))}
 
 
 def window(y):
     return pd.Timestamp(f"{y - 1}-10-01"), pd.Timestamp(f"{y + 1}-01-31")
+
+
+def satellite_signal(refresh):
+    """Satellite Kelvin-wave signal by event: {year: signal}, with buoy dynamic height for 1997/1998."""
+    _, sig, _ = kelvin_waves(refresh)
+    dt = delayed_time_anomalies("2014-08-15", "2016-03-15")
+    return {NOW: sig, 2023: sig, 2015: wave_signal(dt), 1997: wave_signal(anomalies("dyn", refresh))}
 
 
 def main():
@@ -40,9 +51,12 @@ def main():
 
     apply_style(args.theme)
     cfg = SETTINGS[args.var]
-    sig = wave_signal(anomalies(args.var, args.refresh))
-    field = infill_across(rate_of_change(sig) if args.kind == "rate" else sig)
-    latest = field.dropna(how="all").index[-1]
+    if args.var == "ssh":
+        signals = satellite_signal(args.refresh)
+    else:
+        signals = dict.fromkeys(EVENTS, wave_signal(anomalies(args.var, args.refresh)))
+    fields = {y: infill_across(rate_of_change(s) if args.kind == "rate" else s) for y, s in signals.items()}
+    latest = fields[NOW].dropna(how="all").index[-1]
     top = cfg[args.kind]
     step = cfg["step"][args.kind == "rate"]
     levels = np.arange(-top, top + step / 2, step)
@@ -55,9 +69,9 @@ def main():
     for k, y in enumerate(EVENTS):
         start, end = window(y)
         ax = fig.add_axes([L, (1.15 + (len(EVENTS) - 1 - k) * 2.27) / H, W, 1.9 / H])
-        w = field.loc[start:min(end, latest)]
+        w = fields[y].loc[start:min(end, latest)]
         days = (w.index - start).days.values
-        cf = ax.contourf(days, LONS, w.values.T, levels=levels, cmap=cmap, norm=norm, extend="both")
+        cf = ax.contourf(days, np.array(w.columns, float), w.values.T, levels=levels, cmap=cmap, norm=norm, extend="both")
         total = (end - start).days
         ax.set_xlim(0, total)
         ax.set_ylim(LONS[0], LONS[-1])
@@ -72,7 +86,8 @@ def main():
                            if k == len(EVENTS) - 1 else [], fontsize=10.5)
         ax.axvline((pd.Timestamp(f"{y}-01-01") - start).days, color=COLORS["text"], lw=0.8, ls=(0, (4, 3)))
         cur = y == NOW
-        ax.set_title(f"{y}/{y + 1}", fontsize=14, fontweight="bold", loc="left", pad=5,
+        tag = "  (buoy surface height: no daily satellite record)" if args.var == "ssh" and y == 1997 else ""
+        ax.set_title(f"{y}/{y + 1}{tag}", fontsize=14, fontweight="bold", loc="left", pad=5,
                      color=COLORS["el_nino"] if cur else COLORS["text"])
         for sp in ax.spines.values():
             sp.set_visible(cur)
@@ -94,12 +109,18 @@ def main():
              "the right. The dashed line marks 1 January of each El Niño's first year.")
     what = "Rate of change of the Kelvin-wave signal" if args.kind == "rate" else "Kelvin-wave signal"
     add_title(fig, f"{what} in {cfg['name']}, four El Niño events",
-              f"Daily buoy measurements on the equator, 165°E–95°W, from October of the year before each El Niño."
+              (("Daily satellite sea level" if args.var == "ssh" else "Daily buoy measurements")
+               + " on the equator, 165°E–95°W, from October of the year before each El Niño.")
               + (" Red: rising; blue: falling." if args.kind == "rate" else " Red: above its 91-day average; blue: below."))
-    add_source(fig, "Data: TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily, at 8 moorings 10–15° "
-               "apart; anomalies from each mooring's 1991–2020 seasonal cycle,\n5-day means. Signal: anomaly minus its "
-               "91-day running mean. Rate of change: centred over 4 days. Gaps up to 10 days and single missing moorings "
-               "are interpolated; blank areas have no data.")
+    buoys = ("TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily, at 8 moorings 10–15° apart; anomalies "
+             "from each mooring's 1991–2020 seasonal cycle,\n5-day means. Signal: anomaly minus its 91-day running mean. "
+             "Rate of change: centred over 4 days. Gaps up to 10 days and single missing moorings are interpolated; blank "
+             "areas have no data.")
+    sat = ("NOAA satellite altimetry, 0.25°, daily, 1°S–1°N, every 1° of longitude: blended near-real-time product (2017 "
+           "onward, CoastWatch ERDDAP) for 2026/2027 and 2023/2024, delayed-time product (2012–2019, PIFSC ERDDAP) for "
+           "2015/2016, each\nanomalies from its own seasonal cycle; 1997/1998: TAO/TRITON buoy dynamic height. 5-day means. "
+           "Signal: anomaly minus its 91-day running mean. Rate of change: centred over 4 days.")
+    add_source(fig, "Data: " + (sat if args.var == "ssh" else buoys))
     save(fig, args.out,
          alt=f"Longitude–time diagrams of the {what.lower()} in {cfg['name']} along the equator from TAO buoys for the "
              "El Niños of " + join_and(f"{y}/{y + 1}" for y in EVENTS) + f", with data through {latest:%-d %B %Y}.")
