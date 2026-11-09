@@ -119,8 +119,9 @@ def main():
             ax.text(latest + (end - latest) / 2, np.mean(ax.get_ylim()), f"Data through\n{latest:%-d %b %Y}",
                     ha="center", va="center", fontsize=10, color=COLORS["text_2"], zorder=4, rotation=90)
         panels.append(ax)
-    fig.text(0.02, 0.1, "Rows run from south (bottom) to north (top);\nthe numbers match the map.", fontsize=10.5,
-             color=COLORS["text_2"])
+    if not CLEAN:
+        fig.text(0.02, 0.1, "Rows run from south (bottom) to north (top);\nthe numbers match the map.", fontsize=10.5,
+                 color=COLORS["text_2"])
     cax = fig.add_axes([0.46, 0.09, 0.45, 0.016])
     cb = fig.colorbar(mesh, cax=cax, orientation="horizontal", ticks=np.arange(-30, 31, 10))
     cb.outline.set_visible(False)

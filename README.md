@@ -43,7 +43,7 @@ python update_site.py --site-only           # rewrite the pages only (e.g. after
 python update_site.py --pages el-nino --figures anim_3d.py   # rebuild only some figures
 python summary.py                           # print the "What's happening now" summary
 python hovmoller_sst.py                     # build any single figure into figures_public/
-python export_figures.py                    # clean copies (no titles) and MP4 videos in figures_clean/
+python export_figures.py                    # the same figures in another theme or location (the site already uses them)
 ```
 
 ## Repository layout

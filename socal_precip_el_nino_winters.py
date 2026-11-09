@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, ListedColormap
 from matplotlib.patches import Patch
 
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, save
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, save
 from enso_nclimgrid import LAT, LON, socal_months
 from enso_socal import CATEGORIES, categorize, category_colors, winter_roni
 
@@ -92,8 +92,9 @@ def main():
     w = np.cos(np.deg2rad(pct["lat"]))
     reg_pct = float((ev.mean("wy") * w).sum() / (normal * w).sum() * 100)
     ax.set_title("Average precipitation, % of normal", fontsize=14.5, loc="left", pad=24, color=COLORS["text"])
-    ax.text(0, 1.015, f"Regional mean {reg_pct:.0f}% of the 1991–2020 normal", transform=ax.transAxes,
-            fontsize=11, color=COLORS["text_2"], va="bottom")
+    stat = f"Regional mean {reg_pct:.0f}% of the 1991–2020 normal"
+    if not add_note(f"Average precipitation: {stat}."):
+        ax.text(0, 1.015, stat, transform=ax.transAxes, fontsize=11, color=COLORS["text_2"], va="bottom")
     cax = fig.add_axes([0.06, 0.515, 0.40, 0.013])
     cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=levels[:-1])
     cb.outline.set_visible(False)
@@ -109,8 +110,9 @@ def main():
     finish(ax)
     reg_wet = int(((ev * w).sum(("lat", "lon")) > (normal * w).sum(("lat", "lon"))).sum())
     ax.set_title(f"Winters wetter than normal (of {n})", fontsize=14.5, loc="left", pad=24, color=COLORS["text"])
-    ax.text(0, 1.015, f"Region as a whole: {reg_wet} of {n} winters wetter than normal", transform=ax.transAxes,
-            fontsize=11, color=COLORS["text_2"], va="bottom")
+    stat = f"Region as a whole: {reg_wet} of {n} winters wetter than normal"
+    if not add_note(f"{stat}."):
+        ax.text(0, 1.015, stat, transform=ax.transAxes, fontsize=11, color=COLORS["text_2"], va="bottom")
     cax = fig.add_axes([0.55, 0.515, 0.40, 0.013])
     cb = fig.colorbar(cf2, cax=cax, orientation="horizontal", ticks=range(n + 1))
     cb.outline.set_visible(False)

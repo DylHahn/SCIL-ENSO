@@ -16,7 +16,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, Normalize
 
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, save
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, save
 from enso_nclimgrid import LAT, LON, socal_months, summer_months
 from enso_socal import winter_roni
 
@@ -86,8 +86,9 @@ def main():
         delta = s.loc[LATE[0]:LATE[1]].mean() - s.loc[EARLY[0]:EARLY[1]].mean()
         ax.set_title(f"{names[v]}: change since {EARLY[0]}–{EARLY[1]}", fontsize=14.5, loc="left", pad=24,
                      color=COLORS["text"])
-        ax.text(0, 1.015, f"Regional mean {delta:+.1f} °C ({LATE[0]}–{LATE[1]} vs. {EARLY[0]}–{EARLY[1]})",
-                transform=ax.transAxes, fontsize=11, color=COLORS["text_2"], va="bottom")
+        stat = f"Regional mean {delta:+.1f} °C ({LATE[0]}–{LATE[1]} vs. {EARLY[0]}–{EARLY[1]})"
+        if not add_note(f"{names[v]}: {stat}."):
+            ax.text(0, 1.015, stat, transform=ax.transAxes, fontsize=11, color=COLORS["text_2"], va="bottom")
     cax = fig.add_axes([0.28, 0.54, 0.44, 0.013])
     cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(0, 2.76, 0.5))
     cb.outline.set_visible(False)

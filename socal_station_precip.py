@@ -16,7 +16,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, save
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, save
 from enso_socal import (CATEGORIES, RAIN_NOTES, RAIN_STATIONS, categorize, category_colors, load_station, season_so_far,
                         water_year_totals, winter_roni)
 
@@ -103,8 +103,10 @@ def main():
         ax.set_title(name, fontsize=13.5, loc="left", pad=20)
         ax.text(0, 1.02, RAIN_NOTES[name], transform=ax.transAxes, fontsize=9.5, color=COLORS["text_2"],
                 va="bottom")
-    fig.text(0.07, 0.035, "Each dot is one water year (Oct–Sep); horizontal bars are medians. "
-             "“6/7” under a column = 6 of 7 seasons in that ENSO phase had above-normal precipitation.", fontsize=10.5, color=COLORS["text_2"])
+    how = ("Each dot is one water year (Oct–Sep); horizontal bars are medians. “6/7” under a column = 6 of 7 seasons in "
+           "that ENSO phase had above-normal precipitation.")
+    if not add_note(how):
+        fig.text(0.07, 0.035, how, fontsize=10.5, color=COLORS["text_2"])
 
     la = next(s for s in summary if s[0] == "Los Angeles")
     sd = next(s for s in summary if s[0] == "San Diego")

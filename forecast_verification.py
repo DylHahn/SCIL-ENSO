@@ -53,9 +53,15 @@ def load_issue(month, refresh):
     path = CACHE_DIR / f"cpc_strengths_{month:%Y%m}.html"
     if refresh or not path.exists():
         url = ARCHIVE.format(m=month.month, y=month.year)
-        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "enso-public-viz/1.0"}),
-                                    timeout=60) as r:
-            text = r.read().decode("utf-8", "replace")
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "enso-public-viz/1.0"}),
+                                        timeout=60) as r:
+                text = r.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError:
+            today = pd.Timestamp.today()
+            if (month.year, month.month) == (today.year, today.month):     # this month's issue is not out yet
+                return None
+            raise
         issued, rows = _rows(text)
         if issued != f"{month:%B %Y}":                     # the archive may not hold this month (yet)
             with urllib.request.urlopen(CURRENT, timeout=60) as r:

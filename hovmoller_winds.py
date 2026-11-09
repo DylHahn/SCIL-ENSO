@@ -134,9 +134,10 @@ def main():
             ax.axhline(days[-1], color=COLORS["text_2"], lw=1, ls=(0, (3, 2)))
             ax.text(np.mean(LON_RANGE), days[-1] + 12, f"Data through\n{latest:%-d %B %Y}", ha="center",
                     va="top", fontsize=10.5, color=COLORS["text_2"])
-        ax.text(0.03, 0.005, f"{counts[y]} bursts to {latest:%-d %b}", transform=ax.transAxes, fontsize=10.5,
-                color=COLORS["text"], va="bottom", bbox=dict(facecolor=COLORS["surface"], edgecolor="none",
-                                                              alpha=0.8, pad=2))
+        if not CLEAN:
+            ax.text(0.03, 0.005, f"{counts[y]} bursts to {latest:%-d %b}", transform=ax.transAxes, fontsize=10.5,
+                    color=COLORS["text"], va="bottom", bbox=dict(facecolor=COLORS["surface"], edgecolor="none",
+                                                                  alpha=0.8, pad=2))
         if k == 0:
             ax.set_ylabel("Date  (time runs downward ↓)", fontsize=11)
     fig.text((left + right) / 2, 0.145, "Longitude along the equator  (west → east)", ha="center", fontsize=11,

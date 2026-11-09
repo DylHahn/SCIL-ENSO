@@ -25,7 +25,7 @@ from matplotlib.colors import BoundaryNorm
 from matplotlib.ticker import FuncFormatter
 
 from enso_anim import AnimationFrames
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, lon_label
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, lon_label
 from enso_sealevel import anomalies, daily
 
 NOW = 2026
@@ -155,7 +155,7 @@ def main():
         t.set_fontweight("bold")
     hov.set_xlabel("Longitude along the equator", fontsize=12, fontweight="bold", color=COLORS["text"])
     hov.set_ylabel("Date (time runs down)", fontsize=12, fontweight="bold", color=COLORS["text"])
-    hov.set_title("Kelvin-wave signal along the equator, day by day: each streak slanting right is one wave",
+    hov.set_title("Kelvin-wave signal along the equator",
                   fontsize=13.5, fontweight="bold", loc="left", pad=8, color=COLORS["text"])
     now_line = hov.axhline(dates[0], color="white", lw=1.2, alpha=0.9)
     cax = fig.add_axes([0.085 + W + 0.012, HOV[0] / H, 0.012, HOV[1] / H])     # as tall as the panel
@@ -202,9 +202,10 @@ def main():
         num = hov.text(X0 - 1.5, t0, str(n), fontsize=12, fontweight="bold", color="white", ha="right",
                        va="center", alpha=0, bbox=dict(boxstyle="round,pad=0.2", fc="black", ec="none", alpha=0))
         tracks.append((t1, ln, ln2, num))
-    note = fig.text(lx, 1 - (top_tab + 1.0 + 0.45 * len(waves)) / H,
-                    "A wave is listed once it\nhas crossed the Pacific;\nwaves still travelling\nappear in later "
-                    "updates.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
+    if not add_note("A wave is listed once it has crossed the Pacific; waves still travelling appear in later updates."):
+        fig.text(lx, 1 - (top_tab + 1.0 + 0.45 * len(waves)) / H,
+                 "A wave is listed once it\nhas crossed the Pacific;\nwaves still travelling\nappear in later "
+                 "updates.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
 
     add_title(fig, f"Kelvin waves along the equatorial Pacific, October {NOW - 1} to {dates[-1]:%B %Y}",
               "Daily satellite sea level height (SSH), 1°S–1°N: SSH along the equator on each day (top) and the "

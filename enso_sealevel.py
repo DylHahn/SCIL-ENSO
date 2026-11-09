@@ -221,7 +221,12 @@ def box_anomalies(key, box, start, refresh=False):
     p = CACHE / f"box_{key}_{pd.Timestamp(start):%Y%m%d}.nc"
     if not p.exists() or refresh or p.stat().st_mtime < today.timestamp():
         print(f"Reading NOAA altimetry around {key} ...", flush=True)
-        _get_box(p, f"{pd.Timestamp(start):%Y-%m-%d}T00:00:00Z", "last", 1, box)
+        try:
+            _get_box(p, f"{pd.Timestamp(start):%Y-%m-%d}T00:00:00Z", "last", 1, box)
+        except OSError:                                  # the server is down: use the last copy read, if any
+            if not p.exists():
+                raise
+            print(f"NOAA altimetry unavailable: using the saved data around {key}", flush=True)
     base = []
     for y in range(CLIM[0], CLIM[1] + 1):                # one request per year: longer ones time out
         b = CACHE / f"boxclim_{key}_{y}.nc"

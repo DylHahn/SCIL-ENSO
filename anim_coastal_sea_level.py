@@ -87,7 +87,7 @@ def main():
     for t in hov.get_yticklabels():
         t.set_fontweight("bold")
     hov.set_ylabel("Date (time runs down)", fontsize=12, fontweight="bold", color=COLORS["text"])
-    hov.set_title("Coastal sea level day by day: a streak slanting down to the right is a wave moving north",
+    hov.set_title("Coastal sea level day by day",
                   fontsize=13.5, fontweight="bold", loc="left", pad=8, color=COLORS["text"])
     now_line = hov.axhline(dates[0], color="white", lw=1.2, alpha=0.9)
     cax = fig.add_axes([0.085 + W + 0.012, HOV[0] / H, 0.012, HOV[1] / H])

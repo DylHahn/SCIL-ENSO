@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 
 from enso_anim import AnimationFrames
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style
 from enso_sealevel import band_anomalies, daily_band
 
 NOW = 2026
@@ -68,9 +68,11 @@ def main():
     cb.ax.tick_params(labelsize=10, length=0)
     cb.set_label("Sea level anomaly (cm): height and colour", fontsize=10.5, color=COLORS["text_2"])
     stamp = fig.text(0.04, 0.80, "", fontsize=17, fontweight="bold", color=COLORS["text"])
-    fig.text(0.04, 0.765, "Ridges along the equator moving east (left to right) are Kelvin waves;\n"
-             "the eastern Pacific rises as warm water piles up against South America.",
-             fontsize=11, color=COLORS["text_2"], va="top", linespacing=1.35)
+    if not add_note("Ridges along the equator moving east (left to right) are Kelvin waves; the eastern Pacific rises "
+                    "as warm water piles up against South America."):
+        fig.text(0.04, 0.765, "Ridges along the equator moving east (left to right) are Kelvin waves;\n"
+                 "the eastern Pacific rises as warm water piles up against South America.",
+                 fontsize=11, color=COLORS["text_2"], va="top", linespacing=1.35)
     add_title(fig, "Sea level across the tropical Pacific in 3D",
               "Daily satellite sea level height (SSH) compared with normal. Height exaggerated about "
               f"{exag / 1e6:.0f} million times.")

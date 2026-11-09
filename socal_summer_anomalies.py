@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm
 from matplotlib.patches import Patch
 
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style, save
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, save
 from enso_nclimgrid import LAT, LON, socal_months, summer_months
 from enso_socal import winter_roni
 
@@ -84,8 +84,9 @@ def main():
         reg = series[var][args.year]
         rank = int((series[var] > reg).sum()) + 1
         ax.set_title(f"{titles[var]}, Jun–Sep {args.year}", fontsize=15, loc="left", pad=24, color=COLORS["text"])
-        ax.text(0, 1.015, f"Regional mean {reg:+.1f} °C · {ordinal(rank)} warmest of {len(series[var])} summers",
-                transform=ax.transAxes, fontsize=11, color=COLORS["text_2"], va="bottom")
+        stat = f"Regional mean {reg:+.1f} °C · {ordinal(rank)} warmest of {len(series[var])} summers"
+        if not add_note(f"{titles[var]}: {stat}."):
+            ax.text(0, 1.015, stat, transform=ax.transAxes, fontsize=11, color=COLORS["text_2"], va="bottom")
     cax = fig.add_axes([0.28, 0.455, 0.44, 0.015])
     cb = fig.colorbar(cf, cax=cax, orientation="horizontal", ticks=np.arange(-3, 3.5, 1))
     cb.outline.set_visible(False)

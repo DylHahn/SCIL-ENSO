@@ -404,7 +404,7 @@ FIGURE_NOTES = {
             "wind blowing toward South America, against the usual trade winds. Each strong burst is followed by a "
             "Kelvin wave in the figures below."),
     "kelvin_speeds.py": dict(
-        takeaway="The 2026 Kelvin waves were not unusually fast: they crossed at a median of 2.8 m/s, about 53 days "
+        takeaway="The 2026 Kelvin waves were not unusually fast: they crossed at a median of 2.8 m/s, about 52 days "
                  "from 150°E to 95°W, the same as the median of all clear waves since 2017.",
         how="Each dot is one Kelvin wave, placed at the date it was halfway across and at its speed; the right-hand "
             "axis gives the same speed as days to cross. Bigger dots raised sea level more; the bars show how "

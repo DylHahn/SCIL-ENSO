@@ -21,6 +21,8 @@ committed) and copied into docs/ (published by GitHub Pages).
 import argparse
 import datetime as dt
 import html
+import json
+import os
 import re
 import shutil
 import subprocess
@@ -30,7 +32,7 @@ from string import Template
 from PIL import Image
 
 from enso_common import HERE
-from export_figures import OUT as CLEAN_DIR, clean_name, export_one
+from export_figures import OUT as CLEAN_DIR, clean_name
 from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_SWITCH_LABEL,
                          FIGURE_VARIANTS, GLOSSARY, PAGES, REPO_URL, SITE_URL)
 
@@ -96,13 +98,18 @@ def build_figures(page, refresh, only=None):
         for v, (label, extra_args) in enumerate(FIGURE_VARIANTS.get(script, [("", [])])):
             name = stem(i, script) + (f"__{variant_slug(label)}" if v else "")
             cmd = [sys.executable, str(HERE / script), "--theme", "dark", "--out", str(out / f"{name}{ext}"), *extra_args]
+            clean = dict(os.environ, ENSO_CLEAN="1")           # the figure alone: its text goes on the page
             if refresh and downloads and v == 0:
                 cmd.append("--refresh")
             print(f"\n>> [{page['key']}] {script} {label}".rstrip(), flush=True)
-            if subprocess.call(cmd) != 0:
+            if subprocess.call(cmd, env=clean) != 0:
                 failed.append(script)
-            elif not is_interactive(script) and not export_one(page["slug"] or "el-nino", script, label, extra_args):
-                failed.append(script)                              # clean copy for the download links
+            elif not is_interactive(script):                       # the same files are the downloads
+                to = CLEAN_DIR / (page["slug"] or "el-nino")
+                to.mkdir(parents=True, exist_ok=True)
+                for e in (".png", ".mp4"):
+                    if (out / f"{name}{e}").exists():
+                        shutil.copy2(out / f"{name}{e}", to / f"{clean_name(script, label, extra_args)}{e}")
     return failed
 
 
@@ -193,16 +200,16 @@ def toc_html(groups):
 
 
 def downloads_html(page, script, s, animated, up):
-    """Copy the figure's clean exports to docs/downloads/ and return the download links: the figure as shown,
-    the clean figure (no title or notes) and, for animations, the MP4 video, for each version (cm | inches)."""
+    """Copy the figure's files to docs/downloads/ and return the download links: the figure and, for animations,
+    the MP4 video, for each version (cm | inches)."""
     tab = page["slug"] or "el-nino"
     versions = FIGURE_VARIANTS.get(script, [("", [])])
-    parts = [f'<a href="img/{s}.png" download>Figure as shown (PNG)</a>']
+    parts = []
     files = {}
     for label, extra in versions:
         name = clean_name(script, label, extra)
         tag = f", {label}" if len(versions) > 1 else ""
-        for ext, what in ((".png", "Clean figure, no title (PNG{})"), (".mp4", "Video (MP4{})")):
+        for ext, what in ((".png", "Figure (PNG{})"), (".mp4", "Video (MP4{})")):
             f = CLEAN_DIR / tab / f"{name}{ext}"
             if f.exists() and (ext == ".png" or animated):
                 DOWNLOADS.mkdir(parents=True, exist_ok=True)
@@ -220,6 +227,17 @@ def downloads_html(page, script, s, animated, up):
         data=FIGURE_INFO[script][1], description=alt.read_text().strip() if alt.exists() else "",
         animated=animated, files=files))
     return '<p class="figlinks downloads"><b>Download:</b> ' + " · ".join(parts) + "</p>"
+
+
+def page_text(src, s):
+    """The title, subtitle, source and notes a figure's script wrote beside it ({} if not built yet)."""
+    f = src / f"{s}.text.json"
+    return json.loads(f.read_text()) if f.exists() else {}
+
+
+def inline(text):
+    """Figure text as one line of HTML, with matplotlib's exponents (10$^{14}$) as superscripts."""
+    return re.sub(r"\$\^\{(.+?)\}\$", r"<sup>\1</sup>", html.escape(" ".join(text.split())))
 
 
 def write_page(page):
@@ -252,13 +270,18 @@ def write_page(page):
         how = (f'<details class="how"><summary>How to read this figure</summary><p>{gloss(notes["how"])}</p>'
                f'</details>') if notes.get("how") else ""
         why, data_used = FIGURE_INFO[script]
-        cap = (f'<b class="figtitle">Figure {n}. {html.escape(short)}</b>'
-               f'<dl class="figinfo"><dt>What it shows</dt><dd>{gloss(caption)}</dd>'
+        text = page_text(src, s)
+        extra_rows = (f'<dt>Source and method</dt><dd class="figsource">{inline(text.get("source", ""))}</dd>'
+                      if text.get("source") else "")
+        if text.get("notes"):
+            extra_rows += f'<dt>Notes</dt><dd class="fignotes">{inline(" ".join(text["notes"]))}</dd>'
+        info = (f'<dl class="figinfo"><dt>What it shows</dt><dd>{gloss(caption)}</dd>'
                f'<dt>How it relates to El Niño</dt><dd>{gloss(why)}</dd>'
                f'<dt>Data</dt><dd>{html.escape(data_used)}</dd>'
                f'<dt>Get the data</dt><dd>' + " · ".join(
                    f'<a href="{html.escape(DATASETS[k][1])}" target="_blank" rel="noopener">{html.escape(DATASETS[k][0])}</a>'
-                   for k in FIGURE_DATA[script]) + '</dd></dl>')
+                   for k in FIGURE_DATA[script]) + '</dd>' + extra_rows + '</dl>')
+        cap = f'<b class="figtitle">Figure {n}. {html.escape(short)}</b>' + info
         toc[-1][1].append(f'<li value="{n}"><a href="#g{n}">{html.escape(short)}</a></li>')
         SEARCH.append(dict(t=f"Figure {n}. {short}", p=page["tab"], g=page.get("group") or "",
                            s=notes.get("takeaway") or caption,                # shown under the result
@@ -291,7 +314,11 @@ def write_page(page):
                     if (src / f"{vs}{e}").exists():
                         shutil.copy2(src / f"{vs}{e}", img_dir / f"{vs}{e}")
                 anim = f' data-anim="img/{vs}.webp"' if animated else ""
-                buttons.append(f'<button type="button" data-png="img/{vs}.png"{anim} '
+                t = page_text(src, vs)
+                words = "".join(f' data-{k}="{html.escape(v)}"' for k, v in (
+                    ("title", inline(t.get("title", short))), ("sub", inline(t.get("subtitle", ""))),
+                    ("source", inline(t.get("source", ""))), ("notes", inline(" ".join(t.get("notes", []))))))
+                buttons.append(f'<button type="button" data-png="img/{vs}.png"{anim}{words} '
                                f'aria-pressed="{str(v == 0).lower()}">{html.escape(label)}</button>')
             what = FIGURE_SWITCH_LABEL.get(script, "Units")
             switch = (f'<div class="variant-switch" role="group" aria-label="{what}"><span>{what}:</span>'
@@ -315,7 +342,10 @@ def write_page(page):
                      f'width="{w}" height="{h}" decoding="async"></a>')
             links = ""
         links += downloads_html(page, script, s, animated, up)
-        body.append(f'<figure id="g{n}">{takeaway}{switch}{media}<figcaption>{cap}{links}{how}</figcaption></figure>')
+        heading = (f'<h3 class="figheading">Figure {n}. <span>{inline(text.get("title", short))}</span></h3>'
+                   + (f'<p class="figsub">{inline(text["subtitle"])}</p>' if text.get("subtitle") else ""))
+        body.append(f'<figure id="g{n}">{heading}{takeaway}{switch}{media}'
+                    f'<figcaption>{info}{links}{how}</figcaption></figure>')
 
     extra = page["extra"]
     if page["key"] == "methods":
@@ -375,10 +405,9 @@ def main():
         write_page(page)
     write_search_index()
     if DOWNLOAD_INDEX:
-        import json
         (DOWNLOADS / "figures.json").write_text(json.dumps(
             dict(updated=f"{dt.date.today():%Y-%m-%d}", site=SITE_URL, author=AUTHOR,
-                 note="Clean figures (no title or notes) at fixed addresses, refreshed at every site update. "
+                 note="Figures (no title or notes in the image) at fixed addresses, refreshed at every site update. "
                       "Text fields describe the current data.", figures=DOWNLOAD_INDEX),
             ensure_ascii=False, indent=1))
     write_redirects()

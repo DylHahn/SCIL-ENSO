@@ -22,7 +22,7 @@ from matplotlib.colors import BoundaryNorm, ListedColormap
 
 from anim_kelvin import START, kelvin_waves, wave_signal
 from enso_anim import AnimationFrames
-from enso_common import FIG_DIR, COLORS, add_source, add_title, apply_style
+from enso_common import CLEAN, FIG_DIR, COLORS, add_note, add_source, add_title, apply_style
 from enso_sealevel import box_anomalies
 from enso_tidegauges import STATIONS, alongshore_km
 
@@ -141,7 +141,7 @@ def main():
 
     # where the gauge is
     lx = 0.6
-    loc = fig.add_axes([lx, 6.55 / H, 0.38, 3.2 / H], projection=ccrs.PlateCarree(central_longitude=-100))
+    loc = fig.add_axes([lx, 5.15 / H, 0.38, mw / H] if CLEAN else [lx, 6.55 / H, 0.38, 3.2 / H], projection=ccrs.PlateCarree(central_longitude=-100))
     loc.set_extent([-132, -74, -8, 52], crs=pc)
     loc.add_feature(cfeature.OCEAN, facecolor=COLORS["ocean"])
     loc.add_feature(cfeature.LAND, facecolor=COLORS["land"], edgecolor="none")
@@ -155,13 +155,16 @@ def main():
              zorder=5)
     loc.set_title(f"{f'{num}  ' if num else ''}{name}", fontsize=13.5, fontweight="bold", loc="left", pad=6,
                   color=COLORS["text"])
-    fig.text(lx, 6.35 / H, f"{abs(lat):.1f}°{'N' if lat >= 0 else 'S'}, {abs(lon):.1f}°W"
-             + (f"\nabout {km:,.0f} km along the coast from La Libertad, Ecuador" if abs(km) > 1 else ""),
-             fontsize=10.5, fontweight="bold", color=COLORS["text"], va="top", linespacing=1.4)
-    fig.text(lx, 5.75 / H, "White star: the tide gauge. Black circles: the satellite points\nnearest it out at sea, "
-             "averaged for the charts below. A coastal Kelvin\nwave shows as a band of higher sea level hugging "
-             "the coast.\nBelow, dashed lines appear as each equatorial Kelvin\nwave of Figure 2 reaches 95°W, "
-             "near South America.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
+    where = (f"{name}: {abs(lat):.1f}°{'N' if lat >= 0 else 'S'}, {abs(lon):.1f}°W"
+             + (f", about {km:,.0f} km along the coast from La Libertad, Ecuador." if abs(km) > 1 else "."))
+    if not add_note(where):
+        fig.text(lx, 6.35 / H, where.split(": ", 1)[1].replace(", about", "\nabout"), fontsize=10.5, fontweight="bold",
+                 color=COLORS["text"], va="top", linespacing=1.4)
+    if not CLEAN:
+        fig.text(lx, 5.75 / H, "White star: the tide gauge. Black circles: the satellite points\nnearest it out at sea, "
+                 "averaged for the charts below. A coastal Kelvin\nwave shows as a band of higher sea level hugging "
+                 "the coast.\nBelow, dashed lines appear as each equatorial Kelvin\nwave of Figure 2 reaches 95°W, "
+                 "near South America.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
 
     # below: sea level at the satellite points nearest the gauge, drawn day by day
     top = fig.add_axes([L, 2.85 / H, 0.9, 1.55 / H])
@@ -174,7 +177,7 @@ def main():
     bot.set_ylabel("Signal (cm)")
     top.set_title("Sea level height (SSH) near the gauge compared with normal", fontsize=13, fontweight="bold",
                   loc="left", pad=6, color=COLORS["text"])
-    bot.set_title("Kelvin-wave signal near the gauge: SSH minus its 91-day average, so each passing wave is a peak",
+    bot.set_title("Kelvin-wave signal near the gauge",
                   fontsize=13, fontweight="bold", loc="left", pad=6, color=COLORS["text"])
     tnum = mdates.date2num(dates)
     lines, cursors, arrivals = [], [], []

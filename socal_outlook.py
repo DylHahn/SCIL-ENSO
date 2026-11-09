@@ -22,7 +22,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, Patch
 
-from enso_common import FIG_DIR, COLORS, HERE, add_source, add_title, apply_style, save
+from enso_common import FIG_DIR, COLORS, HERE, add_note, add_source, add_title, apply_style, save
 
 OUTLOOK_DIR = HERE / "data" / "cpc_outlook"
 URL = "https://ftp.cpc.ncep.noaa.gov/GIS/us_tempprcpfcst/seas{var}_latest.zip"
@@ -156,8 +156,9 @@ def main():
         label = "Rain" if var == "prcp" else "Temperature"
         ax.set_title(f"{label}, {season_text(code, valid)}", fontsize=15, loc="left",
                      pad=26, color=COLORS["text"])
-        ax.text(0, 1.015, f"Southern California: {phrase(var, cat, prob)}", transform=ax.transAxes,
-                fontsize=11.5, color=COLORS["text_2"], va="bottom")
+        stat = f"Southern California: {phrase(var, cat, prob)}"
+        if not add_note(f"{label}, {season_text(code, valid)}. {stat}."):
+            ax.text(0, 1.015, stat, transform=ax.transAxes, fontsize=11.5, color=COLORS["text_2"], va="bottom")
         # legend: only the bands that actually appear inside the map window
         from shapely.geometry import box
         window = box(EXTENT[0], EXTENT[2], EXTENT[1], EXTENT[3])

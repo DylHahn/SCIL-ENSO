@@ -13,6 +13,7 @@ synthetic / demo mode.
 from __future__ import annotations
 
 import io
+import json
 import os
 import time
 import urllib.request
@@ -55,6 +56,7 @@ CACHE_NAMES = {
 # Clean figures for slides and papers (export_figures.py): no title, subtitle, source line or reading notes,
 # cropped to the content; animations are also written as MP4 video
 CLEAN = os.environ.get("ENSO_CLEAN") == "1"
+PAGE_TEXT = {}                     # clean mode: title, subtitle, source and notes, written beside the figure
 
 # All paths are relative to this folder, so the scripts work from anywhere
 HERE = Path(__file__).resolve().parent
@@ -189,6 +191,7 @@ def add_title(fig, title, subtitle=None, y=None):
     """Big plain-language headline + one-line explanation, left aligned.
     Positions are fixed in inches so spacing is the same at any figure height."""
     if CLEAN:
+        PAGE_TEXT.update(title=title, subtitle=subtitle or "")
         return
     h = fig.get_figheight()
     y = 1 - 0.1 / h if y is None else y
@@ -202,8 +205,17 @@ def add_title(fig, title, subtitle=None, y=None):
 def add_source(fig, text):
     """Source credit at the bottom left."""
     if CLEAN:
+        PAGE_TEXT["source"] = text
         return
     fig.text(0.02, 0.012, text, ha="left", va="bottom", fontsize=10, color=COLORS["muted"])
+
+
+def add_note(text):
+    """Explanatory text that belongs beside a clean figure rather than in it. Returns True if it was kept
+    for the page, so the caller draws it only otherwise: `if not add_note(t): ax.text(...)`."""
+    if CLEAN:
+        PAGE_TEXT.setdefault("notes", []).append(text)
+    return CLEAN
 
 
 READABLE_SCALE, READABLE_MIN, READABLE_KEEP = 1.12, 11.0, 12.0
@@ -273,6 +285,8 @@ def save(fig, out_path, alt=None):
         fig.savefig(out_path, dpi=200)
     if alt:
         out_path.with_suffix(".alt.txt").write_text(alt.strip() + "\n")
+    if CLEAN and PAGE_TEXT:
+        out_path.with_suffix(".text.json").write_text(json.dumps(PAGE_TEXT, ensure_ascii=False, indent=1))
     print(f"Saved {out_path}")
 
 
