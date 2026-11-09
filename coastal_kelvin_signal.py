@@ -96,15 +96,16 @@ def main():
     pts = np.nanmean(np.stack([da.sel(latitude=a, longitude=b).values for a, b in zip(plat, plon)]), axis=0)
     s = pd.Series(pts, index=dates)
     sig = wave_signal(s)
+    rate = (sig.shift(-2) - sig.shift(2)) / 4.0                          # cm per day, centred over 4 days
     _, _, waves = kelvin_waves(args.refresh)
     waves = [w for w in waves if w[0] + (w[3] - w[0]) / 2 >= pd.Timestamp(START)]   # as numbered in anim_kelvin.py
 
-    H = 11.2
+    H = 13.15
     fig = plt.figure(figsize=(13, H))
     pc = ccrs.PlateCarree()
     L = 0.075
     mw = 4.6                                                           # map width and height, inches
-    mp = fig.add_axes([L, 5.15 / H, mw / 13, mw / H], projection=pc)
+    mp = fig.add_axes([L, 7.1 / H, mw / 13, mw / H], projection=pc)
     levels = np.arange(-40, 40.1, 5)
     cmap = ListedColormap(plt.get_cmap("RdBu_r")(np.linspace(0.04, 0.96, len(levels) + 1)))
     norm = BoundaryNorm(levels, cmap.N, extend="both")
@@ -130,7 +131,7 @@ def main():
                    zorder=6, bbox=dict(facecolor="white", alpha=0.85, edgecolor="none", pad=4))
     mp.set_title(f"Satellite sea level around {short(name)}", fontsize=13.5, fontweight="bold", loc="left", pad=8,
                  color=COLORS["text"])
-    cax = fig.add_axes([L + mw / 13 + 0.012, 5.15 / H, 0.012, mw / H])
+    cax = fig.add_axes([L + mw / 13 + 0.012, 7.1 / H, 0.012, mw / H])
     cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cax, ticks=levels[::2], extend="both")
     mp.set_facecolor(COLORS["surface_2"])                           # no satellite data
     cb.outline.set_visible(False)
@@ -141,7 +142,7 @@ def main():
 
     # where the gauge is
     lx = 0.6
-    loc = fig.add_axes([lx, 5.15 / H, 0.38, mw / H] if CLEAN else [lx, 6.55 / H, 0.38, 3.2 / H], projection=ccrs.PlateCarree(central_longitude=-100))
+    loc = fig.add_axes([lx, 7.1 / H, 0.38, mw / H] if CLEAN else [lx, 8.5 / H, 0.38, 3.2 / H], projection=ccrs.PlateCarree(central_longitude=-100))
     loc.set_extent([-132, -74, -8, 52], crs=pc)
     loc.add_feature(cfeature.OCEAN, facecolor=COLORS["ocean"])
     loc.add_feature(cfeature.LAND, facecolor=COLORS["land"], edgecolor="none")
@@ -158,21 +159,27 @@ def main():
     where = (f"{name}: {abs(lat):.1f}°{'N' if lat >= 0 else 'S'}, {abs(lon):.1f}°W"
              + (f", about {km:,.0f} km along the coast from La Libertad, Ecuador." if abs(km) > 1 else "."))
     if not add_note(where):
-        fig.text(lx, 6.35 / H, where.split(": ", 1)[1].replace(", about", "\nabout"), fontsize=10.5, fontweight="bold",
+        fig.text(lx, 8.3 / H, where.split(": ", 1)[1].replace(", about", "\nabout"), fontsize=10.5, fontweight="bold",
                  color=COLORS["text"], va="top", linespacing=1.4)
     if not CLEAN:
-        fig.text(lx, 5.75 / H, "White star: the tide gauge. Black circles: the satellite points\nnearest it out at sea, "
+        fig.text(lx, 7.7 / H, "White star: the tide gauge. Black circles: the satellite points\nnearest it out at sea, "
                  "averaged for the charts below. A coastal Kelvin\nwave shows as a band of higher sea level hugging "
                  "the coast.\nBelow, dashed lines appear as each equatorial Kelvin\nwave of Figure 2 reaches 95°W, "
                  "near South America.", fontsize=10.5, color=COLORS["text_2"], va="top", linespacing=1.35)
 
     # below: sea level at the satellite points nearest the gauge, drawn day by day
-    top = fig.add_axes([L, 2.85 / H, 0.9, 1.55 / H])
-    bot = fig.add_axes([L, 0.85 / H, 0.9, 1.55 / H], sharex=top)
+    top = fig.add_axes([L, 4.8 / H, 0.9, 1.55 / H])
+    bot = fig.add_axes([L, 2.8 / H, 0.9, 1.55 / H], sharex=top)
+    der = fig.add_axes([L, 0.85 / H, 0.9, 1.55 / H], sharex=top)
     lim = max(10, np.ceil(np.nanmax(np.abs(s.values)) / 10) * 10)
     top.set_ylim(-lim, lim)
     slim = max(6, np.ceil(np.nanmax(np.abs(sig.values)) / 3) * 3)
     bot.set_ylim(-slim, slim)
+    rlim = max(1, np.ceil(np.nanmax(np.abs(rate.values)) * 2) / 2)
+    der.set_ylim(-rlim, rlim)
+    der.set_ylabel("cm per day")
+    der.set_title("Rate of change of the signal: red while sea level is rising, blue while it is falling", fontsize=13,
+                  fontweight="bold", loc="left", pad=6, color=COLORS["text"])
     top.set_ylabel("SSH (cm)")
     bot.set_ylabel("Signal (cm)")
     top.set_title("Sea level height (SSH) near the gauge compared with normal", fontsize=13, fontweight="bold",
@@ -181,7 +188,7 @@ def main():
                   fontsize=13, fontweight="bold", loc="left", pad=6, color=COLORS["text"])
     tnum = mdates.date2num(dates)
     lines, cursors, arrivals = [], [], []
-    for ax, ylim in ((top, lim), (bot, slim)):
+    for ax, ylim in ((top, lim), (bot, slim), (der, rlim)):
         ax.axhline(0, color=COLORS["text_2"], lw=0.8)
         ax.yaxis.grid(True, color=COLORS["grid"], lw=0.6)
         ax.set_axisbelow(True)
@@ -195,12 +202,13 @@ def main():
             arrivals.append((w[3], ln, lbl))
         ax.tick_params(axis="both", labelsize=11)
     plt.setp(top.get_xticklabels(), visible=False)
-    bot.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
-    bot.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
-    for ax in (top, bot):
+    plt.setp(bot.get_xticklabels(), visible=False)
+    der.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
+    der.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    for ax in (top, bot, der):
         for tl in ax.get_xticklabels() + ax.get_yticklabels():
             tl.set_fontweight("bold")
-    fills = {top: [], bot: []}
+    fills = {top: [], bot: [], der: []}
 
     last30 = np.nanmean(s.values[-30:])
     add_title(fig, f"Satellite sea level around {short(name)}, October {NOW - 1} to {dates[-1]:%B %Y}",
@@ -209,7 +217,7 @@ def main():
     add_source(fig, "Data: NOAA blended satellite altimetry (sea level anomaly, daily, 0.25°, via NOAA CoastWatch "
                "ERDDAP), anomalies from the 2017–2024 seasonal cycle, 5-day means; points within about 25 km of the "
                "coast\nare less reliable. Kelvin-wave signal: anomaly minus its 91-day running mean (the last 45 days "
-               "use a shorter average and may change). Equatorial waves as in Figure 2.")
+               "use a shorter average and may change); rate of change: centred over 4 days. Equatorial waves as in Figure 2.")
 
     frames = AnimationFrames(fig, dpi=100)
     idx = list(range(0, len(dates), args.every))
@@ -221,7 +229,7 @@ def main():
             mesh.remove()
         mesh = draw(i)
         date.set_text(f"{d:%-d %B %Y}")
-        for ax, series, ln in ((top, s, lines[0]), (bot, sig, lines[1])):
+        for ax, series, ln in ((top, s, lines[0]), (bot, sig, lines[1]), (der, rate, lines[2])):
             y = series.values[:i + 1]
             ln.set_data(tnum[:i + 1], y)
             for f in fills[ax]:

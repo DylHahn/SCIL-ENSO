@@ -33,7 +33,7 @@ from PIL import Image
 
 from enso_common import HERE
 from export_figures import OUT as CLEAN_DIR, clean_name
-from site_config import (AUTHOR, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_SWITCH_LABEL,
+from site_config import (AUTHOR, DATASET_RESOLUTION, DATASETS, FIGURE_DATA, FIGURE_INFO, FIGURE_NOTES, FIGURE_SWITCH_LABEL,
                          FIGURE_VARIANTS, GLOSSARY, PAGES, REPO_URL, SITE_URL)
 
 DOCS = HERE / "docs"
@@ -278,6 +278,8 @@ def write_page(page):
         info = (f'<dl class="figinfo"><dt>What it shows</dt><dd>{gloss(caption)}</dd>'
                f'<dt>How it relates to El Niño</dt><dd>{gloss(why)}</dd>'
                f'<dt>Data</dt><dd>{html.escape(data_used)}</dd>'
+               f'<dt>Resolution</dt><dd>' + html.escape("; ".join(DATASET_RESOLUTION[k] for k in FIGURE_DATA[script]))
+               + '</dd>'
                f'<dt>Get the data</dt><dd>' + " · ".join(
                    f'<a href="{html.escape(DATASETS[k][1])}" target="_blank" rel="noopener">{html.escape(DATASETS[k][0])}</a>'
                    for k in FIGURE_DATA[script]) + '</dd>' + extra_rows + '</dl>')

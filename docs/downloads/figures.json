@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-08",
+ "updated": "2026-11-09",
  "site": "https://dylhahn.github.io/SCIL-ENSO/",
  "author": "Dylan Hahn",
  "note": "Figures (no title or notes in the image) at fixed addresses, refreshed at every site update. Text fields describe the current data.",
@@ -286,6 +286,41 @@
    }
   },
   {
+   "script": "hovmoller_kelvin_events.py",
+   "title": "Kelvin waves in four El Niños (horizontal Hovmöller)",
+   "tab": "Kelvin Waves & Sea Level",
+   "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
+   "caption": "Daily buoy measurements along the equator for 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with time running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between warm-layer depth and surface height, and between the Kelvin-wave signal and its rate of change.",
+   "takeaway": "The Kelvin waves of 1997 were the largest of these four events: from January to October the signal in the depth of the warm layer reached 31 m, against 25 m in 2015, 23 m in 2026 and 20 m in 2023, when several eastern buoys were missing. At its fastest, the warm layer deepened by about 5–6 m per day in every event.",
+   "how_to_read": "Each row is one El Niño. Time runs left to right and longitude runs up the page, so a Kelvin wave moving east is a streak rising to the right; a steeper streak is a faster wave. In the signal views, red means deeper or higher than the 91-day average and blue means shallower or lower. In the rate-of-change views, red means rising or deepening and blue means falling or shoaling, with stronger colours for faster changes, so a wave's front is red and the water behind its peak is blue. Dark blocks are periods without buoy data.",
+   "relation": "Kelvin waves carry warm water east before and during an El Niño. Comparing the same months in each event shows how many waves there were, how large they were and how fast the ocean changed as each one arrived.",
+   "data": "TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm and dynamic height (0/500 dbar), at 8 moorings on the equator; anomalies from each mooring's 1991–2020 seasonal cycle.",
+   "description": "Longitude–time diagrams of the kelvin-wave signal in warm-layer depth (20 °C isotherm) along the equator from TAO buoys for the El Niños of 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with data through 1 November 2026.",
+   "animated": false,
+   "files": {
+    "Warm-layer depth.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_warmlayerdepth.png",
+    "Warm-layer depth: rate of change.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_warmlayerdepthrateofchange.png",
+    "Surface height.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_surfaceheight.png",
+    "Surface height: rate of change.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/hovmoller_kelvin_events_surfaceheightrateofchange.png"
+   }
+  },
+  {
+   "script": "kelvin_variables.py",
+   "title": "The 2026 Kelvin waves in four variables",
+   "tab": "Kelvin Waves & Sea Level",
+   "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
+   "caption": "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature and east–west wind along the equator since October 2025, with the traced Kelvin waves drawn over each.",
+   "takeaway": "The 2026 waves are clearest in sea level and the depth of the warm layer. Bursts of westerly wind near 165°E line up with the start of waves 1 to 3, while the waves leave only a weak mark on sea surface temperature.",
+   "how_to_read": "Each row is one variable, with time running left to right and longitude running up the page. Each variable is shown as its departure from its own 91-day average, so red means above that average. The dashed lines are the Kelvin waves traced in satellite sea level, drawn at the same place in every row, so you can check whether each variable changes as a wave passes.",
+   "relation": "Wind starts a Kelvin wave, the wave moves the warm layer and raises sea level, and the surface temperature responds later and more weakly. Seeing them together shows which measurements carry each wave most clearly.",
+   "data": "NOAA blended satellite altimetry (0.25°, daily), via NOAA CoastWatch ERDDAP; TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm, sea surface temperature and zonal wind.",
+   "description": "Longitude–time diagrams along the equator from 2025-10 to November 2026 of the Kelvin-wave signal in satellite sea level, the depth of the 20 °C isotherm, sea surface temperature and zonal wind, with the 6 Kelvin waves traced in satellite sea level overlaid.",
+   "animated": false,
+   "files": {
+    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/kelvin_variables.png"
+   }
+  },
+  {
    "script": "coastal_sea_level.py",
    "title": "Coastal sea level from Ecuador to Washington",
    "tab": "Kelvin Waves & Sea Level",
@@ -325,7 +360,7 @@
    "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
    "caption": "Daily satellite sea level height (SSH) around each tide gauge from Ecuador to Washington since October 2025, as an animated map, with the SSH near the gauge and its Kelvin-wave signal drawn day by day; one button per gauge.",
    "takeaway": "By late October 2026 the whole sea off Ecuador stood 30–40 cm above normal; off San Diego the rise was a band of high water hugging the coast, and off Washington sea level was close to normal.",
-   "how_to_read": "Choose a tide gauge with the buttons above the figure; the numbers match the animation above. The map shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out at sea (black circles), and its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave stands out as a peak. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach 95°W; a coastal peak soon after may be that wave arriving.",
+   "how_to_read": "Choose a tide gauge with the buttons above the figure; the numbers match the animation above. The map shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out at sea (black circles), its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave stands out as a peak, and the rate of change of that signal in centimetres per day: red while sea level is rising and blue while it is falling, with larger values for a faster rise. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach 95°W; a coastal peak soon after may be that wave arriving.",
    "relation": "Following the same waves from the equator to each stretch of coast shows how far along the Americas El Niño's Kelvin waves reach. Each one that arrives raises coastal sea level for a few weeks, adding to flooding risk at high tide, and warms the coastal ocean.",
    "data": "NOAA blended near-real-time altimetry (sea surface height anomaly, 0.25°, daily), via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle at each point.",
    "description": "Animated map of daily satellite sea level around the La Libertad, Ecuador tide gauge from October 2025 to 7 November 2026, with the sea level at the satellite points nearest the gauge and its Kelvin-wave signal drawn day by day. Over the last 30 days, sea level there was +41 cm compared with normal.",

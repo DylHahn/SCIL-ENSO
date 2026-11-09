@@ -172,6 +172,13 @@ PAGES = [
             ('kelvin_speeds.py', True, 'How fast the Kelvin waves crossed the Pacific',
              "The speed of every Kelvin wave traced in satellite sea level since 2017, and the days each took to "
              "cross from 150°E to 95°W, against the ENSO state at the time."),
+            ('hovmoller_kelvin_events.py', True, 'Kelvin waves in four El Niños (horizontal Hovmöller)',
+             "Daily buoy measurements along the equator for 2026/2027, 2023/2024, 2015/2016 and 1997/1998, with time "
+             "running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between "
+             "warm-layer depth and surface height, and between the Kelvin-wave signal and its rate of change."),
+            ('kelvin_variables.py', True, 'The 2026 Kelvin waves in four variables',
+             "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature and east–west "
+             "wind along the equator since October 2025, with the traced Kelvin waves drawn over each."),
             ('interactive_sealevel_data.py', True, 'Interactive 3D: sea level and Kelvin waves',
              "Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can "
              "rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave "
@@ -403,6 +410,24 @@ FIGURE_NOTES = {
             "left to right from the western Pacific to South America. Red streaks are westerly wind bursts: spells of "
             "wind blowing toward South America, against the usual trade winds. Each strong burst is followed by a "
             "Kelvin wave in the figures below."),
+    "hovmoller_kelvin_events.py": dict(
+        takeaway="The Kelvin waves of 1997 were the largest of these four events: from January to October the signal in "
+                 "the depth of the warm layer reached 31 m, against 25 m in 2015, 23 m in 2026 and 20 m in 2023, when "
+                 "several eastern buoys were missing. At its fastest, the warm layer deepened by about 5–6 m per day in "
+                 "every event.",
+        how="Each row is one El Niño. Time runs left to right and longitude runs up the page, so a Kelvin wave moving east "
+            "is a streak rising to the right; a steeper streak is a faster wave. In the signal views, red means deeper "
+            "or higher than the 91-day average and blue means shallower or lower. In the rate-of-change views, red means "
+            "rising or deepening and blue means falling or shoaling, with stronger colours for faster changes, so a "
+            "wave's front is red and the water behind its peak is blue. Dark blocks are periods without buoy data."),
+    "kelvin_variables.py": dict(
+        takeaway="The 2026 waves are clearest in sea level and the depth of the warm layer. Bursts of westerly wind near "
+                 "165°E line up with the start of waves 1 to 3, while the waves leave only a weak mark on sea surface "
+                 "temperature.",
+        how="Each row is one variable, with time running left to right and longitude running up the page. Each variable is "
+            "shown as its departure from its own 91-day average, so red means above that average. The dashed lines "
+            "are the Kelvin waves traced in satellite sea level, drawn at the same place in every row, so you can "
+            "check whether each variable changes as a wave passes."),
     "kelvin_speeds.py": dict(
         takeaway="The 2026 Kelvin waves were not unusually fast: they crossed at a median of 2.8 m/s, about 52 days "
                  "from 150°E to 95°W, the same as the median of all clear waves since 2017.",
@@ -430,8 +455,9 @@ FIGURE_NOTES = {
         how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. The map "
             "shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave "
             "appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out "
-            "at sea (black circles), and its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave "
-            "stands out as a peak. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach "
+            "at sea (black circles), its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave "
+            "stands out as a peak, and the rate of change of that signal in centimetres per day: red while sea level "
+            "is rising and blue while it is falling, with larger values for a faster rise. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach "
             "95°W; a coastal peak soon after may be that wave arriving."),
     "anim_marine_heatwaves.py": dict(
         takeaway="On 20 October 2026 the whole coastal ocean off Ecuador and Peru was in a marine heatwave, 70% of "
@@ -666,6 +692,16 @@ FIGURE_INFO = {
         "NOAA NCEI Blended Sea Winds v2, daily 10 m zonal wind (0.25°), averaged over 5°S–5°N; anomalies from the "
         "NCEI 1991–2020 monthly climatology; 5-day running means. Days missing from NCEI's record (all of May 2026) "
         "are filled with CCMP v2.1 near-real-time winds (Remote Sensing Systems), adjusted to match NCEI."),
+    "hovmoller_kelvin_events.py": (
+        "Kelvin waves carry warm water east before and during an El Niño. Comparing the same months in each event shows "
+        "how many waves there were, how large they were and how fast the ocean changed as each one arrived.",
+        "TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm and dynamic "
+        "height (0/500 dbar), at 8 moorings on the equator; anomalies from each mooring's 1991–2020 seasonal cycle."),
+    "kelvin_variables.py": (
+        "Wind starts a Kelvin wave, the wave moves the warm layer and raises sea level, and the surface temperature "
+        "responds later and more weakly. Seeing them together shows which measurements carry each wave most clearly.",
+        "NOAA blended satellite altimetry (0.25°, daily), via NOAA CoastWatch ERDDAP; TAO/TRITON moored buoys (NOAA PMEL, "
+        "via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm, sea surface temperature and zonal wind."),
     "kelvin_speeds.py": (
         "The speed of a Kelvin wave sets how long the warm water takes to reach South America, and so how much "
         "warning the ocean gives before the eastern Pacific warms. Speed depends on how the ocean is layered: "
@@ -761,7 +797,33 @@ FIGURE_INFO = {
 # Links to the public datasets, listed under each figure ("Get the data"). Each link was checked
 # when added; NOAA occasionally moves pages, so re-check them if a link breaks.
 # ---------------------------------------------------------------------------------------------
+# Resolution of each dataset, shown under every figure that uses it.
+DATASET_RESOLUTION = {
+    "godas": "NCEP GODAS: 1° longitude × ⅓° latitude near the equator, 10 m depth levels, monthly",
+    "oisst_monthly": "OISST v2.1: 0.25° grid, monthly",
+    "oisst_daily": "OISST v2.1: 0.25° grid, daily",
+    "oisst_daily_psl": "OISST v2.1: 0.25° grid, daily",
+    "ersst": "ERSST v5: 2° grid, monthly",
+    "globaltemp_grid": "NOAAGlobalTemp v6: 5° grid, monthly",
+    "globaltemp_series": "Global temperature series: one global value per year",
+    "roni": "RONI: one index value per overlapping 3-month season",
+    "roni_outlook": "RONI outlook: one forecast per overlapping 3-month season, issued monthly",
+    "roni_strengths": "Strength probabilities: one forecast per overlapping 3-month season, issued monthly",
+    "nino_indices": "Niño indices: one regional average per month",
+    "pmel_wwv": "Warm water volume: one basin-wide value per month",
+    "tide_gauges": "Tide gauges: individual stations, daily",
+    "ccmp": "CCMP v2.1: 0.25° grid, 6-hourly (daily means used)",
+    "winds": "Blended Sea Winds v2: 0.25° grid, daily",
+    "altimetry": "Blended altimetry: 0.25° grid, daily",
+    "tao": "TAO/TRITON buoys: 8 moorings on the equator, 10–15° of longitude apart, daily",
+    "nclimgrid": "nClimGrid: about 5 km (1/24°) grid, monthly",
+    "ghcn": "GHCN-Daily: individual stations, daily",
+    "cpc_outlook": "NOAA CPC outlooks: 3-month seasons, issued monthly",
+    "cpc_gis": "NOAA CPC outlook maps: 3-month seasons, mapped as probability categories",
+}
 DATASETS = {
+    "tao": ("TAO/TRITON daily moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP)",
+            "https://www.pmel.noaa.gov/tao/drupal/disdel/"),
     "godas": ("NCEP GODAS ocean reanalysis (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.godas.html"),
     "oisst_monthly": ("OISST v2.1 monthly (NOAA PSL)", "https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html"),
     "oisst_daily": ("OISST v2.1 daily (NOAA CoastWatch ERDDAP)",
@@ -816,6 +878,8 @@ FIGURE_DATA = {
     "coastal_sea_level.py": ["tide_gauges"],
     "anim_coastal_sea_level.py": ["tide_gauges"],
     "coastal_kelvin_signal.py": ["altimetry"],
+    "hovmoller_kelvin_events.py": ["tao"],
+    "kelvin_variables.py": ["altimetry", "tao"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],
@@ -833,9 +897,13 @@ FIGURE_DATA = {
 # script -> [(button label, extra command-line arguments)], the first being the default.
 FIGURE_VARIANTS = {
     "anim_kelvin.py": [("cm", []), ("inches", ["--units", "in"])],
+    "hovmoller_kelvin_events.py": [("Warm-layer depth", ["--var", "d20"]),
+                                   ("Warm-layer depth: rate of change", ["--var", "d20", "--kind", "rate"]),
+                                   ("Surface height", ["--var", "dyn"]),
+                                   ("Surface height: rate of change", ["--var", "dyn", "--kind", "rate"])],
     "coastal_kelvin_signal.py": [(f"{n} {town}", ["--station", str(uid)]) for n, (uid, town) in enumerate(
         [(91, "La Libertad"), (87, "Quepos"), (569, "San Diego"), (551, "San Francisco"), (556, "Crescent City"),
          (592, "South Beach"), (558, "Neah Bay")], 1)],
 }
 # Label in front of a figure's version buttons (default "Units")
-FIGURE_SWITCH_LABEL = {"coastal_kelvin_signal.py": "Tide gauge"}
+FIGURE_SWITCH_LABEL = {"coastal_kelvin_signal.py": "Tide gauge", "hovmoller_kelvin_events.py": "Show"}

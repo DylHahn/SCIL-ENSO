@@ -269,7 +269,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated November 8, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated November 9, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -284,6 +284,7 @@
     <tr><td>Monthly Niño region indices</td><td>NOAA CPC (OISST v2.1)</td><td>Monthly</td><td>Niño 4, 3.4, 3 and 1+2 anomalies</td></tr>
     <tr><td>NCEP Global Ocean Data Assimilation System (GODAS)</td><td>NOAA NCEP, via NOAA PSL</td><td>1° × ⅓°, 10 m levels (5–205 m used), monthly</td><td>Upper-ocean temperature sections, Hovmöller and animation</td></tr>
     <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present</td><td>Kelvin wave animation; sea level in 3D; satellite sea level at each tide gauge</td></tr>
+    <tr><td>TAO/TRITON moored buoys: 20 °C isotherm depth, dynamic height, sea surface temperature, zonal wind</td><td>NOAA Pacific Marine Environmental Laboratory (PMEL), via NOAA CoastWatch ERDDAP</td><td>8 moorings on the equator, 165°E–95°W, 10–15° of longitude apart; daily, 1991–present used</td><td>Kelvin waves in four El Niños; the 2026 Kelvin waves in four variables</td></tr>
     <tr><td>Warm water volume index</td><td>NOAA Pacific Marine Environmental Laboratory (PMEL)</td><td>Monthly, 1980–present</td><td>Warm water stored before each El Niño</td></tr>
     <tr><td>Blended Sea Winds (NBS) v2, 10 m winds</td><td>NOAA NCEI</td><td>0.25°, daily, 1987–present</td><td>Westerly wind bursts along the equator</td></tr>
     <tr><td>Fast-delivery daily tide-gauge sea level</td><td>University of Hawaii Sea Level Center (UHSLC)</td><td>Individual stations, daily, about two months behind real time</td><td>Coastal sea level from Ecuador to Washington; animation of coastal sea level</td></tr>
@@ -453,6 +454,16 @@
   fewer days, so the last 45 days may change. The dashed lines are the days the equatorial Kelvin waves reached 95°W;
   a coastal peak that follows one is consistent with that wave arriving, but local winds and storms also change
   coastal sea level, especially north of Mexico.</li>
+  <li><b>Kelvin waves in the buoy record.</b> Daily TAO/TRITON measurements on the equator at the eight moorings in place
+  through every El Niño since 1997/1998 (165°E, 180°, 170°W, 155°W, 140°W, 125°W, 110°W and 95°W). Dynamic height (0/500 dbar)
+  is computed by NOAA PMEL from each buoy's temperature profile, so it is a measure of surface height closely tied to the
+  depth of the 20 °C isotherm rather than an independent measurement of it; satellite sea level is independent but
+  available daily here only from 2017. Anomalies are departures from each mooring's 1991–2020 seasonal cycle (three
+  harmonics), as 5-day running means. The Kelvin-wave signal is the anomaly minus its centred 91-day running mean. Its
+  rate of change is the centred difference over four days, per day: positive while a wave's front arrives and negative
+  behind its peak. It describes how fast the water rises or falls at one place, which is different from the speed
+  at which a wave travels. Gaps of up to 10 days are interpolated in time and single missing moorings across longitude;
+  longer gaps are left blank. In 2023/2024 several eastern moorings were missing for much of the period.</li>
   <li><b>Marine heatwaves from California to Peru.</b> NOAA OISST v2.1 daily sea surface temperature (via NOAA PSL)
   on every fourth 0.25° grid point (1°) over 25°S–45°N, 150°W–70°W. Following Hobday et al. (2016), the
   climatological mean and 90th percentile for each day of the year are computed from 1991–2020 with an 11-day window
@@ -587,7 +598,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261108";
+  const up = "../", src = up + "search-index.json?v=20261109";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {
