@@ -247,14 +247,15 @@
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 
-  body.embed main { padding-top: 20px; }
-  .embed-foot { margin-top: 24px; }
+  body.embed main { max-width: none; margin: 0; padding: 8px 12px; }
+  body.embed figure { margin: 0; }
+  body.embed .ex-desc, body.embed .o3-note, body.embed .ex-table, body.embed noscript { display: none; }
 </style>
 </head>
 <body class="embed">
 <main>
 <figure id="g1" class="explorer" data-src="interactive.json?v=20261113">
-  <p class="takeaway">Pick a measure and a month to see where 2026/2027 ranks among every El Niño since 1950.</p>
+  
   <div class="ex-controls" role="group" aria-label="Measure shown"></div>
   <p class="ex-desc"></p>
   <div class="ex-grid">
@@ -272,7 +273,7 @@
     <summary>Show the data as a table</summary>
     <div class="ex-table-wrap"></div>
   </details>
-  <figcaption><b class="figtitle">Figure 2. Interactive: explore every El Niño since 1950</b><dl class="figinfo"><dt>What it shows</dt><dd>Choose a measure, then move across the chart to compare all events month by month; the bars rank every event at the selected month. Select any gray line, or use the menu, to highlight another event.</dd><dt>How it relates to El Niño</dt><dd>Each measure captures a different part of El Niño: Niño 3.4 is the official yardstick, Niño 1+2 tracks the coast of South America, Niño 4 the western-central Pacific, and the upper ocean the stored heat that feeds the surface in the months ahead.</dd><dt>Data</dt><dd>NOAA ERSST v5 (Niño region sea surface temperature), NCEP GODAS (upper-200 m temperature), and NOAA CPC RONI with its official outlook; anomalies from 1991–2020.</dd><dt>Resolution</dt><dd>ERSST v5: 2° grid, monthly; NCEP GODAS: 1° longitude × ⅓° latitude near the equator, 10 m depth levels, monthly; RONI: one index value per overlapping 3-month season; RONI outlook: one forecast per overlapping 3-month season, issued monthly</dd><dt>Get the data</dt><dd><a href="https://psl.noaa.gov/data/gridded/data.noaa.ersst.v5.html" target="_blank" rel="noopener">ERSST v5 (NOAA PSL)</a> · <a href="https://psl.noaa.gov/data/gridded/data.godas.html" target="_blank" rel="noopener">NCEP GODAS ocean reanalysis (NOAA PSL)</a> · <a href="https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt" target="_blank" rel="noopener">Relative Oceanic Niño Index (NOAA CPC)</a> · <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/outlook/" target="_blank" rel="noopener">Official RONI outlook (NOAA CPC)</a></dd></dl></figcaption>
+  <figcaption></figcaption>
   <noscript><p>This interactive chart needs JavaScript. The same data appear in the figures below.</p></noscript>
 </figure>
 <script>
@@ -530,15 +531,6 @@
 })();
 </script>
 
-<footer class="embed-foot">
-  <p>From <a href="https://dylhahn.github.io/SCIL-ENSO/#g2" target="_blank" rel="noopener">ENSO Visualizations</a>, Dylan Hahn, SDSU Climate
-  Informatics Lab. Updated November 13, 2026.</p>
-  <p class="disclaimer"><strong>Disclaimer.</strong> These visualizations are provided for education and general
-  information only, without warranty of any kind. They are not official forecasts, outlooks or warnings, and they
-  may contain errors or change as NOAA updates its data. Use them at your own risk; for decisions, rely on official
-  sources such as the <a href="https://www.cpc.ncep.noaa.gov/">NOAA Climate Prediction Center</a> and the
-  <a href="https://www.weather.gov/">National Weather Service</a>.</p>
-</footer>
 </main>
 </body>
 </html>

@@ -247,14 +247,15 @@
   footer { border-top: 1px solid var(--line); padding-top: 24px; color: var(--muted); font-size: 15px; }
   footer ul, .note ul { padding-left: 20px; }
 
-  body.embed main { padding-top: 20px; }
-  .embed-foot { margin-top: 24px; }
+  body.embed main { max-width: none; margin: 0; padding: 8px 12px; }
+  body.embed figure { margin: 0; }
+  body.embed .ex-desc, body.embed .o3-note, body.embed .ex-table, body.embed noscript { display: none; }
 </style>
 </head>
 <body class="embed">
 <main>
 <figure id="g1" class="ocean3d" data-src="interactive_sealevel.json?v=20261113">
-  <p class="takeaway">Sea level along the equator in the eastern Pacific has risen by about 40 cm (16 in) since mid-2025 as warm water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.</p>
+  
   <div class="o3-bar">
     <div class="o3-group o3-units" role="group" aria-label="Units">
       <button type="button" data-unit="cm" aria-pressed="true">cm</button>
@@ -281,7 +282,7 @@
     <button type="button" class="o3-reset">Reset view</button>
   </div>
   <p class="o3-note"></p>
-  <figcaption><b class="figtitle">Figure 6. Interactive 3D: sea level and Kelvin waves</b><dl class="figinfo"><dt>What it shows</dt><dd>Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave signal alone.</dd><dt>How it relates to El Niño</dt><dd>Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a daily, ocean-wide picture of where El Niño&#x27;s heat is accumulating and of the Kelvin waves that carry it east; higher sea level along the coasts of the Americas is itself one of El Niño&#x27;s effects.</dd><dt>Data</dt><dd>NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N at 1°, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle; wave signal = anomaly minus its 91-day running mean.</dd><dt>Resolution</dt><dd>Blended altimetry: 0.25° grid, daily</dd><dt>Get the data</dt><dd><a href="https://coastwatch.noaa.gov/erddap/griddap/noaacwBLENDEDsshDaily.html" target="_blank" rel="noopener">Blended satellite sea level (NOAA CoastWatch ERDDAP)</a></dd></dl><details class="how"><summary>How to read this figure</summary><p>Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days play. Sea level height (SSH) shows the full rise; Kelvin-wave signal removes the slow build-up so that the waves stand out as red ridges travelling from left to right along the equator. The cm and inches buttons switch the units.</p></details></figcaption>
+  <figcaption></figcaption>
   <noscript><p>The 3D view needs JavaScript.</p></noscript>
 </figure>
 <script>
@@ -401,15 +402,6 @@
 })();
 </script>
 
-<footer class="embed-foot">
-  <p>From <a href="https://dylhahn.github.io/SCIL-ENSO/kelvin/#g6" target="_blank" rel="noopener">ENSO Visualizations</a>, Dylan Hahn, SDSU Climate
-  Informatics Lab. Updated November 13, 2026.</p>
-  <p class="disclaimer"><strong>Disclaimer.</strong> These visualizations are provided for education and general
-  information only, without warranty of any kind. They are not official forecasts, outlooks or warnings, and they
-  may contain errors or change as NOAA updates its data. Use them at your own risk; for decisions, rely on official
-  sources such as the <a href="https://www.cpc.ncep.noaa.gov/">NOAA Climate Prediction Center</a> and the
-  <a href="https://www.weather.gov/">National Weather Service</a>.</p>
-</footer>
 </main>
 </body>
 </html>

@@ -236,18 +236,17 @@ def embed_code(url, title):
 
 
 def write_embed(page, script, n, s, short, caption, takeaway, cap):
-    """Write an interactive figure as a standalone page at a fixed address, docs/embed/<name>.html, with its data
-    beside it, for other websites to link to or embed. Returns <name>."""
+    """Write an interactive figure alone (its controls and timeline, no text) as a standalone page at a fixed
+    address, docs/embed/<name>.html, with its data beside it, for other websites to link to or embed. Returns <name>."""
     name = script.removesuffix(".py").removesuffix("_data")
     EMBED.mkdir(parents=True, exist_ok=True)
     shutil.copy2(BUILD / page["key"] / f"{s}.json", EMBED / f"{name}.json")
     shell = (SITE / "page.html").read_text()
     css = shell[shell.index("<style>") + 7:shell.index("</style>")]
-    disclaimer = re.search(r'<p class="disclaimer">.*?</p>', shell, re.S).group(0)
     home = SITE_URL + (f"{page['slug']}/" if page["slug"] else "")
     figure = ((SITE / INTERACTIVE_TEMPLATES[script]).read_text().replace("{{ID}}", "g1")
               .replace("{{DATA}}", f"{name}.json?v={dt.date.today():%Y%m%d}")
-              .replace("{{TAKEAWAY}}", takeaway).replace("{{CAPTION}}", cap))
+              .replace("{{TAKEAWAY}}", "").replace("{{CAPTION}}", ""))       # the figure alone
     (EMBED / f"{name}.html").write_text(f"""<!doctype html>
 <html lang="en">
 <head>
@@ -257,18 +256,14 @@ def write_embed(page, script, n, s, short, caption, takeaway, cap):
 <meta name="description" content="{html.escape(caption)}">
 <link rel="canonical" href="{home}#g{n}">
 <style>{css}
-  body.embed main {{ padding-top: 20px; }}
-  .embed-foot {{ margin-top: 24px; }}
+  body.embed main {{ max-width: none; margin: 0; padding: 8px 12px; }}
+  body.embed figure {{ margin: 0; }}
+  body.embed .ex-desc, body.embed .o3-note, body.embed .ex-table, body.embed noscript {{ display: none; }}
 </style>
 </head>
 <body class="embed">
 <main>
 {figure}
-<footer class="embed-foot">
-  <p>From <a href="{home}#g{n}" target="_blank" rel="noopener">ENSO Visualizations</a>, {html.escape(AUTHOR)}, SDSU Climate
-  Informatics Lab. Updated {dt.date.today():%B %-d, %Y}.</p>
-  {disclaimer}
-</footer>
 </main>
 </body>
 </html>
