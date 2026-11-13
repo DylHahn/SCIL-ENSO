@@ -190,6 +190,8 @@
               max-width: 900px; padding-left: 12px; border-left: 3px solid var(--accent); }
   .how { margin-top: 10px; }
   .how summary { cursor: pointer; color: var(--text); font-size: 15px; font-weight: 600; width: fit-content; }
+  .how pre { margin: 8px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 13.5px;
+             white-space: pre-wrap; word-break: break-all; color: var(--text); }
   .how p { margin: 6px 0 0; padding: 10px 14px; background: var(--surface); border-radius: 8px; font-size: 15.5px; }
   .term { border-bottom: 1px dotted var(--muted); cursor: help; }
   .term:focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; border-radius: 2px; }
@@ -269,7 +271,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated November 9, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated November 13, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -537,7 +539,9 @@ downloads the latest data and rebuilds every figure and page.</p>
 the plot, its labels and its legend, with the title and description on the page. Animations are also available as MP4
 video. The files are kept at fixed addresses, <code>https://dylhahn.github.io/SCIL-ENSO/downloads/&lt;figure&gt;.png</code> and
 <code>.mp4</code>, that are refreshed at every update, so other websites can link to them and always show the latest
-version; <a href="https://dylhahn.github.io/SCIL-ENSO/downloads/figures.json">figures.json</a> lists them with their current descriptions. When reusing
+version. The interactive figures are also available as standalone pages, <code>https://dylhahn.github.io/SCIL-ENSO/embed/&lt;figure&gt;.html</code>,
+with an embed code beneath each figure for showing them on another website, such as iCHARM;
+<a href="https://dylhahn.github.io/SCIL-ENSO/downloads/figures.json">figures.json</a> lists them with their current descriptions. When reusing
 a figure, please credit "Dylan Hahn, SDSU Climate Informatics Lab" and the data sources listed for it, and note that
 the disclaimer above applies.</p>
 </section>
@@ -602,7 +606,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261109";
+  const up = "../", src = up + "search-index.json?v=20261113";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {

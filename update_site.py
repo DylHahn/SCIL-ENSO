@@ -37,6 +37,7 @@ from site_config import (AUTHOR, DATASET_RESOLUTION, DATASETS, FIGURE_DATA, FIGU
                          FIGURE_VARIANTS, GLOSSARY, PAGES, REPO_URL, SITE_URL)
 
 DOCS = HERE / "docs"
+EMBED = DOCS / "embed"                             # interactive figures as standalone pages, for other sites
 DOWNLOADS = DOCS / "downloads"                     # clean figures at fixed addresses (no position prefix)
 DOWNLOAD_INDEX = []                                # docs/downloads/figures.json: what is there, with current text
 BUILD = HERE / "figures_public"
@@ -229,6 +230,58 @@ def downloads_html(page, script, s, animated, up):
     return '<p class="figlinks downloads"><b>Download:</b> ' + " · ".join(parts) + "</p>"
 
 
+def embed_code(url, title):
+    return (f'<iframe src="{url}" title="{title}" width="100%" height="900" style="border:0" loading="lazy" '
+            f'allowfullscreen></iframe>')
+
+
+def write_embed(page, script, n, s, short, caption, takeaway, cap):
+    """Write an interactive figure as a standalone page at a fixed address, docs/embed/<name>.html, with its data
+    beside it, for other websites to link to or embed. Returns <name>."""
+    name = script.removesuffix(".py").removesuffix("_data")
+    EMBED.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(BUILD / page["key"] / f"{s}.json", EMBED / f"{name}.json")
+    shell = (SITE / "page.html").read_text()
+    css = shell[shell.index("<style>") + 7:shell.index("</style>")]
+    disclaimer = re.search(r'<p class="disclaimer">.*?</p>', shell, re.S).group(0)
+    home = SITE_URL + (f"{page['slug']}/" if page["slug"] else "")
+    figure = ((SITE / INTERACTIVE_TEMPLATES[script]).read_text().replace("{{ID}}", "g1")
+              .replace("{{DATA}}", f"{name}.json?v={dt.date.today():%Y%m%d}")
+              .replace("{{TAKEAWAY}}", takeaway).replace("{{CAPTION}}", cap))
+    (EMBED / f"{name}.html").write_text(f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{html.escape(short)} · ENSO Visualizations · SDSU Climate Informatics Lab</title>
+<meta name="description" content="{html.escape(caption)}">
+<link rel="canonical" href="{home}#g{n}">
+<style>{css}
+  body.embed main {{ padding-top: 20px; }}
+  .embed-foot {{ margin-top: 24px; }}
+</style>
+</head>
+<body class="embed">
+<main>
+{figure}
+<footer class="embed-foot">
+  <p>From <a href="{home}#g{n}" target="_blank" rel="noopener">ENSO Visualizations</a>, {html.escape(AUTHOR)}, SDSU Climate
+  Informatics Lab. Updated {dt.date.today():%B %-d, %Y}.</p>
+  {disclaimer}
+</footer>
+</main>
+</body>
+</html>
+""")
+    DOWNLOAD_INDEX.append(dict(
+        script=script, title=short, tab=page["tab"], page=home, caption=caption,
+        takeaway=FIGURE_NOTES.get(script, {}).get("takeaway", ""), how_to_read=FIGURE_NOTES.get(script, {}).get("how", ""),
+        relation=FIGURE_INFO[script][0], data=FIGURE_INFO[script][1], description="", animated=False, interactive=True,
+        files={"html": f"{SITE_URL}embed/{name}.html", "json": f"{SITE_URL}embed/{name}.json"},
+        embed=embed_code(f"{SITE_URL}embed/{name}.html", short)))
+    return name
+
+
 def page_text(src, s):
     """The title, subtitle, source and notes a figure's script wrote beside it ({} if not built yet)."""
     f = src / f"{s}.text.json"
@@ -296,9 +349,16 @@ def write_page(page):
                 raise SystemExit(f"Missing {s}.json: run update_site.py without --site-only first.")
             img_dir.mkdir(exist_ok=True)
             shutil.copy2(src / f"{s}.json", img_dir / f"{s}.json")
+            name = write_embed(page, script, n, s, short, caption, takeaway, cap + how)
+            url = f"{SITE_URL}embed/{name}.html"
+            links = (f'<p class="figlinks downloads"><b>Standalone:</b> <a href="{up}embed/{name}.html" target="_blank" '
+                     f'rel="noopener">Open as its own page (HTML)</a> · <a href="{up}embed/{name}.json" download>Data '
+                     f'(JSON)</a></p><details class="how"><summary>Embed this figure on another website</summary>'
+                     f'<p>Paste this code into the other page; the figure updates there whenever this site is updated.</p>'
+                     f'<pre><code>{html.escape(embed_code(url, short))}</code></pre></details>')
             body.append((SITE / INTERACTIVE_TEMPLATES[script]).read_text().replace("{{ID}}", f"g{n}")
                         .replace("{{DATA}}", f"img/{s}.json?v={dt.date.today():%Y%m%d}")
-                        .replace("{{TAKEAWAY}}", takeaway).replace("{{CAPTION}}", cap + how))
+                        .replace("{{TAKEAWAY}}", takeaway).replace("{{CAPTION}}", cap + links + how))
             continue
         if not (src / f"{s}.png").exists():
             raise SystemExit(f"Missing figure {s}.png: run update_site.py without --site-only first.")
@@ -401,8 +461,9 @@ def main():
             failed += build_figures(page, args.refresh, args.figures)
     DOCS.mkdir(exist_ok=True)
     (DOCS / ".nojekyll").write_text("")
-    if DOWNLOADS.exists():                             # refilled from figures_clean/ as the pages are written
-        shutil.rmtree(DOWNLOADS)              # serve files as-is (no Jekyll processing)
+    for d in (DOWNLOADS, EMBED):                       # refilled as the pages are written
+        if d.exists():
+            shutil.rmtree(d)              # serve files as-is (no Jekyll processing)
     for page in PAGES:
         write_page(page)
     write_search_index()

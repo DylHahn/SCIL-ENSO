@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09",
+ "updated": "2026-11-13",
  "site": "https://dylhahn.github.io/SCIL-ENSO/",
  "author": "Dylan Hahn",
  "note": "Figures (no title or notes in the image) at fixed addresses, refreshed at every site update. Text fields describe the current data.",
@@ -20,6 +20,25 @@
     "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_timeseries.png",
     "default.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_timeseries.mp4"
    }
+  },
+  {
+   "script": "interactive_data.py",
+   "title": "Interactive: explore every El Niño since 1950",
+   "tab": "Overview",
+   "page": "https://dylhahn.github.io/SCIL-ENSO/",
+   "caption": "Choose a measure, then move across the chart to compare all events month by month; the bars rank every event at the selected month. Select any gray line, or use the menu, to highlight another event.",
+   "takeaway": "Pick a measure and a month to see where 2026/2027 ranks among every El Niño since 1950.",
+   "how_to_read": "",
+   "relation": "Each measure captures a different part of El Niño: Niño 3.4 is the official yardstick, Niño 1+2 tracks the coast of South America, Niño 4 the western-central Pacific, and the upper ocean the stored heat that feeds the surface in the months ahead.",
+   "data": "NOAA ERSST v5 (Niño region sea surface temperature), NCEP GODAS (upper-200 m temperature), and NOAA CPC RONI with its official outlook; anomalies from 1991–2020.",
+   "description": "",
+   "animated": false,
+   "interactive": true,
+   "files": {
+    "html": "https://dylhahn.github.io/SCIL-ENSO/embed/interactive.html",
+    "json": "https://dylhahn.github.io/SCIL-ENSO/embed/interactive.json"
+   },
+   "embed": "<iframe src=\"https://dylhahn.github.io/SCIL-ENSO/embed/interactive.html\" title=\"Interactive: explore every El Niño since 1950\" width=\"100%\" height=\"900\" style=\"border:0\" loading=\"lazy\" allowfullscreen></iframe>"
   },
   {
    "script": "roni_vs_past_events.py",
@@ -134,6 +153,25 @@
     "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_3d.png",
     "default.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_3d.mp4"
    }
+  },
+  {
+   "script": "interactive_3d_data.py",
+   "title": "Interactive 3D: warm layer, temperature layers and hottest water",
+   "tab": "Ocean Heat Below the Surface",
+   "page": "https://dylhahn.github.io/SCIL-ENSO/ocean/",
+   "caption": "Rotate and zoom a 3D model of the tropical Pacific for 2026/2027, 2023/2024, 2015/2016, 1997/1998, 1982/1983 or the 1991–2020 normal, month by month. Warm layer: the sea surface above the base of the warm layer (20 °C). Temperature layers: the depths of the 20, 24, 26 and 28 °C isotherms. Hottest water: the volume of water above 28 and 29 °C.",
+   "takeaway": "Switch to Hottest water and compare 2026/2027 with Normal: the body of water above 28 °C is far larger in 2026/2027 and reaches much farther east.",
+   "how_to_read": "Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the months play. Choose a view and a year above the model, and use the slider or play button to move through the months. The opacity sliders below fade or hide each layer, so you can look inside.",
+   "relation": "El Niño is fuelled by heat stored in the upper ocean. Seeing the warm layer, its temperature layers and the volume of the hottest water in three dimensions shows where that heat is, and how much more there is than usual.",
+   "data": "NCEP GODAS ocean reanalysis, monthly temperature to 205 m, via NOAA PSL; volumes over 5°S–5°N, 120°E–80°W; normal = 1991–2020 mean temperature.",
+   "description": "",
+   "animated": false,
+   "interactive": true,
+   "files": {
+    "html": "https://dylhahn.github.io/SCIL-ENSO/embed/interactive_3d.html",
+    "json": "https://dylhahn.github.io/SCIL-ENSO/embed/interactive_3d.json"
+   },
+   "embed": "<iframe src=\"https://dylhahn.github.io/SCIL-ENSO/embed/interactive_3d.html\" title=\"Interactive 3D: warm layer, temperature layers and hottest water\" width=\"100%\" height=\"900\" style=\"border:0\" loading=\"lazy\" allowfullscreen></iframe>"
   },
   {
    "script": "warm_water_before_onset.py",
@@ -321,6 +359,25 @@
    "files": {
     "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/kelvin_variables.png"
    }
+  },
+  {
+   "script": "interactive_sealevel_data.py",
+   "title": "Interactive 3D: sea level and Kelvin waves",
+   "tab": "Kelvin Waves & Sea Level",
+   "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
+   "caption": "Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave signal alone.",
+   "takeaway": "Sea level along the equator in the eastern Pacific has risen by about 40 cm (16 in) since mid-2025 as warm water piled up; switch to the Kelvin-wave signal to watch the individual waves roll east.",
+   "how_to_read": "Load the view, then drag to rotate and use + and − to zoom; the angle you choose is kept while the days play. Sea level height (SSH) shows the full rise; Kelvin-wave signal removes the slow build-up so that the waves stand out as red ridges travelling from left to right along the equator. The cm and inches buttons switch the units.",
+   "relation": "Warm water takes up more space, so sea level rises where the warm layer thickens. Satellite sea level gives a daily, ocean-wide picture of where El Niño's heat is accumulating and of the Kelvin waves that carry it east; higher sea level along the coasts of the Americas is itself one of El Niño's effects.",
+   "data": "NOAA blended satellite altimetry, daily sea surface height anomaly over 12°S–12°N at 1°, via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle; wave signal = anomaly minus its 91-day running mean.",
+   "description": "",
+   "animated": false,
+   "interactive": true,
+   "files": {
+    "html": "https://dylhahn.github.io/SCIL-ENSO/embed/interactive_sealevel.html",
+    "json": "https://dylhahn.github.io/SCIL-ENSO/embed/interactive_sealevel.json"
+   },
+   "embed": "<iframe src=\"https://dylhahn.github.io/SCIL-ENSO/embed/interactive_sealevel.html\" title=\"Interactive 3D: sea level and Kelvin waves\" width=\"100%\" height=\"900\" style=\"border:0\" loading=\"lazy\" allowfullscreen></iframe>"
   },
   {
    "script": "coastal_sea_level.py",
