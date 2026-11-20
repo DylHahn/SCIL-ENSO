@@ -7,6 +7,9 @@ the 20 °C isotherm, in sea surface temperature, in sea surface salinity (NASA S
 zonal wind, the depth, temperature and wind from the TAO/TRITON buoys (see enso_tao.py). The dashed lines are the Kelvin waves traced in satellite sea level (anim_kelvin.py), from
 150°E to 95°W, numbered as in that figure.
 
+The figure is an animation: the five strips fill in day by day, with each wave's dashed line drawn as far as
+the day shown, and the final frame is the full figure.
+
     python kelvin_variables.py
 """
 import argparse
@@ -16,10 +19,12 @@ import pandas as pd
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, ListedColormap
+from matplotlib.patches import Rectangle
 from matplotlib.ticker import FuncFormatter
 
 from anim_kelvin import START, X0, X1, kelvin_waves
-from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, lon_label, save
+from enso_anim import AnimationFrames
+from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, lon_label
 from enso_salinity import salinity_signal
 from enso_tao import LONS, anomalies, infill_across, wave_signal
 
@@ -31,6 +36,7 @@ PANELS = [("ssh", "Satellite sea level", "cm", 12, 2), ("d20", "Warm-layer depth
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--every", type=int, default=3, help="days per animation frame")
     ap.add_argument("--theme", choices=["dark", "light"], default="dark")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--out", default=str(FIG_DIR / "kelvin" / "kelvin_variables.png"))
@@ -43,7 +49,7 @@ def main():
     H = 0.9 + (len(PANELS) - 1) * 2.32 + 1.95 + 1.39
     fig = plt.figure(figsize=(13, H))
     L, W = 0.08, 0.82
-    ends = []
+    ends, axes = [], []
     for k, (key, name, unit, top, step) in enumerate(PANELS):
         ax = fig.add_axes([L, (0.9 + (len(PANELS) - 1 - k) * 2.32) / H, W, 1.95 / H])
         if key == "ssh":
@@ -76,6 +82,7 @@ def main():
             if k == 0:
                 ax.text(w[0] + (w[3] - w[0]) * 0.3, X0 + (X1 - X0) * 0.3 + 5, str(n), fontsize=11, fontweight="bold",
                         color="white", ha="center", bbox=dict(boxstyle="round,pad=0.15", fc="black", ec="none", alpha=0.7))
+        axes.append(ax)
         cax = fig.add_axes([L + W + 0.012, (0.9 + (len(PANELS) - 1 - k) * 2.32) / H, 0.012, 1.95 / H])
         cb = fig.colorbar(cf, cax=cax, ticks=levels[::4 if key in ("sst", "sss") else 2])
         cb.outline.set_visible(False)
@@ -91,8 +98,35 @@ def main():
                "anomalies from each mooring's 1991–2020 seasonal cycle, 5-day means. Gaps up to 10 days and single "
                "missing moorings are interpolated. Salinity: NASA SMAP near-real-time (0.25°, daily, 1°S–1°N, via NOAA "
                "CoastWatch ERDDAP), 5-day means.")
-    save(fig, args.out,
-         alt=f"Longitude–time diagrams along the equator from {START[:7]} to {max(ends):%B %Y} of the Kelvin-wave signal in "
+    # reveal the strips day by day: a cover hides everything to the right of the day shown
+    first, last = pd.Timestamp(START), max(max(ends), ssh.index[-1])
+    x_end = mdates.date2num(axes[0].get_xlim()[1]) if not isinstance(axes[0].get_xlim()[1], float) else axes[0].get_xlim()[1]
+    covers, cursors = [], []
+    for ax in axes:
+        y0, y1 = ax.get_ylim()
+        covers.append(ax.add_patch(Rectangle((mdates.date2num(first), y0), x_end - mdates.date2num(first), y1 - y0,
+                                             facecolor=COLORS["surface_2"], edgecolor="none", zorder=5)))
+        cursors.append(ax.axvline(first, color="white", lw=1.4, zorder=6))
+    stamp = axes[0].text(1.0, 1.03, "", transform=axes[0].transAxes, ha="right", va="bottom", fontsize=14,
+                         fontweight="bold", color=COLORS["text"])
+    frames = AnimationFrames(fig, dpi=95)
+    days = list(pd.date_range(first, last, freq=f"{args.every}D"))
+    if days[-1] != last:
+        days.append(last)
+    for d in days:
+        x = mdates.date2num(d + pd.Timedelta(hours=12))
+        done = d >= last
+        for cov, cur in zip(covers, cursors):
+            cov.set_x(x)
+            cov.set_width(max(x_end - x, 0))
+            cov.set_visible(not done)
+            cur.set_xdata([x, x])
+            cur.set_visible(not done)
+        stamp.set_text(f"{d:%-d %B %Y}")
+        frames.grab(80)
+    frames.durations[-1] = 4500
+    frames.save(args.out, quality=80,
+         alt=f"Animated longitude–time diagrams along the equator from {START[:7]} to {max(ends):%B %Y} of the Kelvin-wave signal in "
              "satellite sea level, the depth of the 20 °C isotherm, sea surface temperature, sea surface salinity and zonal wind, "
              "with the "
              f"{len(waves)} Kelvin waves traced in satellite sea level overlaid.")

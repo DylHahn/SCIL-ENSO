@@ -170,7 +170,7 @@ PAGES = [
              "running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between "
              "warm-layer depth, buoy surface height and satellite sea level, and between the Kelvin-wave signal and "
              "its rate of change."),
-            ('kelvin_variables.py', True, 'The 2026 Kelvin waves in five variables',
+            ('kelvin_variables.py', True, 'Animation: the 2026 Kelvin waves in five variables',
              "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature, sea surface "
              "salinity and east–west wind along the equator since October 2025, with the traced Kelvin waves drawn "
              "over each."),
@@ -410,7 +410,9 @@ FIGURE_NOTES = {
         how="Each row is one variable, with time running left to right and longitude running up the page. Each variable is "
             "shown as its departure from its own 91-day average, so red means above that average. The dashed lines "
             "are the Kelvin waves traced in satellite sea level, drawn at the same place in every row, so you can "
-            "check whether each variable changes as a wave passes."),
+            "check whether each variable changes as a wave passes. Press play to watch the rows fill in day by day: a "
+            "burst of westerly wind in the bottom row is followed by a wave rising through sea level and the warm "
+            "layer."),
     "kelvin_speeds.py": dict(
         takeaway="The 2026 Kelvin waves were not unusually fast: they crossed at a median of 2.8 m/s, about 52 days "
                  "from 150°E to 95°W, the same as the median of all clear waves since 2017.",
