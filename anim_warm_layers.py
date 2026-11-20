@@ -94,7 +94,7 @@ def main():
     bounds = [0] + ISOTHERMS + [40]
     norm = BoundaryNorm(bounds, cmap.N)
 
-    top_in, row_in, sec_in, bottom_in = 2.75, 2.45, 1.95, 0.95       # colour key and units at the top
+    top_in, row_in, sec_in, bottom_in = 2.75, 2.85, 1.95, 0.95       # colour key and units at the top
     H = top_in + row_in * len(rows) + bottom_in
     fig = plt.figure(figsize=(13, H))
     vmax = max(float(v.sum(axis=1).max()) for v in vols) * 1.08
@@ -109,8 +109,8 @@ def main():
         ax.set_ylabel("Depth (m)", fontsize=10)
         ax.xaxis.set_major_formatter(FuncFormatter(lon_label))
         ax.set_xticks([140, 160, 180, 200, 220, 240, 260])
-        if k < len(rows) - 1:
-            ax.set_xticklabels([])
+        ax.tick_params(axis="x", labelsize=10)
+        ax.set_xlabel("Longitude along the equator", fontsize=10, labelpad=2)
         cur = k == 0
         ax.set_title(name, fontsize=14, fontweight="bold", loc="left", pad=5,
                      color=COLORS["el_nino"] if cur else COLORS["text"])

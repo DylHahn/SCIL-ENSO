@@ -271,7 +271,7 @@
   <p class="kicker">Methods &amp; data</p>
   <h1>Methods and data</h1>
   <p class="lede">Data sources, definitions and methods behind every figure on this site, with known limitations.</p>
-  <p class="meta">Updated November 13, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
+  <p class="meta">Updated November 20, 2026. Data: NOAA observations, reanalysis and official forecasts.</p>
 </header>
 
 
@@ -606,7 +606,7 @@ document.querySelectorAll(".player .play").forEach(btn => {
 // Site search: every figure on every tab, and the glossary, from search-index.json (built by update_site.py)
 (() => {
   const input = document.getElementById("site-search"), box = document.getElementById("search-results");
-  const up = "../", src = up + "search-index.json?v=20261113";
+  const up = "../", src = up + "search-index.json?v=20261120";
   let index = null, sel = -1;
   const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const load = () => index ? Promise.resolve(index) : fetch(src).then(r => r.json()).then(d => {
