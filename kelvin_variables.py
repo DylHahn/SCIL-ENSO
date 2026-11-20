@@ -46,12 +46,13 @@ def main():
     _, ssh, waves = kelvin_waves(args.refresh)
     waves = [w for w in waves if w[0] + (w[3] - w[0]) / 2 >= pd.Timestamp(START)]
     ssh = ssh.loc[START:]
-    H = 0.9 + (len(PANELS) - 1) * 2.32 + 1.95 + 1.39
+    ROW = 2.62                                                      # panel spacing (inches), room for month labels
+    H = 0.9 + (len(PANELS) - 1) * ROW + 1.95 + 1.39
     fig = plt.figure(figsize=(13, H))
     L, W = 0.08, 0.82
     ends, axes = [], []
     for k, (key, name, unit, top, step) in enumerate(PANELS):
-        ax = fig.add_axes([L, (0.9 + (len(PANELS) - 1 - k) * 2.32) / H, W, 1.95 / H])
+        ax = fig.add_axes([L, (0.9 + (len(PANELS) - 1 - k) * ROW) / H, W, 1.95 / H])
         if key == "ssh":
             lons, f = np.array(ssh.columns, float), ssh
         elif key == "sss":
@@ -73,24 +74,27 @@ def main():
         ax.set_yticks([165, 190, 220, 250, 265])
         ax.tick_params(axis="both", labelsize=10.5)
         ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 3, 5, 7, 9, 11]))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y") if k == len(PANELS) - 1 else FuncFormatter(lambda *_: ""))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
         ax.set_ylabel("Longitude\n(west → east)", fontsize=10.5)
         ax.set_title(name, fontsize=14, fontweight="bold", loc="left", pad=5, color=COLORS["text"])
         for n, w in enumerate(waves, 1):
             ax.plot([w[0], w[3]], [X0, X1], color="black", lw=1.5, alpha=0.3)
             ax.plot([w[0], w[3]], [X0, X1], color="white", lw=0.8, ls=(0, (6, 4)), alpha=0.85)
             if k == 0:
-                ax.text(w[0] + (w[3] - w[0]) * 0.3, X0 + (X1 - X0) * 0.3 + 5, str(n), fontsize=11, fontweight="bold",
+                f = 0.25 if n % 2 else 0.62                          # alternate heights, so close waves don't overlap
+                ax.text(w[0] + (w[3] - w[0]) * f, X0 + (X1 - X0) * f + 5, f"{n} · {w[1]:.1f} m/s", fontsize=10.5,
+                        fontweight="bold",
                         color="white", ha="center", bbox=dict(boxstyle="round,pad=0.15", fc="black", ec="none", alpha=0.7))
         axes.append(ax)
-        cax = fig.add_axes([L + W + 0.012, (0.9 + (len(PANELS) - 1 - k) * 2.32) / H, 0.012, 1.95 / H])
+        cax = fig.add_axes([L + W + 0.012, (0.9 + (len(PANELS) - 1 - k) * ROW) / H, 0.012, 1.95 / H])
         cb = fig.colorbar(cf, cax=cax, ticks=levels[::4 if key in ("sst", "sss") else 2])
         cb.outline.set_visible(False)
         cb.ax.tick_params(labelsize=9.5, length=0)
         cb.set_label(unit, fontsize=11, fontweight="bold", color=COLORS["text"])
 
     add_note("Time runs left to right and longitude runs up the page. Dashed lines are the Kelvin waves traced in "
-             "satellite sea level, numbered as in Figure 2.")
+             "satellite sea level, numbered as in Figure 2, each labelled with the speed at which it crossed the Pacific "
+             "(as in Figure 3): the distance from 150°E to 95°W divided by the time its peak took to travel it.")
     add_title(fig, f"Kelvin waves in five variables, October {NOW - 1} to {max(ends):%B %Y}",
               "Kelvin-wave signal along the equator: each variable minus its own 91-day average. Red: above; blue: below.")
     add_source(fig, "Data: NOAA blended satellite altimetry (0.25°, daily, 1°S–1°N, via NOAA CoastWatch ERDDAP); TAO/TRITON "
