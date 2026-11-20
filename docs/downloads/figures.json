@@ -346,15 +346,15 @@
   },
   {
    "script": "kelvin_variables.py",
-   "title": "The 2026 Kelvin waves in four variables",
+   "title": "The 2026 Kelvin waves in five variables",
    "tab": "Kelvin Waves & Sea Level",
    "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
-   "caption": "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature and east–west wind along the equator since October 2025, with the traced Kelvin waves drawn over each.",
-   "takeaway": "The 2026 waves are clearest in sea level and the depth of the warm layer. Bursts of westerly wind near 165°E line up with the start of waves 1 to 3, while the waves leave only a weak mark on sea surface temperature.",
+   "caption": "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature, sea surface salinity and east–west wind along the equator since October 2025, with the traced Kelvin waves drawn over each.",
+   "takeaway": "The 2026 waves are clearest in sea level and the depth of the warm layer. Bursts of westerly wind near 165°E line up with the start of waves 1 to 3, while the waves leave only a weak mark on sea surface temperature and salinity: where a wave raises sea level the surface tends to be slightly fresher, but rain and evaporation change salinity as much as the waves do.",
    "how_to_read": "Each row is one variable, with time running left to right and longitude running up the page. Each variable is shown as its departure from its own 91-day average, so red means above that average. The dashed lines are the Kelvin waves traced in satellite sea level, drawn at the same place in every row, so you can check whether each variable changes as a wave passes.",
-   "relation": "Wind starts a Kelvin wave, the wave moves the warm layer and raises sea level, and the surface temperature responds later and more weakly. Seeing them together shows which measurements carry each wave most clearly.",
-   "data": "NOAA blended satellite altimetry (0.25°, daily), via NOAA CoastWatch ERDDAP; TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm, sea surface temperature and zonal wind.",
-   "description": "Longitude–time diagrams along the equator from 2025-10 to November 2026 of the Kelvin-wave signal in satellite sea level, the depth of the 20 °C isotherm, sea surface temperature and zonal wind, with the 6 Kelvin waves traced in satellite sea level overlaid.",
+   "relation": "Wind starts a Kelvin wave, the wave moves the warm layer and raises sea level, and the surface temperature responds later and more weakly. The eastward current of each wave also carries fresher water from the western Pacific, so salinity can change too. Seeing them together shows which measurements carry each wave most clearly.",
+   "data": "NOAA blended satellite altimetry (0.25°, daily), via NOAA CoastWatch ERDDAP; TAO/TRITON moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm, sea surface temperature and zonal wind; NASA SMAP sea surface salinity (0.25°, daily), via NOAA CoastWatch ERDDAP.",
+   "description": "Longitude–time diagrams along the equator from 2025-10 to November 2026 of the Kelvin-wave signal in satellite sea level, the depth of the 20 °C isotherm, sea surface temperature, sea surface salinity and zonal wind, with the 6 Kelvin waves traced in satellite sea level overlaid.",
    "animated": false,
    "files": {
     "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/kelvin_variables.png"

@@ -3,8 +3,8 @@ Kelvin waves 5 — The 2026 Kelvin waves seen in four variables
 
 From October of the year before the current El Niño to the latest day, along the equator with time running left
 to right: the Kelvin-wave signal (anomaly minus its 91-day running mean) in satellite sea level, in the depth of
-the 20 °C isotherm, in sea surface temperature and in zonal wind, the last three from the TAO/TRITON buoys
-(see enso_tao.py). The dashed lines are the Kelvin waves traced in satellite sea level (anim_kelvin.py), from
+the 20 °C isotherm, in sea surface temperature, in sea surface salinity (NASA SMAP, see enso_salinity.py) and in
+zonal wind, the depth, temperature and wind from the TAO/TRITON buoys (see enso_tao.py). The dashed lines are the Kelvin waves traced in satellite sea level (anim_kelvin.py), from
 150°E to 95°W, numbered as in that figure.
 
     python kelvin_variables.py
@@ -20,11 +20,13 @@ from matplotlib.ticker import FuncFormatter
 
 from anim_kelvin import START, X0, X1, kelvin_waves
 from enso_common import FIG_DIR, COLORS, add_note, add_source, add_title, apply_style, lon_label, save
+from enso_salinity import salinity_signal
 from enso_tao import LONS, anomalies, infill_across, wave_signal
 
 NOW = 2026
 PANELS = [("ssh", "Satellite sea level", "cm", 12, 2), ("d20", "Warm-layer depth (20 °C isotherm), buoys", "m", 32, 4),
-          ("sst", "Sea surface temperature, buoys", "°C", 1.6, 0.2), ("wind", "East–west wind, buoys", "m/s", 4.8, 0.6)]
+          ("sst", "Sea surface temperature, buoys", "°C", 1.6, 0.2),
+          ("sss", "Sea surface salinity, satellite (SMAP)", "psu", 0.48, 0.06), ("wind", "East–west wind, buoys", "m/s", 4.8, 0.6)]
 
 
 def main():
@@ -38,7 +40,7 @@ def main():
     _, ssh, waves = kelvin_waves(args.refresh)
     waves = [w for w in waves if w[0] + (w[3] - w[0]) / 2 >= pd.Timestamp(START)]
     ssh = ssh.loc[START:]
-    H = 11.2
+    H = 0.9 + (len(PANELS) - 1) * 2.32 + 1.95 + 1.39
     fig = plt.figure(figsize=(13, H))
     L, W = 0.08, 0.82
     ends = []
@@ -46,6 +48,9 @@ def main():
         ax = fig.add_axes([L, (0.9 + (len(PANELS) - 1 - k) * 2.32) / H, W, 1.95 / H])
         if key == "ssh":
             lons, f = np.array(ssh.columns, float), ssh
+        elif key == "sss":
+            f = salinity_signal(pd.Timestamp(START) - pd.DateOffset(months=3), args.refresh).loc[START:, 160:270]
+            lons = np.array(f.columns, float)
         else:
             f = infill_across(wave_signal(anomalies(key, args.refresh))).loc[START:]
             lons = np.array(LONS, float)
@@ -72,22 +77,24 @@ def main():
                 ax.text(w[0] + (w[3] - w[0]) * 0.3, X0 + (X1 - X0) * 0.3 + 5, str(n), fontsize=11, fontweight="bold",
                         color="white", ha="center", bbox=dict(boxstyle="round,pad=0.15", fc="black", ec="none", alpha=0.7))
         cax = fig.add_axes([L + W + 0.012, (0.9 + (len(PANELS) - 1 - k) * 2.32) / H, 0.012, 1.95 / H])
-        cb = fig.colorbar(cf, cax=cax, ticks=levels[::2 if k != 2 else 4])
+        cb = fig.colorbar(cf, cax=cax, ticks=levels[::4 if key in ("sst", "sss") else 2])
         cb.outline.set_visible(False)
         cb.ax.tick_params(labelsize=9.5, length=0)
         cb.set_label(unit, fontsize=11, fontweight="bold", color=COLORS["text"])
 
     add_note("Time runs left to right and longitude runs up the page. Dashed lines are the Kelvin waves traced in "
              "satellite sea level, numbered as in Figure 2.")
-    add_title(fig, f"Kelvin waves in four variables, October {NOW - 1} to {max(ends):%B %Y}",
+    add_title(fig, f"Kelvin waves in five variables, October {NOW - 1} to {max(ends):%B %Y}",
               "Kelvin-wave signal along the equator: each variable minus its own 91-day average. Red: above; blue: below.")
     add_source(fig, "Data: NOAA blended satellite altimetry (0.25°, daily, 1°S–1°N, via NOAA CoastWatch ERDDAP); TAO/TRITON "
                "moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP), daily,\nat 8 moorings on the equator 10–15° apart, "
                "anomalies from each mooring's 1991–2020 seasonal cycle, 5-day means. Gaps up to 10 days and single "
-               "missing moorings are interpolated.")
+               "missing moorings are interpolated. Salinity: NASA SMAP near-real-time (0.25°, daily, 1°S–1°N, via NOAA "
+               "CoastWatch ERDDAP), 5-day means.")
     save(fig, args.out,
          alt=f"Longitude–time diagrams along the equator from {START[:7]} to {max(ends):%B %Y} of the Kelvin-wave signal in "
-             "satellite sea level, the depth of the 20 °C isotherm, sea surface temperature and zonal wind, with the "
+             "satellite sea level, the depth of the 20 °C isotherm, sea surface temperature, sea surface salinity and zonal wind, "
+             "with the "
              f"{len(waves)} Kelvin waves traced in satellite sea level overlaid.")
 
 

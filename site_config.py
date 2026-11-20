@@ -177,9 +177,10 @@ PAGES = [
              "running left to right, so each Kelvin wave is a streak rising to the right. Buttons switch between "
              "warm-layer depth, buoy surface height and satellite sea level, and between the Kelvin-wave signal and "
              "its rate of change."),
-            ('kelvin_variables.py', True, 'The 2026 Kelvin waves in four variables',
-             "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature and east–west "
-             "wind along the equator since October 2025, with the traced Kelvin waves drawn over each."),
+            ('kelvin_variables.py', True, 'The 2026 Kelvin waves in five variables',
+             "The Kelvin-wave signal in satellite sea level, warm-layer depth, sea surface temperature, sea surface "
+             "salinity and east–west wind along the equator since October 2025, with the traced Kelvin waves drawn "
+             "over each."),
             ('interactive_sealevel_data.py', True, 'Interactive 3D: sea level and Kelvin waves',
              "Daily satellite sea level height (SSH) across the tropical Pacific as a 3D landscape you can "
              "rotate, from October 2025 to the latest day: the rise as warm water piles up, or the Kelvin-wave "
@@ -427,7 +428,8 @@ FIGURE_NOTES = {
     "kelvin_variables.py": dict(
         takeaway="The 2026 waves are clearest in sea level and the depth of the warm layer. Bursts of westerly wind near "
                  "165°E line up with the start of waves 1 to 3, while the waves leave only a weak mark on sea surface "
-                 "temperature.",
+                 "temperature and salinity: where a wave raises sea level the surface tends to be slightly fresher, "
+                 "but rain and evaporation change salinity as much as the waves do.",
         how="Each row is one variable, with time running left to right and longitude running up the page. Each variable is "
             "shown as its departure from its own 91-day average, so red means above that average. The dashed lines "
             "are the Kelvin waves traced in satellite sea level, drawn at the same place in every row, so you can "
@@ -704,9 +706,11 @@ FIGURE_INFO = {
         "Satellite views: NOAA blended altimetry (2026/2027, 2023/2024) and NOAA delayed-time altimetry (2015/2016)."),
     "kelvin_variables.py": (
         "Wind starts a Kelvin wave, the wave moves the warm layer and raises sea level, and the surface temperature "
-        "responds later and more weakly. Seeing them together shows which measurements carry each wave most clearly.",
+        "responds later and more weakly. The eastward current of each wave also carries fresher water from the western "
+        "Pacific, so salinity can change too. Seeing them together shows which measurements carry each wave most clearly.",
         "NOAA blended satellite altimetry (0.25°, daily), via NOAA CoastWatch ERDDAP; TAO/TRITON moored buoys (NOAA PMEL, "
-        "via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm, sea surface temperature and zonal wind."),
+        "via NOAA CoastWatch ERDDAP), daily depth of the 20 °C isotherm, sea surface temperature and zonal wind; NASA "
+        "SMAP sea surface salinity (0.25°, daily), via NOAA CoastWatch ERDDAP."),
     "kelvin_speeds.py": (
         "The speed of a Kelvin wave sets how long the warm water takes to reach South America, and so how much "
         "warning the ocean gives before the eastern Pacific warms. Speed depends on how the ocean is layered: "
@@ -820,6 +824,7 @@ DATASET_RESOLUTION = {
     "ccmp": "CCMP v2.1: 0.25° grid, 6-hourly (daily means used)",
     "winds": "Blended Sea Winds v2: 0.25° grid, daily",
     "altimetry": "Blended altimetry: 0.25° grid, daily",
+    "smap": "SMAP salinity: 0.25° grid, daily (cleaned and smoothed over 3° of longitude here)",
     "altimetry_dt": "Delayed-time altimetry: 0.25° grid, daily, 2012–2019",
     "tao": "TAO/TRITON buoys: 8 moorings on the equator, 10–15° of longitude apart, daily",
     "nclimgrid": "nClimGrid: about 5 km (1/24°) grid, monthly",
@@ -828,6 +833,8 @@ DATASET_RESOLUTION = {
     "cpc_gis": "NOAA CPC outlook maps: 3-month seasons, mapped as probability categories",
 }
 DATASETS = {
+    "smap": ("SMAP sea surface salinity, near real time (NOAA CoastWatch ERDDAP)",
+             "https://coastwatch.noaa.gov/erddap/griddap/noaacwSMAPsssDaily.html"),
     "altimetry_dt": ("Delayed-time satellite sea level, 2012–2019 (NOAA PIFSC ERDDAP)",
                      "https://oceanwatch.pifsc.noaa.gov/erddap/griddap/noaa_sla_dt.html"),
     "tao": ("TAO/TRITON daily moored buoys (NOAA PMEL, via NOAA CoastWatch ERDDAP)",
@@ -887,7 +894,7 @@ FIGURE_DATA = {
     "anim_coastal_sea_level.py": ["tide_gauges"],
     "coastal_kelvin_signal.py": ["altimetry"],
     "hovmoller_kelvin_events.py": ["tao", "altimetry", "altimetry_dt"],
-    "kelvin_variables.py": ["altimetry", "tao"],
+    "kelvin_variables.py": ["altimetry", "tao", "smap"],
     "anim_marine_heatwaves.py": ["oisst_daily_psl"],
     "warm_water_before_onset.py": ["pmel_wwv", "roni"],
     "forecast_verification.py": ["roni_strengths", "roni"],
