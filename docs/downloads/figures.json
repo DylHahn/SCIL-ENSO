@@ -224,39 +224,6 @@
    }
   },
   {
-   "script": "anim_upper_ocean.py",
-   "title": "Animation: upper-ocean temperature, 2026/2027 and past very strong events",
-   "tab": "Ocean Heat Below the Surface",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/ocean/",
-   "caption": "Animated equatorial upper-ocean temperature sections for 2026/2027, 2023/2024, 2015/2016, 1997/1998, 1982/1983 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 °C line flattens.",
-   "takeaway": "In 2026/2027 the 20 °C line is nearly flat across the Pacific: the cold water that normally lies close to the surface in the east has been pushed down.",
-   "how_to_read": "Each panel is a vertical slice through the ocean along the equator, from Asia (left) to South America (right) and from the surface (top) to 200 m depth (bottom). Warm colours above the black line are the warm upper layer. Normally the line rises toward the east; during El Niño it flattens.",
-   "relation": "The tilt of the warm layer along the equator is the clearest sign of El Niño below the surface: when it flattens, cold water no longer reaches the surface near South America, so the eastern Pacific warms.",
-   "data": "NCEP GODAS ocean reanalysis, monthly temperature to 205 m averaged over 2°S–2°N, via NOAA PSL; normal = 1991–2020.",
-   "description": "Animated depth–longitude sections of equatorial Pacific ocean temperature from January of each El Niño's first year to December of the next, for 2026/2027, 2023/2024, 2015/2016, 1997/1998 and 1982/1983 (the current event to September 2026) and the 1991–2020 normal. In September of the first year, the upper 200 m east of 180° departed from normal by +4.6 °C in 2026/2027, +1.3 °C in 2023/2024, +2.3 °C in 2015/2016, +3.2 °C in 1997/1998 and +2.5 °C in 1982/1983.",
-   "animated": true,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_upper_ocean.png",
-    "default.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_upper_ocean.mp4"
-   }
-  },
-  {
-   "script": "subsurface_comparison.py",
-   "title": "Upper-ocean temperature by event",
-   "tab": "Ocean Heat Below the Surface",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/ocean/",
-   "caption": "Equatorial upper-ocean temperature at the same stage of each event; the current event holds substantially more subsurface heat.",
-   "takeaway": "The upper ocean holds far more extra heat in 2026/2027 than in any past very strong event at the same stage.",
-   "how_to_read": "Each panel is a vertical slice along the equator, from Asia (left) to South America (right), down to 200 m. Colours show how much warmer (red) or cooler (blue) than normal the water is.",
-   "relation": "Heat stored below the surface tends to reach the surface over the following months, so more subsurface heat than in past events at the same stage points to continued warming.",
-   "data": "NCEP GODAS ocean reanalysis, monthly temperature to 205 m averaged over 2°S–2°N, via NOAA PSL; anomalies from 1991–2020.",
-   "description": "Depth-by-longitude slices of the equatorial Pacific in September of 2026, 2023, 2015, 1997, 1982. Average extra warmth in the top 200 m from 180° to 80°W: 2026: +4.6 °C; 2023: +1.3 °C; 2015: +2.3 °C; 1997: +3.2 °C; 1982: +2.5 °C.",
-   "animated": false,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/subsurface_comparison.png"
-   }
-  },
-  {
    "script": "hovmoller_upper_ocean.py",
    "title": "Upper-ocean heat content (Hovmöller)",
    "tab": "Ocean Heat Below the Surface",
@@ -396,30 +363,13 @@
    }
   },
   {
-   "script": "anim_coastal_sea_level.py",
-   "title": "Animation: coastal sea level, day by day",
-   "tab": "Kelvin Waves & Sea Level",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
-   "caption": "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up day by day: a rise that travels north shows as a streak slanting down to the right.",
-   "takeaway": "Sea level along the coast rose first near the equator, in Ecuador and Costa Rica from May 2026, and later and less in California; Oregon and Washington have barely risen so far.",
-   "how_to_read": "Top: sea level at each tide gauge on the day shown, from Ecuador (left) to Washington (right). Bottom: the same day by day, with time running down the page, so a rise that travels north along the coast is a streak slanting down to the right. The map colours each gauge by its sea level on the day shown; the numbers match the columns.",
-   "relation": "Coastal-trapped Kelvin waves carry El Niño's warm water poleward along the coasts of the Americas. Watching the rise move from gauge to gauge shows how far north the waves have reached and how quickly.",
-   "data": "University of Hawaii Sea Level Center fast-delivery daily tide-gauge data; anomalies from each station's 1991–2020 seasonal cycle, 10-day means, not corrected for air pressure.",
-   "description": "Animated chart of coastal sea level at 7 tide gauges from Peru to Washington, from October 2025 to 31 August 2026. Over the last 30 days of data: La Libertad, Ecuador +26 cm, San Diego, CA +15 cm and Neah Bay, WA +2 cm compared with normal.",
-   "animated": true,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_coastal_sea_level.png",
-    "default.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_coastal_sea_level.mp4"
-   }
-  },
-  {
    "script": "coastal_kelvin_signal.py",
    "title": "Animation: satellite sea level at each tide gauge",
    "tab": "Kelvin Waves & Sea Level",
    "page": "https://dylhahn.github.io/SCIL-ENSO/kelvin/",
    "caption": "Daily satellite sea level height (SSH) around each tide gauge from Ecuador to Washington since October 2025, as an animated map, with the SSH near the gauge and its Kelvin-wave signal drawn day by day; one button per gauge.",
    "takeaway": "By late October 2026 the whole sea off Ecuador stood 30–40 cm above normal; off San Diego the rise was a band of high water hugging the coast, and off Washington sea level was close to normal.",
-   "how_to_read": "Choose a tide gauge with the buttons above the figure; the numbers match the animation above. The map shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out at sea (black circles), its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave stands out as a peak, and the rate of change of that signal in centimetres per day: red while sea level is rising and blue while it is falling, with larger values for a faster rise. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach 95°W; a coastal peak soon after may be that wave arriving.",
+   "how_to_read": "Choose a tide gauge with the buttons above the figure; they are numbered from south to north. The map shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out at sea (black circles), its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave stands out as a peak, and the rate of change of that signal in centimetres per day: red while sea level is rising and blue while it is falling, with larger values for a faster rise. Dashed lines appear as the numbered equatorial Kelvin waves of Figure 2 reach 95°W; a coastal peak soon after may be that wave arriving.",
    "relation": "Following the same waves from the equator to each stretch of coast shows how far along the Americas El Niño's Kelvin waves reach. Each one that arrives raises coastal sea level for a few weeks, adding to flooding risk at high tide, and warms the coastal ocean.",
    "data": "NOAA blended near-real-time altimetry (sea surface height anomaly, 0.25°, daily), via NOAA CoastWatch ERDDAP; anomalies from the 2017–2024 seasonal cycle at each point.",
    "description": "Animated map of daily satellite sea level around the La Libertad, Ecuador tide gauge from October 2025 to 7 November 2026, with the sea level at the satellite points nearest the gauge and its Kelvin-wave signal drawn day by day. Over the last 30 days, sea level there was +41 cm compared with normal.",
@@ -444,7 +394,7 @@
   {
    "script": "event_ranking.py",
    "title": "Ranking of El Niño events since 1950",
-   "tab": "Records & Forecasts",
+   "tab": "Records",
    "page": "https://dylhahn.github.io/SCIL-ENSO/records/",
    "caption": "El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the current event completed by NOAA's median forecast.",
    "takeaway": "If NOAA's median forecast is realised, 2026/2027 would rank first by peak strength among El Niño events since 1950.",
@@ -455,54 +405,6 @@
    "animated": false,
    "files": {
     "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/event_ranking.png"
-   }
-  },
-  {
-   "script": "forecast_verification.py",
-   "title": "Verification of NOAA's 2026 forecasts",
-   "tab": "Records & Forecasts",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/records/",
-   "caption": "Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and how confidence in a very strong peak has evolved.",
-   "takeaway": "NOAA's confidence in a very strong peak has risen with every forecast issued since April 2026.",
-   "how_to_read": "",
-   "relation": "Knowing how NOAA's forecasts for this event have performed shows how much confidence to place in the current outlook for its peak.",
-   "data": "NOAA CPC official ENSO strength probabilities (monthly archive since April 2026) and the observed Relative Oceanic Niño Index (RONI).",
-   "description": "Verification of NOAA's 2026 El Niño strength forecasts. For Jul–Sep 2026 (observed +1.69 °C, strong), forecasts by issue month gave the observed category: April 11%; May 17%; June 36%; July 57%; August 76%. Probability of a very strong peak in Nov 2026–Jan 2027 by issue: April 25%; May 37%; June 63%; July 75%; August 90%; September 93%; October 96%.",
-   "animated": false,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/forecast_verification.png"
-   }
-  },
-  {
-   "script": "global_temperature.py",
-   "title": "Global temperature and El Niño",
-   "tab": "Records & Forecasts",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/records/",
-   "caption": "Annual global mean surface temperature anomalies; recent record years have coincided with El Niño events.",
-   "takeaway": "Many of the record-warm years since 1950 coincided with El Niño, which temporarily adds to the long-term warming.",
-   "how_to_read": "",
-   "relation": "El Niño releases heat from the ocean into the atmosphere, temporarily raising global average temperature on top of long-term warming; the year during or after a strong El Niño is often a new record.",
-   "data": "NOAA NCEI global land and ocean surface temperature (NOAAGlobalTemp), relative to 1901–2000; El Niño winters from NOAA CPC RONI (December–February).",
-   "description": "Bar chart of global temperature each year since 1950, rising over time. Highlighted record years that came with an El Niño winter: 1995, 1998, 2010, 2016, 2024. 2026 so far is +1.15 °C above the 20th-century average.",
-   "animated": false,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/global_temperature.png"
-   }
-  },
-  {
-   "script": "socal_summer_anomalies.py",
-   "title": "Summer 2026 temperature anomalies",
-   "tab": "Heat",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/socal/",
-   "caption": "June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA nClimGrid, ~5 km), and the regional overnight-low anomaly for every summer since 1950.",
-   "takeaway": "Summer 2026 nights were among the warmest on record across the region; daytime highs were less exceptional.",
-   "how_to_read": "",
-   "relation": "El Niño's main influence on Southern California comes in winter. This summer's heat coincided with the developing event and record-warm coastal water, so these maps put summer 2026 in context.",
-   "data": "NOAA NCEI nClimGrid monthly (~5 km) mean daily maximum and minimum temperature, June–September, land only; anomalies from 1991–2020.",
-   "description": "Maps of Southern California June–September 2026 temperature anomalies relative to 1991–2020: daytime highs +0.7 °C (7th warmest since 1950), overnight lows +1.7 °C (2nd warmest). Bar chart of the regional overnight-low anomaly for every summer since 1950.",
-   "animated": false,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/socal_summer_anomalies.png"
    }
   },
   {
@@ -552,22 +454,6 @@
    "files": {
     "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_marine_heatwaves.png",
     "default.mp4": "https://dylhahn.github.io/SCIL-ENSO/downloads/anim_marine_heatwaves.mp4"
-   }
-  },
-  {
-   "script": "socal_warming_since_1895.py",
-   "title": "Long-term increase in summer heat",
-   "tab": "Heat",
-   "page": "https://dylhahn.github.io/SCIL-ENSO/socal/",
-   "caption": "Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and the regional summer temperature record since 1895 (NOAA nClimGrid).",
-   "takeaway": "Summer nights across Southern California have warmed more than summer days since the mid-20th century.",
-   "how_to_read": "",
-   "relation": "Long-term warming sets the baseline: any heat related to El Niño now comes on top of summers that are already warmer than in the past.",
-   "data": "NOAA NCEI nClimGrid monthly (~5 km) June–September mean daily maximum and minimum temperature since 1895; El Niño winters from NOAA CPC RONI.",
-   "description": "Maps and time series of Southern California summer temperature since 1895. Change from 1951–1980 to 1996–2025: daytime highs +1.1 °C, overnight lows +1.3 °C. Five hottest summers: 2018, 2020, 2021, 2022, 2024.",
-   "animated": false,
-   "files": {
-    "default.png": "https://dylhahn.github.io/SCIL-ENSO/downloads/socal_warming_since_1895.png"
    }
   },
   {

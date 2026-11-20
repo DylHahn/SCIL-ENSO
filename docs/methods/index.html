@@ -263,7 +263,7 @@
   </div>
 </div>
 <nav class="tabs" aria-label="Pages">
-  <div class="tabgroup"><span class="tablabel">El Niño 2026/2027</span><a href="../">Overview</a><a href="../surface/">Sea Surface Temperature</a><a href="../ocean/">Ocean Heat Below the Surface</a><a href="../kelvin/">Kelvin Waves &amp; Sea Level</a><a href="../records/">Records &amp; Forecasts</a></div>
+  <div class="tabgroup"><span class="tablabel">El Niño 2026/2027</span><a href="../">Overview</a><a href="../surface/">Sea Surface Temperature</a><a href="../ocean/">Ocean Heat Below the Surface</a><a href="../kelvin/">Kelvin Waves &amp; Sea Level</a><a href="../records/">Records</a></div>
   <div class="tabgroup"><span class="tablabel">Southern California</span><a href="../socal/">Heat</a><a href="../socal-precip/">Rainfall</a></div>
   <div class="tabgroup"><span class="tablabel">About</span><a href="../methods/" aria-current="page">Methods &amp; Data</a></div>
 </nav>
@@ -282,7 +282,7 @@
 <table>
   <thead><tr><th>Dataset</th><th>Provider</th><th>Resolution</th><th>Used for</th></tr></thead>
   <tbody>
-    <tr><td>Relative Oceanic Niño Index (RONI); official RONI outlook and strength probabilities</td><td>NOAA Climate Prediction Center (CPC)</td><td>3-month means</td><td>Event strength, event definitions, forecasts, forecast verification, ENSO phase of each winter</td></tr>
+    <tr><td>Relative Oceanic Niño Index (RONI); official RONI outlook and strength probabilities</td><td>NOAA Climate Prediction Center (CPC)</td><td>3-month means</td><td>Event strength, event definitions, forecasts, ENSO phase of each winter</td></tr>
     <tr><td>Monthly Niño region indices</td><td>NOAA CPC (OISST v2.1)</td><td>Monthly</td><td>Niño 4, 3.4, 3 and 1+2 anomalies</td></tr>
     <tr><td>NCEP Global Ocean Data Assimilation System (GODAS)</td><td>NOAA NCEP, via NOAA PSL</td><td>1° × ⅓°, 10 m levels (5–205 m used), monthly</td><td>Upper-ocean temperature sections, Hovmöller and animation</td></tr>
     <tr><td>Blended near-real-time altimetry (sea surface height anomaly)</td><td>NOAA NESDIS, via NOAA CoastWatch ERDDAP</td><td>0.25°, daily, 2017–present (delayed-time record via NOAA PIFSC ERDDAP: 0.25°, daily, 2012–2019)</td><td>Kelvin wave animation; sea level in 3D; satellite sea level at each tide gauge</td></tr>
@@ -293,8 +293,8 @@
     <tr><td>Fast-delivery daily tide-gauge sea level</td><td>University of Hawaii Sea Level Center (UHSLC)</td><td>Individual stations, daily, about two months behind real time</td><td>Coastal sea level from Ecuador to Washington; animation of coastal sea level</td></tr>
     <tr><td>Optimum Interpolation SST (OISST) v2.1</td><td>NOAA NCEI, via NOAA PSL and NOAA CoastWatch ERDDAP</td><td>0.25°, monthly and daily</td><td>Sea surface temperature animation; Southern California Bight marine heat</td></tr>
     <tr><td>Extended Reconstructed SST (ERSST) v5</td><td>NOAA NCEI, via NOAA PSL</td><td>2°, monthly, 1854–present</td><td>Equatorial SST Hovmöller, event time series and interactive explorer, tropical Pacific maps</td></tr>
-    <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies; global temperature records</td></tr>
-    <tr><td>nClimGrid monthly</td><td>NOAA NCEI</td><td>~5 km (1/24°), 1895–present</td><td>Southern California temperature and precipitation maps</td></tr>
+    <tr><td>NOAAGlobalTemp v6; global land and ocean temperature series</td><td>NOAA NCEI</td><td>5° grid; global annual series</td><td>Niño 3.4 and tropical-mean anomalies</td></tr>
+    <tr><td>nClimGrid monthly</td><td>NOAA NCEI</td><td>~5 km (1/24°), 1895–present</td><td>Southern California precipitation maps</td></tr>
     <tr><td>Global Historical Climatology Network Daily (GHCN-Daily)</td><td>NOAA NCEI</td><td>Individual stations, daily</td><td>Station warm nights, hot days and rainfall</td></tr>
     <tr><td>Official 3-month precipitation outlook</td><td>NOAA CPC (GIS files)</td><td>Probability categories</td><td>Southern California precipitation outlook</td></tr>
   </tbody>
@@ -496,13 +496,7 @@
   data for 2026. The tropical-mean anomaly is the area-weighted mean over 20°S–20°N.</li>
   <li><b>Hovmöller diagrams.</b> Longitude–time sections along the equator (2°S–2°N) from January of the onset year
   to the following January; each row is one month.</li>
-  <li><b>Forecast verification.</b> Every official CPC strength forecast issued since April 2026, when the RONI-based
-  forecasts began, compared with the category later observed. Lead time is the number of months from the issue
-  month to the centre month of the target season.</li>
-  <li><b>Global temperature.</b> A record year is one warmer than every earlier year in the NCEI series; highlighted
-  records coincided with an El Niño winter (Dec–Feb RONI ≥ +1.0 °C).</li>
-  <li><b>Southern California maps.</b> nClimGrid over 32.45–35.15°N, 121.0–114.4°W (land only). Summer is
-  June–September. Long-term change compares 1996–2025 with 1951–1980; trends are least-squares fits from 1950.</li>
+  <li><b>Southern California maps.</b> nClimGrid over 32.45–35.15°N, 121.0–114.4°W (land only).</li>
   <li><b>Southern California precipitation.</b> Region-wide composites use November–March totals in winters with
   Dec–Feb RONI ≥ +1.5 °C; areas averaging less than 20 mm are left blank. The outlook value for Los Angeles is the
   highest-probability category covering the city.</li>

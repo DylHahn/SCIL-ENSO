@@ -9,10 +9,10 @@ built entirely from public NOAA data. By Dylan Hahn.
 |---|---|
 | **El Niño 2026/2027** › Overview | "What's happening now", "Why this El Niño stands out", development compared with every El Niño since 1950 (animation and interactive explorer), NOAA forecast |
 | › Sea Surface Temperature | Sea surface animation, maps by event, Niño regions, equatorial SST Hovmöller |
-| › Ocean Heat Below the Surface | 3D animation and interactive 3D model, warm water and warm-water layers, equatorial sections and Hovmöller |
-| › Kelvin Waves & Sea Level | Kelvin wave tracker and interactive 3D sea level |
-| › Records & Forecasts | Event ranking, forecast verification, global temperature |
-| **Southern California** › Heat | Summer 2026 anomalies, station warm nights and hot days, marine heatwaves, warming since 1895 |
+| › Ocean Heat Below the Surface | 3D animation and interactive 3D model, warm water and warm-water layers, upper-ocean Hovmöller |
+| › Kelvin Waves & Sea Level | Wind bursts, Kelvin wave tracker and speeds, Kelvin waves in four El Niños and in five variables, interactive 3D sea level, coastal sea level |
+| › Records | Event ranking |
+| **Southern California** › Heat | Station warm nights and hot days, marine heat in the Bight, marine heatwaves from California to Peru |
 | › Rainfall | NOAA seasonal outlook, strong El Niño winters, station rainfall by ENSO phase |
 | Methods & Data | Data sources, definitions, glossary, methods by figure, limitations, citation |
 

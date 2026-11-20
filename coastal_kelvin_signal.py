@@ -27,7 +27,7 @@ from enso_sealevel import box_anomalies
 from enso_tidegauges import STATIONS, alongshore_km
 
 NOW = 2026
-# the gauges reporting since October 2025, south to north, numbered as in anim_coastal_sea_level.py
+# the gauges reporting since October 2025, numbered from south to north
 GAUGES = [91, 87, 569, 551, 556, 592, 558]
 HALF = 3.0                                 # box half-height (degrees of latitude)
 RED, BLUE = "#e8574a", "#3987e5"

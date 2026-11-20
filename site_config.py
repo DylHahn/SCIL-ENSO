@@ -134,14 +134,7 @@ PAGES = [
              "2026/2027, 2023/2024, 2015/2016, 1997/1998, 1982/1983 and the 1991–2020 normal, with the volume of water in "
              "each layer between 5°S and 5°N, from January of each El Niño's first year to December of the next."),
             ("section", 'Along the equator',
-             "Vertical slices through the ocean along the equator, from Asia to South America."),
-            ('anim_upper_ocean.py', False, 'Animation: upper-ocean temperature, 2026/2027 and past very strong events',
-             "Animated equatorial upper-ocean temperature sections for 2026/2027, 2023/2024, 2015/2016, "
-             "1997/1998, 1982/1983 and the 1991–2020 normal; during El Niño the warm layer deepens in the east and the 20 "
-             "°C line flattens."),
-            ('subsurface_comparison.py', True, 'Upper-ocean temperature by event',
-             "Equatorial upper-ocean temperature at the same stage of each event; the current event holds "
-             "substantially more subsurface heat."),
+             "Heat in the upper ocean along the equator, month by month, from Asia to South America."),
             ('hovmoller_upper_ocean.py', False, 'Upper-ocean heat content (Hovmöller)',
              "Average temperature of the upper 200 m along the equator, month by month (rows, top to bottom) and "
              "from the western Pacific to South America (left to right), for 2026/2027 and four past strong events; warm water "
@@ -190,9 +183,6 @@ PAGES = [
             ('coastal_sea_level.py', True, 'Coastal sea level from Ecuador to Washington',
              "Daily tide-gauge sea level along the Pacific coast of the Americas, from Peru and Ecuador to Neah Bay, "
              "Washington, for 2026/2027, 2023/2024, 2015/2016 and 1997/1998."),
-            ('anim_coastal_sea_level.py', True, 'Animation: coastal sea level, day by day',
-             "Daily tide-gauge sea level along the coast from Ecuador to Washington since October 2025, built up "
-             "day by day: a rise that travels north shows as a streak slanting down to the right."),
             ('coastal_kelvin_signal.py', True, 'Animation: satellite sea level at each tide gauge',
              "Daily satellite sea level height (SSH) around each tide gauge from Ecuador to Washington since October "
              "2025, as an animated map, with the SSH near the gauge and its Kelvin-wave signal drawn day by day; one "
@@ -205,36 +195,26 @@ PAGES = [
               'Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center'],
     ),
     dict(
-        key='records', slug='records', tab='Records & Forecasts', group='El Niño 2026/2027',
-        title='Records and forecasts', kicker='El Niño 2026/2027 · Records & forecasts',
-        h1='Records and forecasts: how the 2026/2027 El Niño ranks, and how well it was predicted',
-        lede="Where this event ranks among every El Niño since 1950, how NOAA's forecasts for it have performed, "
-             "and El Niño's influence on global temperature.",
+        key='records', slug='records', tab='Records', group='El Niño 2026/2027',
+        title='Records', kicker='El Niño 2026/2027 · Records',
+        h1='Records: how the 2026/2027 El Niño ranks among every El Niño since 1950',
+        lede="Where this event ranks among every El Niño since 1950 by peak strength, duration and accumulated "
+             "intensity, completed with NOAA's forecast for the months still to come.",
         figures=[
             ('event_ranking.py', True, 'Ranking of El Niño events since 1950',
              "El Niño events since 1950 ranked by peak strength, duration and accumulated intensity, with the "
              "current event completed by NOAA's median forecast."),
-            ('forecast_verification.py', True, "Verification of NOAA's 2026 forecasts",
-             "Each monthly NOAA strength forecast issued since April 2026 compared with the observed RONI, and "
-             "how confidence in a very strong peak has evolved."),
-            ('global_temperature.py', True, 'Global temperature and El Niño',
-             "Annual global mean surface temperature anomalies; recent record years have coincided with El Niño "
-             "events."),
         ],
         extra="",
-        data=['Relative Oceanic Niño Index (RONI), outlook and strength probabilities: NOAA Climate Prediction Center',
-              'Global surface temperature (NOAAGlobalTemp): NOAA NCEI'],
+        data=['Relative Oceanic Niño Index (RONI) and outlook: NOAA Climate Prediction Center'],
     ),
     dict(
         key="socal-heat", slug="socal", tab="Heat", group="Southern California",
         title="Southern California Heat", kicker="Southern California Heat",
         h1="Southern California heat",
-        lede="How the summer of 2026 compared with past summers across Southern California, on land and in "
-             "coastal waters, and how summer heat in the region has increased since 1895.",
+        lede="How the summer of 2026 compared with past summers in Southern California, at weather stations and in "
+             "the coastal ocean, where marine heatwaves have spread from Peru to California.",
         figures=[
-            ('socal_summer_anomalies.py', True, 'Summer 2026 temperature anomalies',
-             "June–September 2026 daytime-high and overnight-low anomalies across Southern California (NOAA "
-             "nClimGrid, ~5 km), and the regional overnight-low anomaly for every summer since 1950."),
             ('socal_station_heat.py', True, 'Warm nights and hot days by station',
              "Station counts of warm nights (≥ 65 °F) and hot days (≥ 90 °F) each summer since 1950 at Los "
              "Angeles, San Diego, the Inland Empire and Santa Barbara."),
@@ -245,9 +225,6 @@ PAGES = [
              "Daily marine heatwave category (I Moderate to IV Extreme) across the eastern Pacific from 25°S to "
              "45°N since January 2026 (NOAA OISST), with the share of the coastal waters off Southern California "
              "and off Ecuador and Peru in each category."),
-            ('socal_warming_since_1895.py', True, 'Long-term increase in summer heat',
-             "Change in summer daytime highs and overnight lows since 1951–1980 across Southern California, and "
-             "the regional summer temperature record since 1895 (NOAA nClimGrid)."),
         ],
         extra="""<section class="note">
   <h2>El Niño and wildfire</h2>
@@ -268,7 +245,7 @@ PAGES = [
     <li>Heat safety: <a href="https://www.weather.gov/safety/heat">National Weather Service</a></li>
   </ul>
 </section>""",
-        data=["Gridded monthly temperature (nClimGrid) and daily station records (GHCN-Daily): NOAA NCEI",
+        data=["Daily station records (GHCN-Daily): NOAA NCEI",
               "Daily sea surface temperature (OISST v2.1): NOAA NCEI, via NOAA CoastWatch ERDDAP and NOAA PSL",
               "Relative Oceanic Niño Index (RONI): NOAA Climate Prediction Center"],
     ),
@@ -458,7 +435,7 @@ FIGURE_NOTES = {
     "coastal_kelvin_signal.py": dict(
         takeaway="By late October 2026 the whole sea off Ecuador stood 30–40 cm above normal; off San Diego the rise "
                  "was a band of high water hugging the coast, and off Washington sea level was close to normal.",
-        how="Choose a tide gauge with the buttons above the figure; the numbers match the animation above. The map "
+        how="Choose a tide gauge with the buttons above the figure; they are numbered from south to north. The map "
             "shows satellite sea level height (SSH) around the gauge (white star) day by day: a coastal Kelvin wave "
             "appears as a band of red along the shore. Below, the SSH at the satellite points nearest the gauge out "
             "at sea (black circles), its Kelvin-wave signal (SSH minus its 91-day average), so each passing wave "
@@ -873,7 +850,7 @@ DATASETS = {
     "cpc_gis": ("Outlook GIS files (NOAA CPC)", "https://www.cpc.ncep.noaa.gov/products/GIS/GIS_DATA/"),
 }
 GODAS_FIGS = ["anim_3d.py", "interactive_3d_data.py", "anim_warm_water.py", "anim_warm_layers.py",
-              "anim_upper_ocean.py", "subsurface_comparison.py", "hovmoller_upper_ocean.py"]
+              "hovmoller_upper_ocean.py"]
 FIGURE_DATA = {
     "anim_sst.py": ["oisst_monthly"],
     "anim_timeseries.py": ["ersst", "godas", "roni"],
